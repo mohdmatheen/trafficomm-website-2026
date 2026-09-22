@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { cpaTrend, dashboardViews, insightStory } from "@/data/visual/reporting-dashboard";
+import { cpaTrend, dashboardViews, decisionNote, insightStory } from "@/data/visual/reporting-dashboard";
 import { cn } from "@/lib/cn";
 import { BarRows, MixBar, TrendLine } from "./MiniChart";
 
@@ -63,13 +63,14 @@ export function ReportingDashboard({ definitions }: { definitions?: readonly { l
       </div>
 
       <div id={`${id}-p`} role="tabpanel" aria-label={`${v.label} reporting view, illustrative data`}>
+        <p className="border-b border-line-dark px-5 py-2.5 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">{v.scope}</p>
         {/* KPI cards */}
         <dl className="grid gap-px bg-line-dark sm:grid-cols-2 lg:grid-cols-3">
           {v.kpis.map((k) => (
             <div key={k.label} className="bg-ink-2 p-5">
               <dt className="eyebrow !text-[0.62rem] text-fog">{k.label}</dt>
               <dd className="mt-2 text-[1.9rem] leading-none tracking-[-0.04em] text-white tabular">{k.value}</dd>
-              <dd className="mt-2 text-[0.8rem] text-mute">{k.note}</dd>
+              {k.note && <dd className="mt-2 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-fog">{k.note}</dd>}
             </div>
           ))}
         </dl>
@@ -84,7 +85,7 @@ export function ReportingDashboard({ definitions }: { definitions?: readonly { l
             <div className="mt-4 h-24">
               <TrendLine values={cpaTrend} />
             </div>
-            <p className="mt-3 text-[0.82rem] text-fog">CPA drifts above target across the last four periods.</p>
+            <p className="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-fog">Above target · last 4 periods</p>
           </div>
           <div className="bg-ink-2 p-5">
             <p className="eyebrow !text-[0.62rem] text-fog">{v.breakdownLabel}</p>
@@ -95,7 +96,7 @@ export function ReportingDashboard({ definitions }: { definitions?: readonly { l
         {/* Reporting → analysis → insight */}
         <ol className="grid gap-px border-t border-line-dark bg-line-dark lg:grid-cols-3">
           {[
-            { k: "Reporting", s: insightStory.reporting, body: <p className="mt-3 text-[0.9rem] leading-relaxed text-fog">{insightStory.reporting.detail}</p> },
+            { k: "Reporting", s: insightStory.reporting, body: <p className="mt-3 font-mono text-[0.9rem] text-fog tabular">{insightStory.reporting.detail}</p> },
             {
               k: "Analysis",
               s: insightStory.analysis,
@@ -130,16 +131,21 @@ export function ReportingDashboard({ definitions }: { definitions?: readonly { l
                 <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
                 {k}
               </p>
-              <p className="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-mute">{definitions?.[i]?.question ?? s.question}</p>
-              {definitions?.[i] && <p className="mt-2 text-[0.88rem] leading-relaxed text-mute">{definitions[i].body}</p>}
-              <p className="mt-3 text-[1.05rem] leading-snug text-white">{s.headline}</p>
+              <p className="mt-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-fog">{definitions?.[i]?.question ?? s.question}</p>
+              <p className="mt-2 text-[1.15rem] leading-snug text-white">{s.headline}</p>
               {body}
+              {i === 2 && (
+                <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-3 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white ring-1 ring-inset ring-line-dark">
+                  <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                  {decisionNote}
+                </p>
+              )}
             </li>
           ))}
         </ol>
 
         <p className="border-t border-line-dark px-5 py-4 text-[0.82rem] leading-relaxed text-mute">
-          Illustrative interface and sample values — not Trafficomm or client performance. Reports are produced in your templates, and the decision stays with your team.
+          Illustrative interface and sample values — not Trafficomm or client performance.
         </p>
       </div>
     </div>

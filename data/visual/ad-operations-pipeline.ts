@@ -55,8 +55,21 @@ export const adOpsPipeline: readonly PipelineStage[] = [
 /** Illustrative brief fields — a representation of an incoming campaign, not a client brief. */
 export const briefFields = ["Objective", "Market", "Platform", "Budget", "Creative", "Tracking"] as const;
 
-/** Creative and tag checks at the QA stage (from the approved Creative QA gate). */
-export const creativeChecks = ["Specs", "File weight", "Landing URLs", "Third-party tags", "Click tracking", "Impression tracking"] as const;
+/**
+ * The approved five QA gates, now shown inside the pipeline's QA and Validate
+ * stages instead of a separate QA framework section. Nothing was dropped in the
+ * move: these are the same gates and checks that section carried.
+ */
+export const qaGateGroups = [
+  { code: "Gate 01", title: "Input QA", scope: "Structure", checks: ["Media plan", "Assets", "Specs"] },
+  { code: "Gate 03", title: "Creative QA", scope: "Creative", checks: ["Creative", "URLs", "Tags", "Tracking"] },
+] as const;
+
+export const validateGateGroups = [
+  { code: "Gate 02", title: "Build QA", scope: "Structure", checks: ["Campaign settings", "Budget", "Dates", "Targeting"] },
+  { code: "Gate 04", title: "Launch QA", scope: "Launch readiness", checks: ["Delivery", "Screenshots", "Tracking validation"] },
+  { code: "Gate 05", title: "Ongoing QA", scope: "In flight", checks: ["Pacing", "Discrepancies", "Performance signals"] },
+] as const;
 
 /** Independent campaign QA, run separately from the build (approved Build / Launch QA gates). */
 export const campaignChecks = ["Naming", "Budget", "Audience", "Creative", "URL", "Tracking", "Placement", "Dates"] as const;
@@ -71,3 +84,11 @@ export const traffickingMap = [
 
 /** In-flight monitoring signals. Status words only — no campaign results. */
 export const monitorSignals = ["Delivery", "Spend", "Tracking", "Creative status"] as const;
+
+/** Reporting cadence, delivered out of the monitoring stage. Same cadences as the approved reporting section. */
+export const monitorCadence = [
+  { label: "Daily", note: "Delivery, spend, pacing, issues" },
+  { label: "Weekly", note: "Performance, trends, optimization" },
+  { label: "Monthly", note: "KPI performance, analysis, recommendations" },
+  { label: "End of campaign", note: "Results, learnings, next steps" },
+] as const;

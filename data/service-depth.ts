@@ -58,6 +58,8 @@ export type ServiceDepth = {
   system: ServiceSystem;
   /** Domain-specific heading for the step-by-step workflow; omitted when the system section already shows the flow. */
   workflowTitle?: [string, string];
+  /** "strip": one compact row of steps instead of cards (used where a visual already carries the process). */
+  workflowStyle?: "strip";
   ownership: { frame: string; clientLabel: string; clientOwns: string[]; trafficommSupports: string[]; note: string };
   /** Recurring reporting cadence (Reporting & Insights). */
   cadences?: { label: string; items: string[] }[];
@@ -194,29 +196,19 @@ export const serviceDepth: Record<string, ServiceDepth> = {
         { label: "Validation", items: ["Testing", "Reconciliation"] },
         { label: "Reporting / optimization", items: ["Reports", "Platform optimization signals"], owner: "output" },
       ],
-      disciplines: {
-        title: ["What Keeps", "the Chain Reliable."],
-        items: [
-          { label: "Event definitions", body: "What each event means, when it fires and what counts as a conversion." },
-          { label: "Parameters", body: "Consistent names and values, so data can be segmented and compared." },
-          { label: "Ownership", body: "Who maintains each tag, event and conversion after launch." },
-          { label: "Testing", body: "Events verified in preview and debug tools before and after release." },
-          { label: "Reconciliation", body: "Analytics and ad-platform numbers compared, and differences explained." },
-          { label: "Documentation", body: "A written map of what is tracked, where and why." },
-        ],
-      },
       limits: {
         title: "What good measurement can — and can't — do",
         body: "No setup delivers perfect attribution or complete tracking. Consent choices, browser restrictions and platform methodologies all leave gaps, and different systems count the same activity differently. Server-side signals such as Meta Conversions API complement browser-side tracking; they do not restore every lost signal. The aim is a setup that is accurate where it can be, explained where it can't, and documented throughout.",
       },
     },
     workflowTitle: ["How a measurement", "engagement runs."],
+    workflowStyle: "strip",
     ownership: {
       frame: "Your analytics and media teams, supported",
       clientLabel: "Your team owns",
-      clientOwns: ["Measurement strategy", "Business KPIs", "Analysis & interpretation"],
+      clientOwns: ["Business definitions", "Consent & privacy decisions", "Platform access", "Final KPI interpretation"],
       trafficommSupports: ["Measurement plan", "GTM configuration", "GA4 setup", "CAPI integration", "Validation", "Documentation"],
-      note: "Trafficomm implements and validates the tracking layer. It does not replace your analysts — it gives them data that has been checked.",
+      note: "Trafficomm implements and validates the tracking layer; your team keeps the business definitions and the final read.",
     },
     links: [
       { href: "/platforms/meta", label: "Meta operations", meta: "Conversions API" },
@@ -231,7 +223,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
   reporting: {
     problem: {
       title: ["Reports Shouldn't Take", "Longer Than the Decision."],
-      lead: "Account teams lose hours to exports, copy-paste and reconciling platforms that disagree — and the report still arrives without the 'so what'.",
+      lead: "Hours go into exports and reconciling platforms that disagree — and the report still arrives without the 'so what'.",
       points: [
         "Manual exports from several platforms",
         "Discrepancies found after the report is sent",
@@ -274,7 +266,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       clientLabel: "Your team owns",
       clientOwns: ["Client relationship", "KPI definitions & targets", "Client presentation"],
       trafficommSupports: ["Data collection", "Validation", "Aggregation", "Analysis", "Commentary", "Report production"],
-      note: "Reports can go to your team or directly to your clients under your brand, so Trafficomm stays invisible if you prefer.",
+      note: "Reports can go to your team, or to your clients under your brand.",
     },
     links: [
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "Data you can trust" },

@@ -2,7 +2,7 @@
 
 import { SignalPipeline } from "./SignalPipeline";
 import { ValidationGates } from "./ValidationGates";
-import { adOpsPipeline, briefFields, campaignChecks, creativeChecks, monitorSignals, traffickingMap } from "@/data/visual/ad-operations-pipeline";
+import { adOpsPipeline, briefFields, campaignChecks, monitorCadence, monitorSignals, qaGateGroups, traffickingMap, validateGateGroups } from "@/data/visual/ad-operations-pipeline";
 
 /** Shared framing for the small stage visuals inside the pipeline panel. */
 function Frame({ label, children }: { label: string; children: React.ReactNode }) {
@@ -17,6 +17,23 @@ function Frame({ label, children }: { label: string; children: React.ReactNode }
 const Chip = ({ children, muted = false }: { children: React.ReactNode; muted?: boolean }) => (
   <span className={`rounded-md px-2.5 py-1.5 font-mono text-[0.72rem] uppercase tracking-[0.08em] ring-1 ring-inset ring-line-dark ${muted ? "text-fog/80" : "text-fog"}`}>{children}</span>
 );
+
+/** The approved QA gates, grouped by what they protect. Checks validate as the signal passes. */
+function GateGroups({ groups }: { groups: readonly { code: string; title: string; scope: string; checks: readonly string[] }[] }) {
+  return (
+    <ul className="grid gap-1.5">
+      {groups.map((g) => (
+        <li key={g.code} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
+          <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white">
+            <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+            {g.title}
+          </span>
+          <span className="text-[0.86rem] text-fog">{g.checks.join(" · ")}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 /** Campaign structure being assembled: campaign → ad set / creative. Platform-neutral. */
 function BuildTree() {
@@ -87,14 +104,17 @@ export function CampaignPipeline() {
           );
         if (i === 3)
           return (
-            <Frame label="Creative & tag checks">
-              <ValidationGates checks={creativeChecks} />
+            <Frame label="Input & creative gates">
+              <GateGroups groups={qaGateGroups} />
             </Frame>
           );
         if (i === 4)
           return (
-            <Frame label="Independent campaign QA">
+            <Frame label="Independent campaign QA — build, launch and in-flight gates">
               <ValidationGates checks={campaignChecks} />
+              <div className="mt-3">
+                <GateGroups groups={validateGateGroups} />
+              </div>
             </Frame>
           );
         if (i === 5)
@@ -134,19 +154,33 @@ export function CampaignPipeline() {
             </Frame>
           );
         return (
-          <Frame label="Watched in flight">
-            <ul className="grid gap-1.5 sm:grid-cols-4">
-              {monitorSignals.map((m) => (
-                <li key={m} className="rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
-                  <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">
+          <>
+            <Frame label="Watched in flight">
+              <ul className="grid gap-1.5 sm:grid-cols-4">
+                {monitorSignals.map((m) => (
+                  <li key={m} className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog ring-1 ring-inset ring-line-dark">
                     <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
                     {m}
-                  </span>
-                  <span className="mt-2 block text-[0.86rem] text-fog">Monitored</span>
-                </li>
-              ))}
-            </ul>
-          </Frame>
+                  </li>
+                ))}
+              </ul>
+            </Frame>
+            {/* Reporting is an output of monitoring, not a separate process. */}
+            <Frame label="Reporting out of the operation">
+              <ul className="grid gap-1.5 sm:grid-cols-2">
+                {monitorCadence.map((c) => (
+                  <li key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
+                    <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white">
+                      <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                      {c.label}
+                    </span>
+                    <span className="text-[0.86rem] text-fog">{c.note}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-[0.84rem] text-mute">Delivered in your templates, under your brand.</p>
+            </Frame>
+          </>
         );
       }}
     />

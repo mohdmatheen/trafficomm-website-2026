@@ -29,16 +29,6 @@ export type ServicePageContent = {
     /** Visual storytelling prototype: render the animated campaign pipeline instead of the stage explorer. */
     visual?: "campaign-pipeline";
   };
-  operatingChain?: {
-    title: [string, string];
-    lead: string;
-    nodes: { label: string; owner: "client" | "trafficomm" | "qa"; items: string[] }[];
-  };
-  qaGates?: {
-    title: [string, string];
-    lead: string;
-    gates: { code: string; title: string; checks: string[] }[];
-  };
   platforms?: {
     title: [string, string];
     lead: string;
@@ -46,11 +36,6 @@ export type ServicePageContent = {
     functions: Record<string, string[]>;
   };
   caseStudy?: { slug: string; eyebrow: string; context: string };
-  reporting?: {
-    title: [string, string];
-    lead: string;
-    cadences: { label: string; items: string[] }[];
-  };
   integration?: {
     title: [string, string];
     lead: string;

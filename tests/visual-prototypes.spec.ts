@@ -29,6 +29,22 @@ test.describe("ad operations pipeline", () => {
     await expect(panel).toContainText("Campaign structure");
   });
 
+  test("QA gates live inside the pipeline", async ({ page, viewport }) => {
+    await page.goto("/services/ad-operations");
+    const tabs = rail(page, viewport!.width).getByRole("tab");
+    const panel = panelIn(page, "lifecycle-title");
+    await tabs.nth(3).click();
+    await expect(panel).toContainText("Input QA");
+    await expect(panel).toContainText("Creative QA");
+    await tabs.nth(4).click();
+    for (const check of ["Naming", "Budget", "Audience", "Creative", "URL", "Tracking", "Placement", "Dates"]) {
+      await expect(panel.getByText(check, { exact: true }).first()).toBeVisible();
+    }
+    await expect(panel).toContainText("Build QA");
+    await expect(panel).toContainText("Launch QA");
+    await expect(panel).toContainText("Ongoing QA");
+  });
+
   test("approval stage keeps the launch decision with the client", async ({ page, viewport }) => {
     await page.goto("/services/ad-operations");
     await rail(page, viewport!.width).getByRole("tab").nth(5).click();
@@ -98,7 +114,9 @@ test.describe("reporting dashboard", () => {
     await expect(panel).toContainText("What happened?");
     await expect(panel).toContainText("Why did it happen?");
     await expect(panel).toContainText("What should we do next?");
-    await expect(panel).toContainText("the decision stays with your team");
+    // The recommendation ends with a person, now stated as a state rather than a sentence.
+    await expect(panel).toContainText("Human decision");
+    await expect(panel).toContainText("not Trafficomm or client performance");
   });
 });
 
@@ -109,7 +127,9 @@ test.describe("reduced motion shows the complete state", () => {
     await page.goto("/services/ad-operations");
     const tabs = rail(page, viewport!.width).getByRole("tab");
     await expect(tabs.nth(7)).toHaveAttribute("aria-selected", "true");
-    await expect(panelIn(page, "lifecycle-title")).toContainText("Monitored");
+    // Monitoring signals and the reporting cadence both live in the final stage now.
+    await expect(panelIn(page, "lifecycle-title")).toContainText("Watched in flight");
+    await expect(panelIn(page, "lifecycle-title")).toContainText("Reporting out of the operation");
 
     // A QA stage reached by selection is fully validated, never left pending.
     await tabs.nth(4).click();

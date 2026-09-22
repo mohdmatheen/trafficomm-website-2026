@@ -37,7 +37,7 @@ export const adOperationsPage: ServicePageContent = {
   lifecycle: {
     title: ["From Media Plan", "to Final Report."],
     // The pipeline visual carries the stage-by-stage explanation; the lead only frames it.
-    lead: "Trafficomm can run every stage, or the ones where your team needs capacity.",
+    lead: "Trafficomm can run every stage, or the ones where your team needs capacity. QA runs separately from the build, at five gates between intake and reporting.",
     visual: "campaign-pipeline",
     stages: [
       { code: "01", title: "Campaign intake", summary: "The approved plan becomes an executable brief, received through your existing channel or ticketing tool.", items: ["Media plan review", "Campaign requirements", "Specs", "Assets", "Timelines"] },
@@ -48,28 +48,6 @@ export const adOperationsPage: ServicePageContent = {
       { code: "06", title: "Monitoring", summary: "Delivery is watched in flight so issues are caught before they cost the campaign.", items: ["Delivery", "Pacing", "Spend", "Impressions", "Clicks", "Issues", "Discrepancies"] },
       { code: "07", title: "Optimization support", summary: "In-flight adjustments against the plan and the KPIs your client is measured on.", items: ["Budget", "Pacing", "Delivery", "KPI signals", "Creative performance", "Audience performance"] },
       { code: "08", title: "Reporting", summary: "Reporting in your templates, from daily pacing to end-of-campaign summaries.", items: ["Daily", "Weekly", "Monthly", "End-of-campaign", "Performance summaries", "Insights"] },
-    ],
-  },
-  operatingChain: {
-    title: ["Built to Work", "Behind Your Team."],
-    lead: "A defined chain of responsibility — the structure behind our longest-running agency engagement.",
-    nodes: [
-      { label: "Client / agency", owner: "client", items: ["Strategy", "Media planning", "Client management"] },
-      { label: "Trafficomm account management", owner: "trafficomm", items: ["Requirements", "Task allocation", "SLA management", "Communication"] },
-      { label: "Trafficomm ad operations", owner: "trafficomm", items: ["Build", "Trafficking", "Monitoring", "Reporting"] },
-      { label: "Dedicated QA", owner: "qa", items: ["Validation", "Accuracy", "Compliance"] },
-      { label: "Client / agency", owner: "client", items: ["Performance", "Scale", "Client delivery"] },
-    ],
-  },
-  qaGates: {
-    title: ["Quality Is a Process.", "Not a Final Check."],
-    lead: "QA is performed separately from the build, at five gates between intake and reporting.",
-    gates: [
-      { code: "Gate 01", title: "Input QA", checks: ["Media plan", "Assets", "Specs"] },
-      { code: "Gate 02", title: "Build QA", checks: ["Campaign settings", "Budget", "Dates", "Targeting"] },
-      { code: "Gate 03", title: "Creative QA", checks: ["Creative", "URLs", "Tags", "Tracking"] },
-      { code: "Gate 04", title: "Launch QA", checks: ["Delivery", "Screenshots", "Tracking validation"] },
-      { code: "Gate 05", title: "Ongoing QA", checks: ["Pacing", "Discrepancies", "Performance signals"] },
     ],
   },
   platforms: {
@@ -94,55 +72,33 @@ export const adOperationsPage: ServicePageContent = {
     context:
       "A leading MENA advertising agency operating across approximately 12 offices faced operational challenges around productivity, resource dependency, QA consistency and talent retention.",
   },
-  reporting: {
-    title: ["Reporting That Goes", "Beyond Delivery."],
-    lead: "Recurring reports in your templates — each cadence answering a different question.",
-    cadences: [
-      { label: "Daily", items: ["Delivery", "Spend", "Pacing", "Issues"] },
-      { label: "Weekly", items: ["Performance", "Trends", "Optimization", "Exceptions"] },
-      { label: "Monthly", items: ["KPI performance", "Campaign analysis", "Insights", "Recommendations"] },
-      { label: "End of campaign", items: ["Results", "Learnings", "Performance summary", "Future recommendations"] },
-    ],
-  },
   integration: {
     title: ["Your Team.", "Extended."],
-    lead: "Trafficomm adds operational capacity behind your agency. It does not replace your team or sit between you and your clients.",
-    agencyOwns: ["Client relationship", "Strategy", "Planning", "Commercial relationship"],
-    trafficommSupports: ["Execution", "Trafficking", "QA", "Monitoring", "Programmatic operations", "Reporting"],
+    lead: "Trafficomm builds, traffics, checks, monitors and reports. Strategy, client relationships and the approval before launch stay with your agency.",
+    agencyOwns: ["Strategy", "Client relationship", "Media direction", "Approval & strategic decisions"],
+    trafficommSupports: ["Build", "Traffic", "QA", "Monitor", "Report"],
   },
   engagement: {
     title: ["Operating Structures", "That Fit the Workload."],
-    lead: "Engagements are shaped around volume and continuity. Scope, service levels and commercial terms are agreed with each client.",
+    lead: "Scope, service levels and commercial terms are agreed with each client.",
     models: [
-      { title: "Dedicated team", body: "For sustained campaign volume and ongoing operational requirements — named specialists under a dedicated account manager." },
-      { title: "Shared operations", body: "For variable campaign workloads and specialist support, drawing on a pooled operations team." },
-      { title: "Project / transition support", body: "For migrations, setup, backlogs, reporting transformation or a phased operational transition." },
+      { title: "Dedicated team", body: "Named specialists under a dedicated account manager." },
+      { title: "Shared operations", body: "Pooled operations capacity for variable workloads." },
+      { title: "Project / transition support", body: "Migrations, backlogs and phased transitions." },
     ],
   },
   faqs: [
     {
-      q: "What parts of Ad Operations can Trafficomm handle?",
-      a: "The full lifecycle: campaign intake and spec sheets, creative auditing, campaign setup and trafficking, ad-server troubleshooting, screenshots, campaign monitoring and optimization against KPIs, and weekly, monthly and end-of-campaign reporting. You can hand over all of it or specific stages.",
-    },
-    {
       q: "Can Trafficomm work as a white-label extension of an agency?",
-      a: "Yes. Trafficomm can operate behind your agency brand, in your tools and templates, with client relationships remaining with you.",
+      a: "Yes. Trafficomm can operate behind your agency brand, in your tools and templates, with client relationships remaining with you. QA stays a separate function from the build — on our longest-running agency engagement, measured work quality is 99.34%.",
     },
     {
       q: "Which advertising platforms does Trafficomm support?",
       a: "Trafficomm has operational experience across Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, DV360, CM360, Search Ads 360 and Amazon Ads. This reflects platform experience, not a partnership or certification.",
     },
     {
-      q: "How does Trafficomm manage QA?",
-      a: "QA is a separate function from the build. Work passes checks at input, build, creative, launch and in flight, and account managers are responsible for quality standards. On our longest-running agency engagement, measured work quality is 99.34%.",
-    },
-    {
       q: "Can Trafficomm support multiple markets?",
       a: "Yes. Trafficomm has campaign experience across Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, delivered from a centralized operations team. Our flagship engagement supports an agency operating from approximately 12 offices.",
-    },
-    {
-      q: "How does campaign reporting work?",
-      a: "Reporting cadence, KPIs and templates are agreed at the start. Typical cadences are daily, weekly, monthly and end-of-campaign, with commentary on what changed and what to do next.",
     },
     {
       q: "Can Trafficomm work with an agency's existing workflows and tools?",

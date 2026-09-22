@@ -25,20 +25,21 @@ export const reportingPipeline: readonly PipelineStage[] = [
   { label: "Output", summary: "Delivered in your template, on the agreed cadence.", items: ["Your template", "Your brand", "Agreed cadence"], owner: "output" },
 ] as const;
 
-export type DashboardView = { id: string; label: string; kpis: { label: string; value: string; note: string }[]; breakdown: { label: string; value: number }[]; breakdownLabel: string };
+export type DashboardView = { id: string; label: string; scope: string; kpis: { label: string; value: string; note: string }[]; breakdown: { label: string; value: number }[]; breakdownLabel: string };
 
 /** Fictional sample values — neutral, with no dramatic swings that could read as a claim. */
 export const dashboardViews: readonly DashboardView[] = [
   {
     id: "overview",
     label: "Overview",
+    scope: "All platforms · period to date",
     kpis: [
-      { label: "Spend", value: "$48.2K", note: "Period to date" },
-      { label: "Sessions", value: "84.6K", note: "Period to date" },
-      { label: "Conversions", value: "1,240", note: "Period to date" },
-      { label: "CPA", value: "$38.90", note: "Against $36.00 target" },
-      { label: "ROAS", value: "3.2x", note: "Against 3.0x target" },
-      { label: "CTR", value: "1.8%", note: "All placements" },
+      { label: "Spend", value: "$48.2K", note: "" },
+      { label: "Sessions", value: "84.6K", note: "" },
+      { label: "Conversions", value: "1,240", note: "" },
+      { label: "CPA", value: "$38.90", note: "Target $36.00" },
+      { label: "ROAS", value: "3.2x", note: "Target 3.0x" },
+      { label: "CTR", value: "1.8%", note: "" },
     ],
     breakdownLabel: "Spend by platform",
     breakdown: [
@@ -52,13 +53,14 @@ export const dashboardViews: readonly DashboardView[] = [
   {
     id: "platform",
     label: "Platform",
+    scope: "Meta · period to date",
     kpis: [
-      { label: "Spend", value: "$16.4K", note: "Meta" },
-      { label: "Sessions", value: "31.2K", note: "Meta" },
-      { label: "Conversions", value: "486", note: "Meta" },
-      { label: "CPA", value: "$33.70", note: "Meta" },
-      { label: "ROAS", value: "3.4x", note: "Meta" },
-      { label: "CTR", value: "2.1%", note: "Meta" },
+      { label: "Spend", value: "$16.4K", note: "" },
+      { label: "Sessions", value: "31.2K", note: "" },
+      { label: "Conversions", value: "486", note: "" },
+      { label: "CPA", value: "$33.70", note: "" },
+      { label: "ROAS", value: "3.4x", note: "" },
+      { label: "CTR", value: "2.1%", note: "" },
     ],
     breakdownLabel: "Conversions by platform",
     breakdown: [
@@ -71,13 +73,14 @@ export const dashboardViews: readonly DashboardView[] = [
   {
     id: "market",
     label: "Market",
+    scope: "Saudi Arabia · period to date",
     kpis: [
-      { label: "Spend", value: "$21.6K", note: "Saudi Arabia" },
-      { label: "Sessions", value: "38.4K", note: "Saudi Arabia" },
-      { label: "Conversions", value: "560", note: "Saudi Arabia" },
-      { label: "CPA", value: "$38.60", note: "Saudi Arabia" },
-      { label: "ROAS", value: "3.1x", note: "Saudi Arabia" },
-      { label: "CTR", value: "1.7%", note: "Saudi Arabia" },
+      { label: "Spend", value: "$21.6K", note: "" },
+      { label: "Sessions", value: "38.4K", note: "" },
+      { label: "Conversions", value: "560", note: "" },
+      { label: "CPA", value: "$38.60", note: "" },
+      { label: "ROAS", value: "3.1x", note: "" },
+      { label: "CTR", value: "1.7%", note: "" },
     ],
     breakdownLabel: "Conversions by market",
     breakdown: [
@@ -90,13 +93,14 @@ export const dashboardViews: readonly DashboardView[] = [
   {
     id: "campaign",
     label: "Campaign",
+    scope: "Campaign B · period to date",
     kpis: [
-      { label: "Spend", value: "$9.8K", note: "Campaign B" },
-      { label: "Sessions", value: "14.9K", note: "Campaign B" },
-      { label: "Conversions", value: "198", note: "Campaign B" },
+      { label: "Spend", value: "$9.8K", note: "" },
+      { label: "Sessions", value: "14.9K", note: "" },
+      { label: "Conversions", value: "198", note: "" },
       { label: "CPA", value: "$49.50", note: "Above target" },
       { label: "ROAS", value: "2.4x", note: "Below target" },
-      { label: "CTR", value: "1.2%", note: "Campaign B" },
+      { label: "CTR", value: "1.2%", note: "" },
     ],
     breakdownLabel: "Conversions by campaign",
     breakdown: [
@@ -113,7 +117,10 @@ export const cpaTrend = [36.1, 35.4, 36.8, 35.9, 36.4, 37.2, 36.6, 37.5, 38.1, 3
 
 /** The reporting → analysis → insight moment, worked through on one illustrative exception. */
 export const insightStory = {
-  reporting: { question: "What happened?", headline: "CPA increased against target.", detail: "$38.90 against a $36.00 target, driven by one campaign." },
-  analysis: { question: "Why?", headline: "Campaign B is carrying the increase.", factors: ["Creative fatigue", "Higher frequency", "Lower conversion rate", "Budget weighted to one ad set"] },
-  insight: { question: "What next?", headline: "Three options, in priority order.", actions: ["Refresh the creative on Campaign B", "Reallocate budget toward Campaign A", "Test a new variation before scaling"] },
+  reporting: { question: "What happened?", headline: "CPA above target", detail: "$38.90 vs $36.00" },
+  analysis: { question: "Why?", headline: "Campaign B", factors: ["Creative fatigue", "Frequency ↑", "CVR ↓", "Budget weighted to one ad set"] },
+  insight: { question: "What next?", headline: "Three options, in priority order", actions: ["Review creative", "Reallocate budget", "Test variation"] },
 } as const;
+
+/** The recommendation is prepared by operators; acting on it is a person's call. */
+export const decisionNote = "Human decision";

@@ -186,9 +186,9 @@ export function ServiceTemplate({ service }: { service: Service }) {
             <ReportingDashboard definitions={sys.distinction.items} />
           </div>
           {depth?.cadences && (
-            <div className="mt-20">
+            <div className="mt-16">
               <SectionHeading eyebrow="Cadence" title="Daily to end of campaign." />
-              <div className="mt-10">
+              <div className="mt-8">
                 <ReportingCadence cadences={depth.cadences} />
               </div>
             </div>
@@ -200,7 +200,18 @@ export function ServiceTemplate({ service }: { service: Service }) {
         <Section tone={tone()} labelledBy="flow-title">
           <SectionHeading id="flow-title" eyebrow="How it runs" title={<Title t={depth.workflowTitle} />} />
           <div className="mt-14">
-            <Steps steps={service.workflow} />
+            {depth.workflowStyle === "strip" ? (
+              <ol className="grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line sm:grid-cols-5" data-reveal>
+                {service.workflow.map((st, i) => (
+                  <li key={st.step} className="bg-white p-5">
+                    <span className="font-mono text-[0.68rem] text-signal-ink">{String(i + 1).padStart(2, "0")}</span>
+                    <p className="mt-3 text-[1.05rem] tracking-[-0.02em] text-ink">{st.step}</p>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <Steps steps={service.workflow} />
+            )}
           </div>
         </Section>
       )}

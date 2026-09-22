@@ -38,9 +38,16 @@ export function SignalJourney() {
       label="Measurement signal journey"
       ownerLabels={{ client: "Your site", trafficomm: "Trafficomm", output: "Output" }}
       detail={(i) => {
+        const d = measurementJourney[i].discipline;
+        const discipline = d ? (
+          <Frame label={`Discipline · ${d.label}`}>
+            <p className="text-[0.9rem] leading-relaxed text-fog">{d.body}</p>
+          </Frame>
+        ) : null;
         if (i === 0) return <ActionSurface />;
         if (i === 1)
           return (
+            <>
             <Frame label="Illustrative event — no personal data">
               <div className="rounded-md bg-white/[0.04] p-4 font-mono text-[0.8rem] ring-1 ring-inset ring-line-dark">
                 <p className="text-white">
@@ -56,19 +63,27 @@ export function SignalJourney() {
                 </ul>
               </div>
             </Frame>
+            {discipline}
+            </>
           );
         if (i === 2)
           return (
+            <>
             <Frame label="Inside the tag manager">
               <ol className="grid gap-1.5 sm:grid-cols-3">
                 {gtmParts.map((g) => (
                   <li key={g.k} className="rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
-                    <span className="block font-mono text-[0.62rem] uppercase tracking-[0.1em] text-signal">{g.k}</span>
+                    <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white">
+                      <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                      {g.k}
+                    </span>
                     <span className="mt-1.5 block text-[0.9rem] text-fog">{g.v}</span>
                   </li>
                 ))}
               </ol>
             </Frame>
+            {discipline}
+            </>
           );
         if (i === 3)
           return (
@@ -115,12 +130,15 @@ export function SignalJourney() {
           );
         if (i === 5)
           return (
+            <>
             <Frame label="Validation layer">
               <ValidationGates checks={validationChecks} />
-              <p className="mt-3 text-[0.84rem] text-mute">A validated signal is one that fired, carried its parameters, arrived, and mapped to the right conversion.</p>
             </Frame>
+            {discipline}
+            </>
           );
         return (
+          <>
           <Frame label="What the validated signal feeds">
             <ul className="grid gap-1.5 sm:grid-cols-2">
               {["Reporting your team can defend", "Platform optimization signals"].map((o) => (
@@ -131,6 +149,8 @@ export function SignalJourney() {
               ))}
             </ul>
           </Frame>
+          {discipline}
+          </>
         );
       }}
     />

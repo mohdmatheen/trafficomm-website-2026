@@ -7,10 +7,7 @@ import { PressureCascade } from "@/components/sections/shared/PressureCascade";
 import { AgencyIntegration } from "@/components/service-page/AgencyIntegration";
 import { EngagementModels } from "@/components/service-page/EngagementModels";
 import { LifecycleExplorer } from "@/components/service-page/LifecycleExplorer";
-import { OperatingChain } from "@/components/service-page/OperatingChain";
 import { ProofStrip } from "@/components/service-page/ProofStrip";
-import { QAGates } from "@/components/service-page/QAGates";
-import { ReportingCadence } from "@/components/service-page/ReportingCadence";
 import { ServiceHero } from "@/components/service-page/ServiceHero";
 import { CampaignPipeline } from "@/components/visual/CampaignPipeline";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -59,24 +56,6 @@ export function ServiceDetailPage({ content, name }: { content: ServicePageConte
         </div>
       </Section>
 
-      {c.operatingChain && (
-        <Section tone="paper" labelledBy="chain-title">
-          <SectionHeading id="chain-title" eyebrow="Operating model" title={<Title t={c.operatingChain.title} />} lead={c.operatingChain.lead} />
-          <div className="mt-14">
-            <OperatingChain nodes={c.operatingChain.nodes} />
-          </div>
-        </Section>
-      )}
-
-      {c.qaGates && (
-        <Section tone="white" labelledBy="qa-title">
-          <SectionHeading id="qa-title" eyebrow="QA framework" title={<Title t={c.qaGates.title} />} lead={c.qaGates.lead} />
-          <div className="mt-14">
-            <QAGates gates={c.qaGates.gates} />
-          </div>
-        </Section>
-      )}
-
       {c.platforms && (
         <Section tone="dark" labelledBy="svc-platforms-title" className="overflow-hidden">
           <div className="grid-bg-dark mask-radial pointer-events-none absolute inset-0 opacity-40" aria-hidden="true" />
@@ -100,19 +79,10 @@ export function ServiceDetailPage({ content, name }: { content: ServicePageConte
         </Section>
       )}
 
-      {c.caseStudy && <FlagshipCase index={null} eyebrow={c.caseStudy.eyebrow} context={c.caseStudy.context} />}
-
-      {c.reporting && (
-        <Section tone="paper" labelledBy="reporting-title">
-          <SectionHeading id="reporting-title" eyebrow="Reporting" title={<Title t={c.reporting.title} />} lead={c.reporting.lead} />
-          <div className="mt-14">
-            <ReportingCadence cadences={c.reporting.cadences} />
-          </div>
-        </Section>
-      )}
+      {c.caseStudy && <FlagshipCase index={null} eyebrow={c.caseStudy.eyebrow} context={c.caseStudy.context} compact />}
 
       {c.integration && (
-        <Section tone="white" labelledBy="integration-title">
+        <Section tone="paper" labelledBy="integration-title">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.4fr] lg:items-center lg:gap-16">
             <SectionHeading id="integration-title" eyebrow="Agency integration" title={<Title t={c.integration.title} />} lead={c.integration.lead} />
             <AgencyIntegration agencyOwns={c.integration.agencyOwns} trafficommSupports={c.integration.trafficommSupports} />

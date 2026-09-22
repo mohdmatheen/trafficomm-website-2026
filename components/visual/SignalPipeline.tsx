@@ -101,7 +101,7 @@ export function SignalPipeline({
           {playing ? "Signal in motion" : "Select a stage"}
         </span>
       </div>
-      <div key={s.label} className="p-5 sm:p-7 animate-enter">
+      <div key={s.label} className="min-h-[24rem] p-5 sm:min-h-[19rem] sm:p-7 animate-enter">
         <p className={cn("max-w-2xl text-[1.04rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{s.summary}</p>
         {s.items && s.items.length > 0 && (
           <ul className="mt-5 flex flex-wrap gap-1.5">

@@ -334,15 +334,15 @@ export const services: Service[] = [
     outcomes: [
       {
         title: "On-time, every time",
-        body: "Recurring reports run to an agreed schedule and template, reducing late-night report building for account teams.",
+        body: "Recurring reports run to an agreed schedule and template.",
       },
       {
         title: "Insight, not just export",
-        body: "Each report carries commentary on what moved, why, and the recommended next action.",
+        body: "Every report carries commentary and a recommended next action.",
       },
       {
         title: "Transparent operations",
-        body: "Reporting extends to the operation itself — so you can see what was delivered, when and to what standard.",
+        body: "Reporting covers the operation itself, not only the campaigns.",
       },
     ],
     workflow: [

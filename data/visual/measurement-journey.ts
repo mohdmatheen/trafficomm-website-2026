@@ -1,5 +1,8 @@
 import type { PipelineStage } from "@/components/visual/SignalPipeline";
 
+/** A stage may carry one measurement discipline, shown when that stage is selected. */
+type JourneyStage = PipelineStage & { discipline?: { label: string; body: string } };
+
 /**
  * Measurement & Analytics signal journey (visual storytelling prototype).
  *
@@ -7,7 +10,7 @@ import type { PipelineStage } from "@/components/visual/SignalPipeline";
  * illustrative event carries no personal data — only a name and non-identifying
  * parameters — and the destinations stage keeps the honest CAPI framing.
  */
-export const measurementJourney: readonly PipelineStage[] = [
+export const measurementJourney: readonly JourneyStage[] = [
   {
     label: "User action",
     summary: "Someone completes an action worth measuring.",
@@ -17,12 +20,14 @@ export const measurementJourney: readonly PipelineStage[] = [
   {
     label: "Data layer",
     summary: "The action becomes a structured event with parameters.",
-    items: ["Event name", "Parameters"],
+    items: ["Event definitions", "Parameters", "Naming taxonomy"],
+    discipline: { label: "Event definitions", body: "What each event means, when it fires and what counts as a conversion — with consistent parameter names so data can be segmented and compared." },
   },
   {
     label: "GTM",
     summary: "A trigger fires the tags that carry the event onward.",
-    items: ["Trigger", "Tag", "Event"],
+    items: ["Trigger", "Tag", "Variables", "Testing"],
+    discipline: { label: "Testing", body: "Events are verified in preview and debug tools before and after release." },
   },
   {
     label: "Destinations",
@@ -37,11 +42,13 @@ export const measurementJourney: readonly PipelineStage[] = [
   {
     label: "Validation",
     summary: "Nothing is trusted until it is tested and reconciled.",
+    discipline: { label: "Reconciliation", body: "Analytics and ad-platform numbers are compared, and differences are explained rather than ignored." },
   },
   {
     label: "Reporting",
     summary: "Only validated signals reach reporting and optimization.",
-    items: ["Reports", "Optimization signals"],
+    items: ["Reports", "Optimization signals", "Documentation"],
+    discipline: { label: "Documentation & ownership", body: "A written map of what is tracked, where and why — and who maintains each tag, event and conversion after launch." },
     owner: "output",
   },
 ] as const;

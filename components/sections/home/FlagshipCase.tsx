@@ -19,7 +19,18 @@ function StageLabel({ n, label }: { n: string; label: string }) {
   );
 }
 
-export function FlagshipCase({ index = "06", eyebrow, context }: { index?: string | null; eyebrow?: string; context?: string }) {
+export function FlagshipCase({
+  index = "06",
+  eyebrow,
+  context,
+  compact = false,
+}: {
+  index?: string | null;
+  eyebrow?: string;
+  context?: string;
+  /** Service pages show the documented figures only; the homepage tells the full story. */
+  compact?: boolean;
+}) {
   const cs = getCaseStudy("mena-agency-ad-operations")!;
   return (
     <Section tone="white" labelledBy="flagship-title">
@@ -51,6 +62,8 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
         </div>
       </div>
 
+      {!compact && (
+        <>
       {/* Story: challenge → model → scale */}
       <ol className="mt-16 grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line lg:grid-cols-3" aria-label="How the engagement unfolded">
         <li className="relative bg-paper p-6 sm:p-8" data-reveal>
@@ -93,6 +106,8 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
           </div>
         </li>
       </ol>
+        </>
+      )}
 
       {/* Documented results */}
       <div className="mt-16">
