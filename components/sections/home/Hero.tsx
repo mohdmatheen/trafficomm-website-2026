@@ -1,14 +1,12 @@
 import { ButtonLink } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Section";
 import { EcosystemHero } from "@/components/visualizations/EcosystemHero";
+import { formatStat } from "@/components/ui/Metric";
+import { companyMetrics as m } from "@/data/metrics";
 
 const capabilities = ["Ad Operations", "Performance", "Programmatic", "Measurement", "Reporting"];
 
-const heroStats = [
-  { v: "10K+", l: "Campaigns handled" },
-  { v: "$10M", l: "Campaign scale" },
-  { v: "70+", l: "Peak team scale" },
-];
+const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label }));
 
 export function Hero() {
   return (

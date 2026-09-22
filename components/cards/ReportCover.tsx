@@ -30,7 +30,7 @@ export function ReportCover({ article, index, className }: { article: Article; i
       <div className={cn("pointer-events-none absolute inset-0", dark ? "grid-bg-dark opacity-40" : "grid-bg opacity-60")} aria-hidden="true" />
       <div className="relative flex items-center justify-between font-mono text-[0.68rem] uppercase tracking-[0.14em]">
         <span className={dark ? "text-fog" : "text-graphite"}>Trafficomm Performance Lab</span>
-        <span className="text-signal">Report {String(index + 1).padStart(2, "0")}</span>
+        <span className="text-signal">No. {String(index + 1).padStart(2, "0")}</span>
       </div>
       <div className={cn("relative mt-4 h-px", dark ? "bg-line-dark-strong" : "bg-line-strong")} />
 

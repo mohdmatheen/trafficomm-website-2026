@@ -7,6 +7,17 @@ export const pages = [
   { name: "measurement", path: "/services/measurement" },
   { name: "reporting", path: "/services/reporting" },
   { name: "creative-adtech", path: "/services/creative-adtech" },
+  { name: "media-agencies", path: "/solutions/media-agencies" },
+  { name: "white-label", path: "/solutions/white-label-ad-operations" },
+  { name: "publishers-adtech", path: "/solutions/publishers-adtech" },
+  { name: "case-studies", path: "/case-studies" },
+  { name: "case-mena", path: "/case-studies/mena-agency-ad-operations" },
+  { name: "how-we-work", path: "/how-we-work" },
+  { name: "about", path: "/about" },
+  { name: "insights", path: "/insights" },
+  { name: "platforms", path: "/platforms" },
+  { name: "platform-dv360", path: "/platforms/dv360" },
+  { name: "contact", path: "/contact" },
 ] as const;
 
 /** Scroll the whole page so lazy images and viewport-triggered content load. */

@@ -26,7 +26,7 @@ export default function ServicesPage() {
             One partner. <span className="block text-steel/70">Six specialized capabilities.</span>
           </>
         }
-        lead="Each capability runs as a module inside your operation — with shared standards for naming, QA, SLAs and reporting across all of them. Use one, or combine them into a complete performance operations layer."
+        lead="Each capability plugs into your operation — with shared standards for naming, QA, SLAs and reporting across all of them. Use one, or combine them into a complete performance operations layer."
         actions={
           <ButtonLink href="/contact" size="lg">
             Request an Operations Assessment
@@ -35,8 +35,8 @@ export default function ServicesPage() {
       />
       <Section tone="paper" className="!pt-0">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {services.map((s, i) => (
-            <ServiceModuleCard key={s.slug} service={s} index={i} />
+          {services.map((s) => (
+            <ServiceModuleCard key={s.slug} service={s} />
           ))}
         </div>
       </Section>

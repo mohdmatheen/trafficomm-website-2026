@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { AssessmentForm } from "@/components/forms/AssessmentForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
-import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
+import { Lock } from "@/components/ui/Icons";
 import { Eyebrow } from "@/components/ui/Section";
-import { company, markets } from "@/data/site";
+import { company, enquiryConfidentialityNote, markets } from "@/data/site";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -38,7 +38,7 @@ export default function ContactPage() {
               What&apos;s slowing <span className="block text-steel/70">your media team down?</span>
             </h1>
             <p className="mt-7 max-w-lg text-lead text-steel">
-              Request an operations assessment, or ask us to schedule a call. Tell us a little about your markets, platforms and volumes so the first conversation is useful.
+              Request an operations assessment, or ask to talk to Trafficomm. Tell us a little about your markets, platforms and volumes so the first conversation is useful.
             </p>
 
             <div id="call" className="mt-12 scroll-mt-28">
@@ -71,10 +71,13 @@ export default function ContactPage() {
               <p className="eyebrow mb-4 text-steel">Markets supported</p>
               <p className="text-[0.95rem] text-graphite">{markets.map((m) => m.name).join(" · ")}</p>
             </div>
-            <ConfidentialNote className="mt-8 max-w-md" />
+            <p className="mt-8 flex max-w-md items-start gap-2.5 text-[0.88rem] leading-relaxed text-steel">
+              <Lock className="mt-0.5 shrink-0 text-ink" />
+              <span>{enquiryConfidentialityNote}</span>
+            </p>
           </div>
           <div className="lg:pt-2">
-            <AssessmentForm tone="light" idPrefix="contact" />
+            <AssessmentForm tone="light" idPrefix="contact" privacyNote={false} />
           </div>
         </div>
       </div>

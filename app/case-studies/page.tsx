@@ -30,10 +30,10 @@ export default function CaseStudiesPage() {
         lead="Much of our work happens behind agency and network brands, so we don't publish client names or logos. What we do publish is what we built and what it achieved."
       />
       <Section tone="paper" className="!pt-0">
-        <div className="grid gap-4 lg:grid-cols-3">
-          <CaseStudyCard cs={flagship} tone="dark" className="lg:col-span-1" />
+        <div className="grid gap-4 md:grid-cols-2">
+          <CaseStudyCard cs={flagship} tone="dark" detailed />
           {rest.map((cs) => (
-            <CaseStudyCard key={cs.slug} cs={cs} />
+            <CaseStudyCard key={cs.slug} cs={cs} detailed />
           ))}
         </div>
       </Section>
@@ -53,7 +53,7 @@ export default function CaseStudiesPage() {
           </div>
         </div>
       </Section>
-      <CTABand />
+      <CTABand title="Want to go deeper than the case study?" body="Detailed walkthroughs can be discussed directly, where client agreements allow — alongside an assessment of your own operation." />
     </>
   );
 }

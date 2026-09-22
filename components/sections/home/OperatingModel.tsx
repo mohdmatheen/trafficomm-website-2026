@@ -4,7 +4,8 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 
 const agency = ["Strategy", "Media planning", "Client relationships"];
 const trafficomm = ["Campaign execution", "QA", "Programmatic", "Optimization", "Measurement", "Reporting"];
-const pillars = ["Capacity", "Specialization", "Consistency", "Execution", "Quality", "Scalability"];
+// Concrete operating commitments rather than abstract pillars; the full model lives on How We Work.
+const commitments = ["Your tools and naming conventions", "Accountable account manager", "QA separate from the build", "Reporting in your templates"];
 
 function Arrow({ vertical = false }: { vertical?: boolean }) {
   return vertical ? (
@@ -100,20 +101,23 @@ export function OperatingModel({ index = "08" }: { index?: string | null }) {
               Take on more clients, markets and campaigns with a specialized team that scales with your workload.
             </p>
           </div>
-          <ul className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-line ring-1 ring-line">
-            {pillars.map((p, i) => (
-              <li key={p} className="flex items-center gap-2.5 bg-white px-3 py-2.5 text-[0.96rem] text-ink">
-                <span className="font-mono text-[0.66rem] text-signal-ink">{String(i + 1).padStart(2, "0")}</span>
-                {p}
+          <ul className="mt-8 divide-y divide-line border-y border-line">
+            {commitments.map((c) => (
+              <li key={c} className="flex items-center gap-3 py-2.5 text-[0.96rem] text-ink">
+                <span className="h-px w-3 bg-signal" aria-hidden="true" />
+                {c}
               </li>
             ))}
           </ul>
         </div>
       </div>
 
-      <div className="mt-10">
+      <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+        <ButtonLink href="/how-we-work" variant="ghost">
+          See How We Work
+        </ButtonLink>
         <ButtonLink href="/solutions/white-label-ad-operations" variant="ghost">
-          See the white-label model
+          See the White-Label Model
         </ButtonLink>
       </div>
     </Section>

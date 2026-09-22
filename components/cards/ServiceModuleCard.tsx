@@ -4,8 +4,8 @@ import { cn } from "@/lib/cn";
 import { ArrowRight } from "@/components/ui/Icons";
 import { ModuleViz } from "@/components/visualizations/ModuleViz";
 
-/** Service card styled as a module in an enterprise operations console. */
-export function ServiceModuleCard({ service, index, className }: { service: Service; index: number; className?: string }) {
+/** Service card: buyer-facing scope line, diagram, summary and functions. */
+export function ServiceModuleCard({ service, className }: { service: Service; className?: string }) {
   return (
     <Link
       href={`/services/${service.slug}`}
@@ -17,12 +17,7 @@ export function ServiceModuleCard({ service, index, className }: { service: Serv
     >
       <span className="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-signal transition-transform duration-700 group-hover:scale-x-100" aria-hidden="true" />
       <div className="flex items-center justify-between border-b border-line px-5 py-3">
-        <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-steel">
-          MOD {String(index + 1).padStart(2, "0")} · {service.code}
-        </span>
-        <span className="flex items-center gap-1.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-steel">
-          <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" /> Active
-        </span>
+        <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">{service.scopeLine.join(" · ")}</span>
       </div>
       <div className="h-24 px-5 pt-5 text-ink">
         <ModuleViz kind={service.viz} />
@@ -38,7 +33,7 @@ export function ServiceModuleCard({ service, index, className }: { service: Serv
           ))}
         </ul>
         <span className="mt-auto flex items-center gap-2 pt-7 text-[0.96rem] font-medium text-ink">
-          Explore module <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
+          Explore {service.name} <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
         </span>
       </div>
     </Link>

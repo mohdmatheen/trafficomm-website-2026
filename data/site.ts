@@ -1,5 +1,3 @@
-import type { Stat } from "./types";
-
 /**
  * Single source of truth for company facts.
  * Every number here is a verified proof point supplied by Trafficomm.
@@ -45,14 +43,8 @@ const vercelHost =
   process.env.VERCEL_ENV === "production" ? process.env.VERCEL_PROJECT_PRODUCTION_URL : (process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL);
 export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || (vercelHost ? `https://${vercelHost}` : "http://localhost:3000")).replace(/\/$/, "");
 
-export const scaleStats: Stat[] = [
-  { value: 2015, display: "2015", label: "Founded", detail: "A decade of operating behind the campaign" },
-  { value: 10, suffix: "K+", label: "Campaigns handled", detail: "Across social, search, programmatic and ad serving" },
-  { value: 1, suffix: "M+", label: "Creatives & placements", detail: "Audited, trafficked, QA'd and monitored" },
-  { value: 10, prefix: "$", suffix: "M", label: "Campaign scale", detail: "Approximate campaign scale, USD" },
-  { value: 250, suffix: "+", label: "Campaigns / month", detail: "Largest monthly campaign volume" },
-  { value: 70, suffix: "+", label: "Peak team scale", detail: "Operations specialists at peak" },
-];
+/** Company-wide scale figures now live in data/metrics.ts (single source of truth). */
+export { scaleStats } from "./metrics";
 
 export const markets = [
   { code: "sa", name: "Saudi Arabia" },
@@ -63,8 +55,12 @@ export const markets = [
   { code: "au", name: "Australia" },
 ] as const;
 
+/** Case studies and case-study references only. */
 export const confidentialityNote =
   "Client identity withheld in accordance with confidentiality obligations.";
+
+/** Contact / enquiry context. */
+export const enquiryConfidentialityNote = "Your enquiry and operational information are treated confidentially.";
 
 export type NavLink = { label: string; href: string; description?: string };
 export type NavGroup = { label: string; href: string; intro: string; links: NavLink[]; feature?: NavLink };

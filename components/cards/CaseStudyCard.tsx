@@ -4,7 +4,8 @@ import { cn } from "@/lib/cn";
 import { ArrowRight } from "@/components/ui/Icons";
 import { CaseMotif } from "@/components/visualizations/CaseMotif";
 
-export function CaseStudyCard({ cs, className, tone = "light" }: { cs: CaseStudy; className?: string; tone?: "light" | "dark" }) {
+/** `detailed` adds challenge and Trafficomm role lines for the case-study index. */
+export function CaseStudyCard({ cs, className, tone = "light", detailed = false }: { cs: CaseStudy; className?: string; tone?: "light" | "dark"; detailed?: boolean }) {
   const dark = tone === "dark";
   return (
     <Link
@@ -27,12 +28,25 @@ export function CaseStudyCard({ cs, className, tone = "light" }: { cs: CaseStudy
         <p className={cn("eyebrow !text-[0.7rem]", dark ? "text-mute" : "text-steel")}>
           {cs.category} · {cs.market}
         </p>
-        <p className="mt-5 text-stat text-signal">{cs.headlineStat.value}</p>
+        <p className="mt-5 whitespace-nowrap text-stat text-signal">{cs.headlineStat.value}</p>
         <p className={cn("eyebrow mt-2 !text-[0.7rem]", dark ? "text-fog" : "text-graphite")}>{cs.headlineStat.label}</p>
         <h3 className={cn("mt-6 text-[1.35rem] leading-tight tracking-[-0.025em]", dark ? "text-white" : "text-ink")}>{cs.cardTitle}</h3>
         <p className={cn("mt-2 text-[0.96rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{cs.client}</p>
+        {detailed && (
+          <dl className={cn("mt-6 divide-y border-y text-[0.92rem] leading-snug", dark ? "divide-line-dark border-line-dark" : "divide-line border-line")}>
+            {[
+              ["Challenge", cs.scan.challenge],
+              ["Trafficomm role", cs.scan.role],
+            ].map(([k, v]) => (
+              <div key={k} className="py-3">
+                <dt className={cn("font-mono text-[0.66rem] uppercase tracking-[0.12em]", dark ? "text-mute" : "text-steel")}>{k}</dt>
+                <dd className={cn("mt-1.5", dark ? "text-fog" : "text-graphite")}>{v}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         <span className={cn("mt-auto flex items-center gap-2 pt-7 text-[0.96rem] font-medium", dark ? "text-white" : "text-ink")}>
-          Read case study <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
+          View case study <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
         </span>
       </div>
     </Link>

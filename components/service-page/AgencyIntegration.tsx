@@ -1,12 +1,24 @@
 import { LogoMark } from "@/components/ui/Logo";
 
-export function AgencyIntegration({ agencyOwns, trafficommSupports }: { agencyOwns: readonly string[]; trafficommSupports: readonly string[] }) {
+export function AgencyIntegration({
+  agencyOwns,
+  trafficommSupports,
+  frame = "Your team, extended",
+  ownerLabel = "Agency owns",
+  note = "More operational capacity — with strategy, planning and client relationships staying with your team.",
+}: {
+  agencyOwns: readonly string[];
+  trafficommSupports: readonly string[];
+  frame?: string;
+  ownerLabel?: string;
+  note?: string;
+}) {
   return (
     <div className="relative rounded-[var(--radius-panel)] border border-dashed border-line-strong p-3 pt-11 sm:p-4 sm:pt-12" data-reveal>
-      <span className="eyebrow absolute left-5 top-4 text-steel">Your team, extended</span>
+      <span className="eyebrow absolute left-5 top-4 text-steel">{frame}</span>
       <div className="grid gap-3 md:grid-cols-[1fr_auto_1.2fr]">
         <div className="rounded-[var(--radius-card)] bg-white p-6 ring-1 ring-line sm:p-8">
-          <p className="eyebrow text-steel">Agency owns</p>
+          <p className="eyebrow text-steel">{ownerLabel}</p>
           <ul className="mt-5 divide-y divide-line border-y border-line">
             {agencyOwns.map((a) => (
               <li key={a} className="py-3 text-[1.1rem] tracking-[-0.01em] text-ink">
@@ -32,7 +44,7 @@ export function AgencyIntegration({ agencyOwns, trafficommSupports }: { agencyOw
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-[0.96rem] leading-relaxed text-fog">More operational capacity — with strategy, planning and client relationships staying with your team.</p>
+            <p className="mt-6 text-[0.96rem] leading-relaxed text-fog">{note}</p>
           </div>
         </div>
       </div>

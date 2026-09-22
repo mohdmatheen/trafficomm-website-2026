@@ -70,7 +70,7 @@ export function CaseStudyTemplate({ cs }: { cs: CaseStudy }) {
         <div className={`mt-14 grid gap-4 sm:grid-cols-2 ${cs.challenges.length > 3 ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
           {cs.challenges.map((c, k) => (
             <div key={c.title} className="rounded-[var(--radius-card)] bg-white p-6 ring-1 ring-line" data-reveal style={{ "--reveal-delay": `${k * 60}ms` } as React.CSSProperties}>
-              <span className="font-mono text-[0.7rem] text-signal-ink">RISK {String(k + 1).padStart(2, "0")}</span>
+              <span className="font-mono text-[0.7rem] text-signal-ink">CHALLENGE {String(k + 1).padStart(2, "0")}</span>
               <h3 className="mt-5 text-[1.25rem] tracking-[-0.02em] text-ink">{c.title}</h3>
               <p className="mt-2 text-[0.94rem] leading-relaxed text-steel">{c.body}</p>
             </div>
@@ -122,7 +122,7 @@ export function CaseStudyTemplate({ cs }: { cs: CaseStudy }) {
           </div>
           <div>
             <p className="eyebrow mb-4 text-steel">Capabilities used</p>
-            <LinkList items={svc.map((s) => ({ href: `/services/${s.slug}`, label: s.name, meta: s.code }))} />
+            <LinkList items={svc.map((s) => ({ href: `/services/${s.slug}`, label: s.name, meta: s.scopeLine.join(" · ") }))} />
           </div>
         </div>
       </Section>

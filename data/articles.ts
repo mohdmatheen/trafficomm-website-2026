@@ -26,7 +26,7 @@ export const articles: Article[] = [
       },
       {
         type: "p",
-        text: "Saudi Arabia has become one of the most operationally demanding advertising markets in the region. Campaign calendars are dense, platform mixes are broad and audiences move quickly between formats. For media teams, the question for 2027 is less about whether to invest and more about whether the operation behind the plan can keep up.",
+        text: "In our operating experience, Saudi Arabia is an operationally demanding advertising market. Campaign calendars are dense, platform mixes are broad and audiences move quickly between formats. For media teams, the question for 2027 is less about whether to invest and more about whether the operation behind the plan can keep up.",
       },
       { type: "h2", text: "1. Platform mix will keep widening", id: "platform-mix" },
       {
@@ -80,6 +80,10 @@ export const articles: Article[] = [
       },
     ],
     related: ["agency-guide-to-outsourcing-ad-operations", "building-vs-outsourcing-ad-operations-team"],
+    links: [
+      { href: "/services/performance-marketing", label: "Performance Marketing", meta: "Service" },
+      { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
+    ],
   },
   {
     slug: "agency-guide-to-outsourcing-ad-operations",
@@ -138,17 +142,17 @@ export const articles: Article[] = [
       { type: "h2", text: "What good looks like", id: "results" },
       {
         type: "p",
-        text: "On Trafficomm's longest-running agency engagement — a leading MENA advertising agency operating from approximately 12 offices — the team began with four specialists and now numbers around thirty, over a partnership of more than seven years.",
+        text: "On Trafficomm's longest-running agency engagement — a leading MENA advertising agency operating from approximately 12 offices — the dedicated team scaled from four specialists to approximately thirty as the agency's operational requirements grew, over a partnership of more than seven years.",
       },
       {
         type: "chart",
         kind: "bar",
-        title: "Dedicated team size — leading MENA agency engagement",
+        title: "Dedicated team scale — leading MENA agency engagement (historical)",
         caption: "Source: Trafficomm case study. Client identity withheld in accordance with confidentiality obligations.",
         unit: "specialists",
         series: [
           { label: "Engagement start", value: 4 },
-          { label: "Today", value: 30, display: "~30", highlight: true },
+          { label: "Scaled to", value: 30, display: "~30", highlight: true },
         ],
       },
       {
@@ -168,12 +172,17 @@ export const articles: Article[] = [
       },
     ],
     related: ["building-vs-outsourcing-ad-operations-team", "saudi-digital-advertising-outlook-2027"],
+    links: [
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
+      { href: "/case-studies/mena-agency-ad-operations", label: "Case study: from 4 specialists to ~30", meta: "Evidence" },
+    ],
   },
   {
     slug: "building-vs-outsourcing-ad-operations-team",
     title: "Building vs Outsourcing an Ad Operations Team",
     dek: "A practical framework for deciding when to hire, when to partner and when a hybrid model gives an agency the best of both.",
-    category: "Research",
+    category: "Guide",
     author: labAuthor,
     publishedAt: "2026-07-21",
     hero: { kicker: "Decision Framework", motif: "grid" },
@@ -232,5 +241,10 @@ export const articles: Article[] = [
       },
     ],
     related: ["agency-guide-to-outsourcing-ad-operations", "saudi-digital-advertising-outlook-2027"],
+    links: [
+      { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
+      { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+    ],
   },
 ];

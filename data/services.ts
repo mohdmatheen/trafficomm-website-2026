@@ -4,6 +4,7 @@ export const services: Service[] = [
   {
     slug: "ad-operations",
     code: "AD-OPS",
+    scopeLine: ["Setup", "Trafficking", "QA", "Reporting"],
     name: "Ad Operations",
     short: "Setup, trafficking, QA, pacing and reporting — run as a managed operation.",
     headline: "The operational core behind every campaign you launch.",
@@ -94,6 +95,7 @@ export const services: Service[] = [
   {
     slug: "performance-marketing",
     code: "PERF",
+    scopeLine: ["Paid social", "Paid search", "Optimization"],
     name: "Performance Marketing",
     short: "Paid social and search campaigns engineered around CPL, CPA and ROAS.",
     headline: "Performance marketing run like an operation, not a guess.",
@@ -172,6 +174,7 @@ export const services: Service[] = [
   {
     slug: "programmatic",
     code: "PROG",
+    scopeLine: ["DV360", "CM360", "Programmatic execution"],
     name: "Programmatic Operations",
     short: "DV360 and CM360 execution — from line-item structure to deal troubleshooting.",
     headline: "Programmatic execution, handled by people who live in DV360 and CM360.",
@@ -240,6 +243,7 @@ export const services: Service[] = [
   {
     slug: "measurement",
     code: "MEAS",
+    scopeLine: ["GA4", "GTM", "Conversion tracking", "CAPI"],
     name: "Measurement & Analytics",
     short: "GA4, GTM, conversion tracking and CAPI — so the numbers can be trusted.",
     headline: "Optimization is only as good as the data underneath it.",
@@ -305,6 +309,7 @@ export const services: Service[] = [
   {
     slug: "reporting",
     code: "RPT",
+    scopeLine: ["Daily", "Weekly", "Monthly", "Campaign analysis"],
     name: "Reporting & Insights",
     short: "Daily to executive reporting, with the analysis that turns data into action.",
     headline: "Reporting that tells your team what to do next.",
@@ -372,6 +377,7 @@ export const services: Service[] = [
   {
     slug: "creative-adtech",
     code: "CRTV",
+    scopeLine: ["Rich media", "Creative QA", "Ad serving"],
     name: "Creative & AdTech",
     short: "Rich media production, third-party tags, ad-server integration and monetization.",
     headline: "Where creative production meets advertising technology.",

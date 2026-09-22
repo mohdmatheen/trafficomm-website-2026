@@ -2,6 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePauseSvgWhenHidden, usePrefersReducedMotion, useVisibilityEffect } from "@/components/motion/useInView";
+import { LogoMark } from "@/components/ui/Logo";
+import { platformLogos } from "@/data/platform-logos";
+import { cn } from "@/lib/cn";
 import { duration } from "@/lib/motion/tokens";
 
 /**
@@ -14,6 +17,12 @@ import { duration } from "@/lib/motion/tokens";
  *
  * Interaction: hovering, focusing or clicking a platform sends one short
  * burst — platform → Trafficomm → the active output — and highlights that path.
+ *
+ * Platform nodes show the official mark + name (marks from /public/platforms,
+ * never redrawn or stretched). Marks whose guidelines allow a one-colour
+ * version sit neutral until the node is active; Google product marks are
+ * always shown as supplied. Below `sm` the radial diagram is replaced by a
+ * tappable list (see EcosystemList) rather than being scaled down.
  */
 
 const W = 640;
@@ -34,18 +43,28 @@ const rand = (i: number) => {
 };
 
 // Left → right across the upper arc. Longer names sit on the outer ring.
-const PLATFORMS: { label: string; outer: boolean }[] = [
-  { label: "Amazon Ads", outer: true },
-  { label: "TikTok", outer: false },
-  { label: "Google Ads", outer: true },
-  { label: "X", outer: false },
-  { label: "Search Ads 360", outer: true },
-  { label: "Meta", outer: false },
-  { label: "DV360", outer: true },
-  { label: "LinkedIn", outer: false },
-  { label: "CM360", outer: true },
-  { label: "Snapchat", outer: false },
+const PLATFORMS: { slug: string; label: string; outer: boolean }[] = [
+  { slug: "amazon-ads", label: "Amazon Ads", outer: true },
+  { slug: "tiktok", label: "TikTok", outer: false },
+  { slug: "google-ads", label: "Google Ads", outer: true },
+  { slug: "x", label: "X", outer: false },
+  { slug: "search-ads-360", label: "Search Ads 360", outer: true },
+  { slug: "meta", label: "Meta", outer: false },
+  { slug: "dv360", label: "DV360", outer: true },
+  { slug: "linkedin", label: "LinkedIn", outer: false },
+  { slug: "cm360", label: "CM360", outer: true },
+  { slug: "snapchat", label: "Snapchat", outer: false },
 ];
+
+// Node anatomy: 10 pad · 16 logo area · 7 gap · name · 12 pad. Heights are fixed; widths follow the name.
+const NODE_H = 30;
+const PAD_L = 10;
+const LOGO_AREA = 16;
+const GAP = 7;
+const PAD_R = 12;
+// Approximate advance widths for 12.5px Geist, so node padding stays even without measuring the DOM.
+const textWidth = (t: string) =>
+  [...t].reduce((n, ch) => n + (/[A-Z]/.test(ch) ? 8.3 : /[0-9]/.test(ch) ? 7.3 : ch === " " ? 3.6 : /[il]/.test(ch) ? 3.4 : /[mw]/.test(ch) ? 9.5 : 6.6), 0);
 
 const OUTPUTS = ["Execute", "Optimize", "Measure", "Report"];
 
@@ -53,8 +72,10 @@ const nodes = PLATFORMS.map((p, i) => {
   const deg = 188 + (i + 0.5) * (164 / PLATFORMS.length);
   const a = (deg * Math.PI) / 180;
   const r = p.outer ? 272 : 200;
-  const w = r1(p.label.length * 7.4 + 34);
-  return { ...p, x: r1(CX + Math.cos(a) * r), y: r1(CY + Math.sin(a) * r * 0.92), a, w };
+  const logo = platformLogos[p.slug];
+  const wordmark = Boolean(logo.inline.wordmark);
+  const w = r1(wordmark ? PAD_L + logo.inline.w + PAD_R - 2 : PAD_L + LOGO_AREA + GAP + textWidth(p.label) + PAD_R);
+  return { ...p, logo, wordmark, x: r1(CX + Math.cos(a) * r), y: r1(CY + Math.sin(a) * r * 0.92), a, w };
 });
 
 type Curve = { sx: number; sy: number; c1x: number; c1y: number; c2x: number; c2y: number; ex: number; ey: number; d: string };
@@ -220,10 +241,11 @@ export function EcosystemHero() {
   };
 
   return (
+    <>
     <svg
       ref={svgRef}
       viewBox={`0 0 ${W} ${H}`}
-      className="h-auto w-full select-none"
+      className="hidden h-auto w-full select-none sm:block"
       role="group"
       aria-label="Diagram: campaign activity from Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, DV360, CM360, Search Ads 360 and Amazon Ads flows into Trafficomm, which organizes it into four outputs: execute, optimize, measure and report."
     >
@@ -238,6 +260,10 @@ export function EcosystemHero() {
         <mask id="eh-mask">
           <rect width={W} height={H} fill="url(#eh-mask-g)" />
         </mask>
+        {/* One-colour (ink) rendering for marks whose guidelines permit a monochrome version. */}
+        <filter id="eh-mono" colorInterpolationFilters="sRGB">
+          <feColorMatrix type="matrix" values="0 0 0 0 0.047  0 0 0 0 0.047  0 0 0 0 0.051  0 0 0 1 0" />
+        </filter>
       </defs>
 
       <rect width={W} height={H} fill="url(#eh-dots)" mask="url(#eh-mask)" />
@@ -368,19 +394,50 @@ export function EcosystemHero() {
         >
           <rect
             x={-n.w / 2}
-            y={-14}
+            y={-NODE_H / 2}
             width={n.w}
-            height={28}
-            rx={14}
+            height={NODE_H}
+            rx={NODE_H / 2}
             fill="#fff"
             stroke={hot === i ? "#ea3e3a" : "#0c0c0d"}
             strokeOpacity={hot === i ? 1 : 0.14}
+            strokeWidth={hot === i ? 1.4 : 1}
             style={{ transition: "stroke var(--dur-fast), stroke-opacity var(--dur-fast)" }}
           />
-          <circle cx={-n.w / 2 + 13} cy={0} r={2.6} fill={hot === i ? "#ea3e3a" : "#0c0c0d"} fillOpacity={hot === i ? 1 : 0.45} />
-          <text x={7} y={0.5} textAnchor="middle" dominantBaseline="middle" fontSize="12.5" fill="#0c0c0d" letterSpacing="-0.1">
-            {n.label}
-          </text>
+          {n.wordmark ? (
+            <image href={n.logo.src} x={-n.logo.inline.w / 2} y={-n.logo.inline.h / 2 + 1} width={n.logo.inline.w} height={n.logo.inline.h} preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
+          ) : (
+            <g transform={`translate(${-n.w / 2 + PAD_L + LOGO_AREA / 2} 0)`} aria-hidden="true">
+              {n.logo.mono && (
+                <image
+                  href={n.logo.src}
+                  x={-n.logo.inline.w / 2}
+                  y={-n.logo.inline.h / 2}
+                  width={n.logo.inline.w}
+                  height={n.logo.inline.h}
+                  preserveAspectRatio="xMidYMid meet"
+                  filter="url(#eh-mono)"
+                  opacity={hot === i ? 0 : 1}
+                  style={{ transition: "opacity var(--dur-fast)" }}
+                />
+              )}
+              <image
+                href={n.logo.src}
+                x={-n.logo.inline.w / 2}
+                y={-n.logo.inline.h / 2}
+                width={n.logo.inline.w}
+                height={n.logo.inline.h}
+                preserveAspectRatio="xMidYMid meet"
+                opacity={n.logo.mono && hot !== i ? 0 : 1}
+                style={{ transition: "opacity var(--dur-fast)" }}
+              />
+            </g>
+          )}
+          {!n.wordmark && (
+            <text x={-n.w / 2 + PAD_L + LOGO_AREA + GAP} y={0.5} dominantBaseline="middle" fontSize="12.5" fill="#0c0c0d" letterSpacing="-0.1">
+              {n.label}
+            </text>
+          )}
         </g>
       ))}
 
@@ -409,5 +466,100 @@ export function EcosystemHero() {
         );
       })}
     </svg>
+    <EcosystemList />
+    </>
+  );
+}
+
+/**
+ * Small screens: the same story as a tappable list instead of a shrunken
+ * radial diagram — platform → Trafficomm operations layer → four outputs.
+ */
+// Mobile lists platforms in navigation order rather than the radial layout order.
+const LIST_ORDER = ["meta", "google-ads", "tiktok", "snapchat", "x", "linkedin", "dv360", "cm360", "search-ads-360", "amazon-ads"];
+const LIST = LIST_ORDER.map((slug) => PLATFORMS.find((p) => p.slug === slug)!);
+
+function EcosystemList() {
+  const [sel, setSel] = useState<number | null>(null);
+  const current = sel === null ? null : LIST[sel];
+  return (
+    <div className="sm:hidden">
+      <p className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">Input · 10 platforms</p>
+      <ul className="mt-3 grid grid-cols-2 gap-2">
+        {LIST.map((p, i) => {
+          const logo = platformLogos[p.slug];
+          const on = sel === i;
+          return (
+            <li key={p.slug}>
+              <button
+                type="button"
+                aria-pressed={on}
+                aria-label={p.label}
+                onClick={() => setSel(on ? null : i)}
+                className={cn(
+                  "flex h-11 w-full items-center gap-2.5 rounded-full bg-white px-3.5 text-left text-[0.92rem] text-ink ring-1 transition-[box-shadow] duration-200",
+                  on ? "ring-2 ring-signal" : "ring-line",
+                )}
+              >
+                {logo.inline.wordmark ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logo.src} alt="" width={logo.inline.w} height={logo.inline.h} loading="lazy" decoding="async" className="object-contain" />
+                ) : (
+                  <>
+                    <span className="relative flex size-4 shrink-0 items-center justify-center" aria-hidden="true">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={logo.src}
+                        alt=""
+                        width={logo.inline.w}
+                        height={logo.inline.h}
+                        loading="lazy"
+                        decoding="async"
+                        className={cn("object-contain transition-[filter,opacity] duration-200", logo.mono && !on && "opacity-85 brightness-0")}
+                      />
+                    </span>
+                    <span className="truncate">{p.label}</span>
+                  </>
+                )}
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="flex justify-center py-2" aria-hidden="true">
+        <span className={cn("h-7 w-px transition-colors duration-300", current ? "bg-signal" : "bg-line-strong")} />
+      </div>
+      <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-ink px-4 py-3.5 text-white">
+        <LogoMark className="w-6" inverted />
+        <span>
+          <span className="block text-[0.95rem] font-semibold font-brand">Trafficomm</span>
+          <span className="block font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">Operations layer</span>
+        </span>
+      </div>
+      <div className="flex justify-center py-2" aria-hidden="true">
+        <span className={cn("h-7 w-px transition-colors duration-300", current ? "bg-signal" : "bg-line-strong")} />
+      </div>
+
+      <p className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">Output</p>
+      <ul className="mt-3 grid grid-cols-2 gap-2">
+        {OUTPUTS.map((o, k) => (
+          <li
+            key={o}
+            className={cn(
+              "flex h-11 items-center gap-2.5 rounded-md px-3 font-mono text-[0.74rem] uppercase tracking-[0.12em] ring-1 transition-colors duration-300 motion-reduce:transition-none",
+              current ? "bg-ink text-white ring-ink" : "bg-white text-ink ring-line",
+            )}
+            style={{ transitionDelay: current ? `${k * 90}ms` : "0ms" }}
+          >
+            <span className={cn("h-5 w-0.5", current ? "bg-signal" : "bg-ink/20")} aria-hidden="true" />
+            {o}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-4 min-h-[1.5em] text-[0.88rem] text-steel" aria-live="polite">
+        {current ? `${current.label} → Trafficomm operations layer → execute, optimize, measure and report.` : "Tap a platform to trace its path through Trafficomm."}
+      </p>
+    </div>
   );
 }

@@ -36,7 +36,9 @@ export function VideoPlayer({ src, poster, title, durationLabel }: { src: string
             <span className="eyebrow flex items-center gap-2 !text-[0.68rem] text-fog">
               <span className="size-1.5 rounded-full bg-signal animate-pulse-dot" aria-hidden="true" /> {title}
             </span>
-            <span className="flex items-center gap-3 font-mono text-[0.77rem] text-mute tabular"><span className="hidden rounded-full px-2 py-0.5 ring-1 ring-line-dark-strong sm:inline">Brand film · in production</span>00:00 / {durationLabel}</span>
+            <span className="flex items-center gap-3 font-mono text-[0.77rem] text-mute tabular">
+              {src ? `00:00 / ${durationLabel}` : <span className="rounded-full px-2 py-0.5 ring-1 ring-line-dark-strong">Brand film · in production</span>}
+            </span>
           </div>
 
           <button

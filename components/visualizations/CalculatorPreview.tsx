@@ -93,11 +93,11 @@ export function CalculatorPreview() {
         </div>
 
         <a href="#assessment" className={buttonClasses("secondary", "lg", "mt-6 w-full sm:w-auto sm:self-start")}>
-          Calculate your operations cost
+          Request an Operations Assessment
           <ArrowRight className="transition-transform group-hover:translate-x-0.5" />
         </a>
         <p className="mt-4 text-[0.86rem] leading-relaxed text-steel">
-          The full calculator is in development and will compare operating models using transparent inputs. Until then, we can model it with you in an operations assessment.
+          The full calculator is in development. Its comparisons will be calculated entirely from the inputs you enter — no savings are assumed or guaranteed, and results from past engagements are not applied. Until then, we can model it with you in an operations assessment.
         </p>
       </div>
     </div>

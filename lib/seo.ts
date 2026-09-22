@@ -27,7 +27,7 @@ export function buildMetadata({ title, description, path, type = "website", publ
       locale: "en_US",
       ...(publishedTime ? { publishedTime } : {}),
     },
-    twitter: { card: "summary_large_image", title: `${title} | ${company.name}`, description },
+    twitter: { card: "summary", title: `${title} | ${company.name}`, description },
     ...(noIndex ? { robots: { index: false, follow: true } } : {}),
   };
 }

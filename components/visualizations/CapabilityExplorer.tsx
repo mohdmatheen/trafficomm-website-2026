@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 import { duration } from "@/lib/motion/tokens";
 import { observeVisibility } from "@/lib/motion/visibility";
 
-type Item = Pick<Service, "slug" | "name" | "code" | "short" | "explorer">;
+type Item = Pick<Service, "slug" | "name" | "short" | "explorer">;
 type Stage = Service["explorer"]["flow"][number];
 
 /**
@@ -76,7 +76,7 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
 
         <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${active}`} className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
           <div className="flex items-center justify-between border-b border-line px-6 py-3.5">
-            <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-steel">{item.code} · Operating workflow</span>
+            <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-steel">Operating workflow</span>
             <span className="flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">
               <span className="size-1.5 rounded-full bg-signal animate-pulse-dot" aria-hidden="true" /> Work in motion
             </span>

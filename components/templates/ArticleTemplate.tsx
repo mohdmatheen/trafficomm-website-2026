@@ -2,6 +2,7 @@ import { ArticleCard } from "@/components/cards/ArticleCard";
 import { ArticleBody } from "@/components/article/ArticleBody";
 import { JsonLd, articleSchema } from "@/components/seo/JsonLd";
 import { CTABand } from "@/components/sections/shared/CTABand";
+import { LinkList } from "@/components/sections/shared/LinkList";
 import { Badge } from "@/components/ui/Badge";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { ButtonLink } from "@/components/ui/Button";
@@ -77,6 +78,12 @@ export function ArticleTemplate({ article, related }: { article: Article; relate
                 <Badge key={t}>{t}</Badge>
               ))}
             </div>
+            {article.links.length > 0 && (
+              <nav aria-label="Related services" className="mt-10">
+                <p className="eyebrow mb-4 text-steel">Where this applies</p>
+                <LinkList items={article.links} />
+              </nav>
+            )}
             <div className="mt-10 rounded-[var(--radius-panel)] bg-ink p-7 text-white sm:p-9">
               <p className="eyebrow text-signal">From the operations team</p>
               <p className="mt-4 text-h3">Want to see how this applies to your team?</p>
@@ -100,7 +107,7 @@ export function ArticleTemplate({ article, related }: { article: Article; relate
         </Section>
       )}
 
-      <CTABand />
+      <CTABand title="Talk to the operators behind the Performance Lab." />
       <JsonLd data={articleSchema(article)} />
     </article>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { company } from "@/data/site";
+import { company, enquiryConfidentialityNote } from "@/data/site";
 import { marketOptions, platformOptions, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors } from "@/lib/assessment";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
@@ -12,7 +12,8 @@ type Tone = "light" | "dark";
 
 const empty: AssessmentInput = { name: "", company: "", email: "", markets: [], platforms: [], volume: "", challenge: "", intent: "assessment", website: "" };
 
-export function AssessmentForm({ tone = "dark", idPrefix = "af" }: { tone?: Tone; idPrefix?: string }) {
+/** `privacyNote`: set false where the page already states the confidentiality line (Contact). */
+export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = true }: { tone?: Tone; idPrefix?: string; privacyNote?: boolean }) {
   const [values, setValues] = useState<AssessmentInput>(empty);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -105,7 +106,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af" }: { tone?: Tone
       <ChipGroup tone={tone} field="platforms" legend="Platforms" hint="Optional" options={platformOptions} selected={values.platforms} error={errors.platforms} onToggle={(v) => toggle("platforms", v)} />
 
       <div className="mt-6 grid gap-5">
-        <Field tone={tone} id={`${idPrefix}-volume`} label="Campaigns per month" error={errors.volume}>
+        <Field tone={tone} id={`${idPrefix}-volume`} label="Campaign volume (per month)" error={errors.volume}>
           <select
             id={`${idPrefix}-volume`}
             data-field="volume"
@@ -138,10 +139,14 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af" }: { tone?: Tone
         </Field>
       </div>
 
-      {/* Honeypot */}
-      <div className="absolute -left-[9999px]" aria-hidden="true">
-        <label htmlFor={`${idPrefix}-website`}>Website</label>
-        <input id={`${idPrefix}-website`} tabIndex={-1} autoComplete="off" value={values.website} onChange={(e) => set("website", e.target.value)} />
+      {/*
+        Anti-spam honeypot. Bots that fill every input populate it and are rejected server-side.
+        Clipped to 1px, transparent, inert, out of the tab order and hidden from assistive tech,
+        so legitimate visitors never see or reach it.
+      */}
+      <div className="pointer-events-none absolute size-px overflow-hidden opacity-0 [clip-path:inset(50%)]" aria-hidden="true" inert>
+        <label htmlFor={`${idPrefix}-website`}>Leave this field empty</label>
+        <input id={`${idPrefix}-website`} name="website" type="text" tabIndex={-1} autoComplete="off" value={values.website} onChange={(e) => set("website", e.target.value)} />
       </div>
 
       {status === "error" && (
@@ -158,16 +163,16 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af" }: { tone?: Tone
         </button>
         {company.bookingUrl ? (
           <a href={company.bookingUrl} target="_blank" rel="noopener noreferrer" className={buttonClasses(dark ? "outline-dark" : "ghost", "lg")}>
-            Schedule a Call
+            Talk to Trafficomm
           </a>
         ) : (
           <button type="button" disabled={busy} onClick={() => submit("call")} className={buttonClasses(dark ? "outline-dark" : "ghost", "lg")}>
-            Schedule a Call
+            Talk to Trafficomm
           </button>
         )}
       </div>
       <p className={cn("mt-4 text-[0.83rem] leading-relaxed", dark ? "text-mute" : "text-steel")}>
-        We use these details only to respond to your request. Conversations are confidential.
+        {privacyNote && `${enquiryConfidentialityNote} `}We use these details only to respond to your request.
       </p>
     </form>
   );

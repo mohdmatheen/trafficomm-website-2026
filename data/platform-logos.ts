@@ -15,6 +15,20 @@ export type PlatformLogo = {
   box: { w: number; h: number };
   source: string;
   note?: string;
+  /**
+   * Compact size (px) for inline "logo + name" use, e.g. the homepage
+   * ecosystem nodes. Symbol marks share one ~16px optical area; the Amazon Ads
+   * mark is a wordmark, so it is sized wider and stands in for the name.
+   */
+  inline: { w: number; h: number; wordmark?: boolean };
+  /**
+   * The owner's guidelines permit a one-colour (monochrome) version of this
+   * mark. Such marks sit neutral by default and reveal their supplied colours
+   * on hover / focus / selection. Marks without this flag (Google product
+   * logos) are always shown exactly as supplied. Black-variant assets (X,
+   * Snapchat, LinkedIn, TikTok placeholder, Amazon Ads) are already neutral.
+   */
+  mono?: boolean;
 };
 
 export const platformLogos: Record<string, PlatformLogo> = {
@@ -22,6 +36,8 @@ export const platformLogos: Record<string, PlatformLogo> = {
     src: "/platforms/meta.svg",
     alt: "Meta",
     box: { w: 34, h: 24 },
+    inline: { w: 19, h: 13 },
+    mono: true,
     source: "https://www.meta.com (official site header lockup)",
     note: "Cropped to the Meta symbol; colors unchanged.",
   },
@@ -29,12 +45,14 @@ export const platformLogos: Record<string, PlatformLogo> = {
     src: "/platforms/google-ads.svg",
     alt: "Google Ads",
     box: { w: 28, h: 28 },
+    inline: { w: 16, h: 16 },
     source: "https://www.gstatic.com/images/branding/productlogos/ads/v5/192px.svg",
   },
   tiktok: {
     src: "/platforms/tiktok.svg",
     alt: "TikTok",
     box: { w: 24, h: 24 },
+    inline: { w: 14, h: 15 },
     source: "Simple Icons (CC0) — official TikTok domains were unreachable from the build network",
     note: "PLACEHOLDER SOURCE: replace with the monochrome icon from TikTok's official brand portal.",
   },
@@ -42,6 +60,7 @@ export const platformLogos: Record<string, PlatformLogo> = {
     src: "/platforms/snapchat.svg",
     alt: "Snapchat",
     box: { w: 27, h: 27 },
+    inline: { w: 16, h: 16 },
     source: "https://snap.com/en-US/brand-guidelines (BLACK_SNAPCHAT_LOGO.svg)",
     note: "Cropped from the official lockup to the Ghost mark.",
   },
@@ -49,6 +68,7 @@ export const platformLogos: Record<string, PlatformLogo> = {
     src: "/platforms/x.svg",
     alt: "X",
     box: { w: 22, h: 22 },
+    inline: { w: 12, h: 12 },
     source: "https://about.x.com/en/who-we-are/brand-toolkit (x-logo.zip)",
     note: "Black variant, matching logo-black.png in the official kit.",
   },
@@ -56,30 +76,35 @@ export const platformLogos: Record<string, PlatformLogo> = {
     src: "/platforms/linkedin.png",
     alt: "LinkedIn",
     box: { w: 26, h: 24 },
+    inline: { w: 14, h: 13 },
     source: "https://brand.linkedin.com/downloads (in-logo.zip, InBug-Black.png)",
   },
   dv360: {
     src: "/platforms/dv360.svg",
     alt: "Display & Video 360",
     box: { w: 28, h: 28 },
+    inline: { w: 16, h: 16 },
     source: "https://www.gstatic.com/images/branding/productlogos/display_and_video_360/v1/192px.svg",
   },
   cm360: {
     src: "/platforms/cm360.svg",
     alt: "Campaign Manager 360",
     box: { w: 28, h: 28 },
+    inline: { w: 16, h: 16 },
     source: "https://www.gstatic.com/images/branding/productlogos/campaign_manager/v6/192px.svg",
   },
   "search-ads-360": {
     src: "/platforms/search-ads-360.svg",
     alt: "Search Ads 360",
     box: { w: 27, h: 27 },
+    inline: { w: 16, h: 16 },
     source: "https://www.gstatic.com/images/branding/productlogos/search_ads_360/v5/192px.svg",
   },
   "amazon-ads": {
     src: "/platforms/amazon-ads.png",
     alt: "Amazon Ads",
     box: { w: 44, h: 16 },
+    inline: { w: 56, h: 14, wordmark: true },
     source: "https://advertising.amazon.com (official header logo, Amazon_Ads_Horizontal_SquidInk.png)",
   },
 };

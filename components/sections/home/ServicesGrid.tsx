@@ -4,7 +4,7 @@ import { CapabilityExplorer } from "@/components/visualizations/CapabilityExplor
 import { services } from "@/data/services";
 
 export function ServicesGrid() {
-  const items = services.map(({ slug, name, code, short, explorer }) => ({ slug, name, code, short, explorer }));
+  const items = services.map(({ slug, name, short, explorer }) => ({ slug, name, short, explorer }));
   return (
     <Section tone="paper" labelledBy="services-title">
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">

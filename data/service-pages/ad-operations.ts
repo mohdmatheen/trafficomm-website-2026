@@ -1,3 +1,4 @@
+import { companyScaleSentence } from "../metrics";
 import type { ServicePageContent } from "./types";
 
 /**
@@ -15,7 +16,7 @@ export const adOperationsPage: ServicePageContent = {
   },
   hero: {
     eyebrow: "Ad Operations",
-    title: ["The Operational Layer", "Behind Every Campaign."],
+    title: ["The Operational Layer", "Behind Your Campaigns."],
     lead: "Trafficomm provides scalable Ad Operations support across campaign setup, trafficking, QA, monitoring, optimization and reporting — operating as an extension of agency and media teams.",
     capabilityLine: ["Campaign Setup", "Trafficking", "QA", "Monitoring", "Optimization", "Reporting"],
     lifecycle: ["Media plan", "Build", "QA", "Launch", "Monitor", "Optimize", "Report"],
@@ -151,7 +152,7 @@ export const adOperationsPage: ServicePageContent = {
     },
     {
       q: "Can Trafficomm support high-volume campaign operations?",
-      a: "Trafficomm has handled 10,000+ campaigns since 2015, with a largest monthly volume of 250+ campaigns and a peak team of 70+ across its operations.",
+      a: `${companyScaleSentence} Engagements are staffed to the agreed workload; the flagship agency engagement scaled from 4 specialists to approximately 30 as requirements grew.`,
     },
   ],
   related: [

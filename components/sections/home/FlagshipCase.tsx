@@ -5,6 +5,7 @@ import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { TeamScaleGrid } from "@/components/visualizations/TeamScaleGrid";
 import { getCaseStudy } from "@/data/case-studies";
+import { caseMetrics as cm } from "@/data/metrics";
 
 const challenges = ["Distributed teams", "Resource dependency", "Execution bottlenecks", "QA consistency", "Talent acquisition & retention"];
 const model = ["Centralized operations", "Dedicated account management", "Structured task allocation", "Dedicated QA", "SLA-driven delivery", "Centralized workflow"];
@@ -36,7 +37,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
             eyebrow={eyebrow ?? cs.client}
             title={
               <>
-                From 4 Specialists <span className="block text-steel/70">to 30.</span>
+                From 4 Specialists <span className="block text-steel/70">to ~30.</span>
               </>
             }
             lead={context ?? cs.subtitle}
@@ -45,7 +46,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
         <div className="lg:pb-2" data-reveal>
           <ConfidentialNote />
           <ButtonLink href={`/case-studies/${cs.slug}`} variant="secondary" className="mt-6">
-            Read the full case study
+            View Case Study
           </ButtonLink>
         </div>
       </div>
@@ -86,7 +87,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
         </li>
         <li className="bg-paper p-6 sm:p-8" data-reveal style={{ "--reveal-delay": "180ms" } as React.CSSProperties}>
           <StageLabel n="3" label="Scale" />
-          <p className="mt-5 text-[1.03rem] leading-relaxed text-steel">The dedicated team grew with the agency&apos;s needs.</p>
+          <p className="mt-5 text-[1.03rem] leading-relaxed text-steel">The dedicated team scaled as the agency&apos;s operational requirements grew.</p>
           <div className="mt-6">
             <TeamScaleGrid />
           </div>
@@ -98,8 +99,8 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
         <StageLabel n="4" label="Documented results" />
         <dl className="mt-8 grid border-t border-line md:grid-cols-2">
           {[
-            { v: "50%", l: "Resource cost reduction" },
-            { v: "99.34%", l: "Work quality" },
+            { v: cm.menaCost.value, l: cm.menaCost.label },
+            { v: cm.menaQuality.value, l: cm.menaQuality.label },
           ].map((m, i) => (
             <div key={m.l} className={`flex flex-col py-8 md:py-10 ${i === 0 ? "md:border-r md:border-line md:pr-10" : "border-t border-line md:border-t-0 md:pl-10"}`} data-reveal>
               <dt className="eyebrow order-2 mt-5 text-graphite">{m.l}</dt>
@@ -109,8 +110,8 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
         </dl>
         <dl className="grid border-y border-line sm:grid-cols-2">
           {[
-            { v: "4 → 30", l: "Team scale" },
-            { v: "7+ years", l: "Partnership" },
+            { v: cm.menaTeam.value, l: cm.menaTeam.label },
+            { v: cm.menaPartnership.value, l: cm.menaPartnership.label },
           ].map((m, i) => (
             <div key={m.l} className={`flex flex-col py-7 ${i === 0 ? "sm:border-r sm:border-line sm:pr-10" : "border-t border-line sm:border-t-0 sm:pl-10"}`} data-reveal>
               <dt className="eyebrow order-2 mt-3 text-steel">{m.l}</dt>
@@ -118,7 +119,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
             </div>
           ))}
         </dl>
-        <p className="mt-5 text-[0.88rem] text-steel">Team scale: approximately 30 specialists today, from 4 at the start of the engagement.</p>
+        <p className="mt-5 text-[0.88rem] text-steel">{cm.menaTeam.copy}</p>
       </div>
     </Section>
   );

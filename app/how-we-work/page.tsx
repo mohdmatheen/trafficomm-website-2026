@@ -174,7 +174,7 @@ export default function HowWeWorkPage() {
       </Section>
 
       <AIOperations index={null} />
-      <CTABand />
+      <CTABand title="What would a phased handover look like for your team?" body="Request an operations assessment. We'll map your business areas by complexity and criticality and outline how a transition could be sequenced." />
     </>
   );
 }

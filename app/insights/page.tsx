@@ -10,7 +10,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata: Metadata = buildMetadata({
   title: "Performance Lab — Insights From Behind the Campaign",
   description:
-    "Guides, research and market insight on ad operations outsourcing, agency operating models and GCC digital advertising from the Trafficomm operations team.",
+    "Guides, decision frameworks and market insight on ad operations outsourcing, agency operating models and GCC digital advertising from the Trafficomm operations team.",
   path: "/insights",
 });
 
@@ -19,7 +19,8 @@ const formats: ArticleCategory[] = ["Industry Insight", "Report", "Benchmark", "
 export default async function InsightsPage() {
   const articles = await getArticles();
   const [lead, ...rest] = articles;
-  const counts = new Map(formats.map((f) => [f, articles.filter((a) => a.category === f).length]));
+  // Only formats that actually have content are listed; empty categories are never shown.
+  const present = formats.map((f) => ({ f, n: articles.filter((a) => a.category === f).length })).filter((x) => x.n > 0);
 
   return (
     <>
@@ -31,13 +32,13 @@ export default async function InsightsPage() {
             Insights from <span className="block text-steel/70">behind the campaign.</span>
           </>
         }
-        lead="Operational thinking from the team that sets up, checks, optimizes and reports campaigns every day — guides, research, benchmarks and market insight."
+        lead="Operational thinking from the team that sets up, checks, optimizes and reports campaigns — practical guides, decision frameworks and market insight."
         meta={
           <ul className="flex flex-wrap gap-2" aria-label="Content formats">
-            {formats.map((f) => (
+            {present.map(({ f, n }) => (
               <li key={f} className="rounded-full bg-white px-3.5 py-2 text-[0.84rem] text-graphite ring-1 ring-line">
                 {f}
-                <span className="ml-2 font-mono text-[0.7rem] text-steel">{counts.get(f)}</span>
+                <span className="ml-2 font-mono text-[0.7rem] text-steel">{n}</span>
               </li>
             ))}
           </ul>
@@ -51,7 +52,7 @@ export default async function InsightsPage() {
           ))}
         </div>
       </Section>
-      <CTABand />
+      <CTABand title="Want to see how this applies to your team?" />
     </>
   );
 }

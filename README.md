@@ -52,9 +52,13 @@ tests/                Playwright suites (development only)
 
 ## Content rules
 
-- Every fact lives in `data/`. Only documented Trafficomm figures are used (founded 2015, 10K+ campaigns, 1M+ creatives & placements, ~$10M campaign scale, 250+ largest monthly volume, 70+ peak team) and the documented MENA case results.
-- Client identities are never published; case studies are anonymized.
+- Every recurring figure lives in **`data/metrics.ts`** (single source of truth) — never hard-code a number in a component.
+  - Company scale: founded 2015 · 10K+ campaigns · 1M+ creatives & placements · $10M campaign / media scale (**not revenue**) · 250+ **peak** monthly campaign volume (not a current run-rate) · 70+ peak team.
+  - Case-study figures describe one anonymized engagement only: 4 → ~30 team scale (**historical** — never "today"/"current"), 50%, 99.34%, 7+ years (Case 01); 250+ campaigns managed (Case 02 — a different fact from the company peak); 300+ rich media creatives (Case 03); 50+ campaigns managed (Case 04).
+- Client identities are never published; case studies are anonymized. "Client identity withheld…" belongs only on case studies and case-study references; Contact uses the enquiry confidentiality line (`data/site.ts`).
 - Platform marks indicate **platform experience** only — never partnership, certification or endorsement. The TikTok mark is a placeholder: **official asset required**.
+- Platform logos (`data/platform-logos.ts`): official assets only, never redrawn, recoloured or stretched. `inline` sets the compact logo + name size; `mono: true` marks brands whose guidelines permit a one-colour version (neutral by default, supplied colours on hover/focus/selection). Google product marks are always shown as supplied.
+- Service-page depth for the five standard services lives in `data/service-depth.ts`; solution workflows, links and CTAs in `data/solutions.ts`.
 
 ## Adding a full service page
 
@@ -107,5 +111,14 @@ QA artefacts are excluded via `.vercelignore`.
 - [ ] Set `ASSESSMENT_WEBHOOK_URL` to the agreed CRM/webhook endpoint.
 - [ ] At trafficomm.com launch only: set `NEXT_PUBLIC_SITE_URL=https://www.trafficomm.com` and `SITE_INDEXABLE=true` in Vercel **Production**.
 - [ ] Add confirmed contact details (email, phone, booking link) in `data/site.ts`.
-- [ ] Legal review of platform-mark usage (Google product marks in particular).
+- [ ] Legal review of platform-mark usage (Google product marks in particular; monochrome Meta mark treatment in the hero).
+- [ ] Confirm the open factual items from the content audit (below) before launch.
 - [ ] Brand film (approved storyboard) and full cost calculator — deferred, not started.
+
+### Factual items awaiting Trafficomm confirmation
+
+- **$10M campaign scale** — cumulative since 2015 or annual? Should it read "~$10M"? Currently shown as "$10M · Campaign scale" with the note "approximate campaign / media scale handled (USD) — not revenue".
+- **70+ peak team** and **10K+ / 1M+** — confirm these are company-wide since 2015 (current wording).
+- **7+ year partnership (Case 01)** — confirm whether the engagement is ongoing or historical; copy currently avoids implying either.
+- **Chennai, India** delivery location (Case 01 solution text) — confirm it may be published.
+- **Performance Lab** — articles are authored by "Trafficomm Performance Lab"; confirm whether a named author should be shown. "Building vs Outsourcing" was reclassified from Research to Guide (it is a decision framework, not original research).

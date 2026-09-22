@@ -1,3 +1,4 @@
+import { caseMetrics as cm } from "./metrics";
 import type { CaseStudy } from "./types";
 
 /**
@@ -12,20 +13,21 @@ export const caseStudies: CaseStudy[] = [
     category: "Enterprise Ad Operations",
     market: "MENA",
     client: "Leading MENA Advertising Agency",
-    title: "From 4 Specialists to 30.",
-    cardTitle: "From 4 Specialists to 30",
+    title: "From 4 Specialists to ~30.",
+    cardTitle: "From 4 Specialists to ~30",
     subtitle: "How Trafficomm built a scalable Ad Operations model for a leading MENA advertising agency.",
     seo: {
       title: "Case Study: Scaling Ad Operations for a Leading MENA Agency",
       description:
-        "How Trafficomm centralized ad operations for a MENA advertising agency with ~12 offices — 50% lower resource costs, 99.34% work quality and a team grown from 4 to 30 over a 7+ year partnership.",
+        "How Trafficomm centralized ad operations for a MENA advertising agency with ~12 offices — 50% lower resource costs, 99.34% work quality and a dedicated team that scaled from 4 to approximately 30 specialists over a 7+ year partnership.",
     },
-    headlineStat: { value: "4 → 30", label: "Team scale" },
+    headlineStat: { value: cm.menaTeam.value, label: cm.menaTeam.cardLabel },
+    scan: { challenge: "Distributed ad operations across ~12 offices, key-person dependency and inconsistent QA.", role: "Centralized ad operations team with account management, task allocation and dedicated QA." },
     metrics: [
-      { value: "50%", label: "Resource cost reduction" },
-      { value: "99.34%", label: "Work quality" },
-      { value: "4 → 30", label: "Team scale" },
-      { value: "7+ yrs", label: "Partnership" },
+      cm.menaCost,
+      cm.menaQuality,
+      { value: cm.menaTeam.value, label: cm.menaTeam.label },
+      { value: cm.menaPartnership.short, label: cm.menaPartnership.label },
     ],
     context:
       "The client is a leading advertising agency with a strong presence across the MENA region, operating from approximately 12 offices. With teams spread across multiple locations — and a reliance on single resources to serve many stakeholders — ad operations had become hard to run efficiently and dependably.",
@@ -46,11 +48,11 @@ export const caseStudies: CaseStudy[] = [
     results: [
       { title: "50% reduction in resource costs", body: "Optimized workflow and centralized resources halved resource costs." },
       { title: "99.34% work quality", body: "Rigorous QA delivered consistently high-quality ad operations." },
-      { title: "Team scaled from 4 to 30", body: "The engagement began with 4 specialists and today supports the agency with a team of approximately 30." },
+      { title: "Team scaled from 4 to ~30", body: cm.menaTeam.copy },
       { title: "7+ year partnership", body: "A collaboration sustained for more than seven years." },
     ],
     conclusion:
-      "By centralizing delivery, structuring the workflow and making quality assurance a dedicated function, Trafficomm gave the agency a scalable ad operations model — one that has grown alongside the agency for more than seven years.",
+      "By centralizing delivery, structuring the workflow and making quality assurance a dedicated function, Trafficomm gave the agency a scalable ad operations model — one that grew alongside the agency over a partnership of more than seven years.",
     services: ["ad-operations", "reporting"],
     platforms: [],
   },
@@ -68,9 +70,10 @@ export const caseStudies: CaseStudy[] = [
       description:
         "How Trafficomm used historical performance analysis, audience strategy, A/B testing and continuous optimization to improve CPL, CPV and VTR for an international agency — 250+ campaigns managed.",
     },
-    headlineStat: { value: "250+", label: "Campaigns managed" },
+    headlineStat: cm.perfCampaigns,
+    scan: { challenge: "Key advertiser accounts below target, with high CPL and CPV.", role: "Performance team: historical analysis, audience strategy, A/B testing and continuous optimization." },
     metrics: [
-      { value: "250+", label: "Campaigns managed" },
+      cm.perfCampaigns,
       { value: "CPL ↓", label: "Improved cost per lead" },
       { value: "CPV ↓", label: "Improved cost per view" },
       { value: "VTR ↑", label: "Improved view-through rate" },
@@ -116,7 +119,8 @@ export const caseStudies: CaseStudy[] = [
       description:
         "How Trafficomm built a dedicated creative team — creative director, designers and developers — producing 300+ high-end rich media mobile creatives in Celtra and Bonzai for an international ad network.",
     },
-    headlineStat: { value: "300+", label: "Rich media creatives" },
+    headlineStat: cm.richMedia,
+    scan: { challenge: "Rising advertiser demand for mobile rich media, without in-house specialists.", role: "Dedicated creative technology team producing in Celtra and Bonzai." },
     metrics: [
       { value: "300+", label: "Rich media mobile creatives" },
       { value: "2", label: "Rich media platforms: Celtra & Bonzai" },
@@ -161,9 +165,10 @@ export const caseStudies: CaseStudy[] = [
       description:
         "How Trafficomm built an ad inventory framework, integrated Google Ad Manager, ran 50+ campaigns and automated inventory and billing reporting for a UAE television broadcaster.",
     },
-    headlineStat: { value: "50+", label: "Campaigns managed" },
+    headlineStat: cm.broadcasterCampaigns,
+    scan: { challenge: "Website inventory with no structured monetization approach.", role: "Inventory framework, Google Ad Manager integration, campaign management and automated reporting." },
     metrics: [
-      { value: "50+", label: "Campaigns managed" },
+      cm.broadcasterCampaigns,
       { value: "GAM", label: "Google Ad Manager integration" },
       { value: "Auto", label: "Inventory, billing & campaign reporting" },
     ],

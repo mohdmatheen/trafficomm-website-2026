@@ -19,6 +19,8 @@ export type FAQ = { q: string; a: string };
 export type Service = {
   slug: string;
   code: string;
+  /** Buyer-facing scope, e.g. "DV360 · CM360 · Programmatic execution". Used instead of internal codes in UI. */
+  scopeLine: string[];
   name: string;
   short: string;
   headline: string;
@@ -50,6 +52,11 @@ export type Solution = {
   services: string[];
   relatedCases: string[];
   faqs: FAQ[];
+  /** How work moves once Trafficomm is in place, step by step, with who performs each step. */
+  workflow: { title: [string, string]; lead: string; steps: { label: string; items: string[]; owner: "client" | "trafficomm" | "output" }[] };
+  /** Contextual links (services, platforms, sibling models) — kept short to avoid link spam. */
+  links: { href: string; label: string; meta?: string }[];
+  cta: { title: string; body: string };
 };
 
 export type Platform = {
@@ -80,6 +87,8 @@ export type CaseStudy = {
   subtitle: string;
   seo: { title: string; description: string };
   headlineStat: { value: string; label: string };
+  /** One-line scan summaries for case-study cards. */
+  scan: { challenge: string; role: string };
   metrics: { value: string; label: string }[];
   context: string;
   challenges: { title: string; body: string }[];
@@ -121,4 +130,6 @@ export type Article = {
   tags: string[];
   body: ArticleBlock[];
   related: string[];
+  /** Services and solutions this article informs — rendered as contextual links. */
+  links: { href: string; label: string; meta?: string }[];
 };

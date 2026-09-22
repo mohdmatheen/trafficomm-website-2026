@@ -6,21 +6,43 @@ import { FAQList } from "@/components/sections/shared/FAQList";
 import { LinkList } from "@/components/sections/shared/LinkList";
 import { PageHero } from "@/components/sections/shared/PageHero";
 import { Steps } from "@/components/sections/shared/Steps";
-import { ButtonLink } from "@/components/ui/Button";
+import { AgencyIntegration } from "@/components/service-page/AgencyIntegration";
+import { CapabilitySplit } from "@/components/service-page/CapabilitySplit";
+import { OptimizationSystem } from "@/components/service-page/OptimizationSystem";
+import { ReportingCadence } from "@/components/service-page/ReportingCadence";
+import { StageChain } from "@/components/service-page/StageChain";
+import { ArrowLink, ButtonLink } from "@/components/ui/Button";
 import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
+import { ArrowRight } from "@/components/ui/Icons";
+import { Metric } from "@/components/ui/Metric";
+import { PlatformMark } from "@/components/ui/PlatformMark";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { ModuleViz } from "@/components/visualizations/ModuleViz";
 import { caseStudies } from "@/data/case-studies";
 import { platforms } from "@/data/platforms";
-import { services } from "@/data/services";
+import { serviceDepth } from "@/data/service-depth";
 import type { Service } from "@/data/types";
 
+const Title = ({ t, dark = false }: { t: [string, string]; dark?: boolean }) => (
+  <>
+    {t[0]} <span className={`block ${dark ? "text-mute" : "text-steel/70"}`}>{t[1]}</span>
+  </>
+);
+
+/**
+ * Standard service page. Each section answers one buyer question: what
+ * problem this solves, what Trafficomm handles, how the work is structured,
+ * who owns what, which platforms are involved and what evidence exists.
+ * Service-specific depth comes from data/service-depth.ts.
+ */
 export function ServiceTemplate({ service }: { service: Service }) {
-  const index = services.findIndex((s) => s.slug === service.slug);
+  const depth = serviceDepth[service.slug];
   const related = caseStudies.filter((c) => service.relatedCases.includes(c.slug));
   const pls = platforms.filter((p) => service.platforms.includes(p.slug));
-  const others = services.filter((s) => s.slug !== service.slug);
-  const total = service.groups.reduce((n, g) => n + g.items.length, 0);
+  const sys = depth?.system;
+  // Light sections alternate white / paper in render order, whichever optional sections a service has.
+  let n = 0;
+  const tone = (): "white" | "paper" => (n++ % 2 === 0 ? "white" : "paper");
 
   return (
     <>
@@ -29,7 +51,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
           { name: "Services", path: "/services" },
           { name: service.name, path: `/services/${service.slug}` },
         ]}
-        eyebrow={`${service.name} · Module ${String(index + 1).padStart(2, "0")}`}
+        eyebrow={service.name}
         title={service.headline}
         lead={service.intro}
         actions={
@@ -37,45 +59,64 @@ export function ServiceTemplate({ service }: { service: Service }) {
             <ButtonLink href="/contact" size="lg">
               Request an Operations Assessment
             </ButtonLink>
-            <ButtonLink href="#capabilities" size="lg" variant="ghost" arrow={false}>
-              What&apos;s included
+            <ButtonLink href="/how-we-work" size="lg" variant="ghost" arrow={false}>
+              See How We Work
             </ButtonLink>
           </>
         }
         aside={
           <div className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
-            <div className="flex items-center justify-between border-b border-line px-5 py-3">
-              <span className="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-steel">
-                MOD {String(index + 1).padStart(2, "0")} · {service.code}
-              </span>
-              <span className="flex items-center gap-1.5 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-steel">
-                <span className="size-1.5 rounded-full bg-signal animate-pulse-dot" aria-hidden="true" /> Active
-              </span>
+            <div className="border-b border-line px-5 py-3">
+              <p className="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-ink">{service.name}</p>
+              <p className="mt-1 font-mono text-[0.64rem] uppercase tracking-[0.12em] text-steel">{service.scopeLine.join(" · ")}</p>
             </div>
             <div className="h-40 px-6 pt-6 text-ink">
               <ModuleViz kind={service.viz} />
             </div>
-            <dl className="grid grid-cols-2 border-t border-line">
-              <div className="border-r border-line p-5">
-                <dt className="eyebrow !text-[0.62rem] text-steel">Functions</dt>
-                <dd className="mt-2 text-[2rem] leading-none tracking-[-0.04em] text-ink">{total}</dd>
-              </div>
-              <div className="p-5">
-                <dt className="eyebrow !text-[0.62rem] text-steel">Platforms</dt>
-                <dd className="mt-2 text-[2rem] leading-none tracking-[-0.04em] text-ink">{pls.length}</dd>
-              </div>
-            </dl>
+            <div className="border-t border-line p-5">
+              <p className="eyebrow !text-[0.62rem] text-steel">Platforms involved</p>
+              <ul className="mt-3 flex flex-wrap gap-1.5">
+                {pls.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/platforms/${p.slug}`} aria-label={`${p.name} operations`} title={p.name} className="block rounded-[10px] ring-1 ring-line transition-shadow hover:ring-ink">
+                      <PlatformMark slug={p.slug} size={36} className="rounded-[10px] ring-0" />
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         }
       />
 
-      <Section tone="white" id="capabilities" labelledBy="cap-title">
+      {depth && (
+        <Section tone={tone()} labelledBy="problem-title">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr] lg:gap-20">
+            <SectionHeading id="problem-title" eyebrow="The problem it solves" title={<Title t={depth.problem.title} />} lead={depth.problem.lead} />
+            <ul className="divide-y divide-line self-end border-y border-line" data-reveal>
+              {depth.problem.points.map((p) => (
+                <li key={p} className="flex items-start gap-4 py-4 text-[1.06rem] leading-snug text-ink">
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full border border-signal-ink" aria-hidden="true" />
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Section>
+      )}
+
+      <Section tone={tone()} id="capabilities" labelledBy="cap-title">
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
-          <SectionHeading id="cap-title" eyebrow="What's included" title="Capabilities" lead={service.summary} />
+          <SectionHeading id="cap-title" eyebrow="What Trafficomm handles" title="Capabilities" lead={service.summary} />
           <div className="grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line sm:grid-cols-2">
             {service.groups.map((g, i) => (
-              <div key={g.title} className="bg-white p-6 sm:p-8" data-reveal style={{ "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}>
-                <p className="font-mono text-[0.7rem] text-signal">{String(i + 1).padStart(2, "0")}</p>
+              <div
+                key={g.title}
+                className={`bg-white p-6 sm:p-8 ${i === service.groups.length - 1 && service.groups.length % 2 === 1 ? "sm:col-span-2" : ""}`}
+                data-reveal
+                style={{ "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}
+              >
+                <p className="font-mono text-[0.7rem] text-signal-ink">{String(i + 1).padStart(2, "0")}</p>
                 <h3 className="mt-4 text-[1.3rem] tracking-[-0.02em] text-ink">{g.title}</h3>
                 <ul className="mt-5 space-y-2.5">
                   {g.items.map((it) => (
@@ -91,14 +132,94 @@ export function ServiceTemplate({ service }: { service: Service }) {
         </div>
       </Section>
 
-      <Section tone="dark" labelledBy="flow-title">
-        <SectionHeading id="flow-title" tone="dark" eyebrow="How it runs" title={<>From brief to report, <span className="block text-mute">step by step.</span></>} />
-        <div className="mt-14">
-          <Steps steps={service.workflow} tone="dark" />
-        </div>
-      </Section>
+      {sys && (
+        <Section tone="dark" labelledBy="system-title" className="overflow-hidden">
+          <div className="grid-bg-dark mask-fade-y pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+          <div className="relative">
+            <SectionHeading id="system-title" tone="dark" eyebrow={sys.eyebrow} title={<Title t={sys.title} dark />} lead={sys.lead} />
+            <div className="mt-14">
+              {sys.kind === "optimization" && <OptimizationSystem levers={sys.levers} kpis={sys.kpis} loop={sys.loop} note={sys.note} />}
+              {sys.kind === "split" && <CapabilitySplit sides={sys.sides} connectors={sys.connectors} />}
+              {sys.kind === "chain" && <StageChain stages={sys.stages} label={`${service.name}: ${sys.title.join(" ")}`} />}
+            </div>
+            {sys.kind === "chain" && sys.limits && (
+              <div className="mt-10 grid gap-4 rounded-[var(--radius-panel)] bg-ink-2 p-6 ring-1 ring-line-dark sm:p-8 lg:grid-cols-[0.8fr_2fr] lg:gap-10" data-reveal>
+                <p className="text-h3 text-white">{sys.limits.title}</p>
+                <p className="text-[1rem] leading-relaxed text-fog">{sys.limits.body}</p>
+              </div>
+            )}
+          </div>
+        </Section>
+      )}
 
-      <Section tone="paper" labelledBy="outcome-title">
+      {sys?.kind === "chain" && sys.disciplines && (
+        <Section tone={tone()} labelledBy="disc-title">
+          <SectionHeading id="disc-title" eyebrow="Measurement discipline" title={<Title t={sys.disciplines.title} />} />
+          <div className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line sm:grid-cols-2 lg:grid-cols-3">
+            {sys.disciplines.items.map((d, i) => (
+              <div key={d.label} className="bg-white p-7" data-reveal style={{ "--reveal-delay": `${(i % 3) * 60}ms` } as React.CSSProperties}>
+                <span className="font-mono text-[0.7rem] text-signal-ink">{String(i + 1).padStart(2, "0")}</span>
+                <h3 className="mt-5 text-[1.25rem] tracking-[-0.02em] text-ink">{d.label}</h3>
+                <p className="mt-2 text-[0.95rem] leading-relaxed text-steel">{d.body}</p>
+              </div>
+            ))}
+          </div>
+        </Section>
+      )}
+
+      {sys?.kind === "chain" && sys.distinction && (
+        <Section tone={tone()} labelledBy="dist-title">
+          <SectionHeading id="dist-title" eyebrow="Reporting · Analysis · Insight" title={<Title t={sys.distinction.title} />} />
+          <ol className="mt-14 grid gap-4 md:grid-cols-3">
+            {sys.distinction.items.map((d, i) => (
+              <li key={d.label} className={`rounded-[var(--radius-panel)] p-7 sm:p-9 ${i === 2 ? "bg-ink text-white" : "bg-paper ring-1 ring-line"}`} data-reveal style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
+                <p className={`font-mono text-[0.74rem] uppercase tracking-[0.12em] ${i === 2 ? "text-signal" : "text-signal-ink"}`}>{d.label}</p>
+                <h3 className={`mt-6 text-h3 ${i === 2 ? "text-white" : "text-ink"}`}>{d.question}</h3>
+                <p className={`mt-3 text-[0.98rem] leading-relaxed ${i === 2 ? "text-fog" : "text-steel"}`}>{d.body}</p>
+              </li>
+            ))}
+          </ol>
+          {depth?.cadences && (
+            <div className="mt-20">
+              <SectionHeading eyebrow="Cadence" title="Daily to end of campaign." />
+              <div className="mt-10">
+                <ReportingCadence cadences={depth.cadences} />
+              </div>
+            </div>
+          )}
+        </Section>
+      )}
+
+      {depth?.workflowTitle && (
+        <Section tone={tone()} labelledBy="flow-title">
+          <SectionHeading id="flow-title" eyebrow="How it runs" title={<Title t={depth.workflowTitle} />} />
+          <div className="mt-14">
+            <Steps steps={service.workflow} />
+          </div>
+        </Section>
+      )}
+
+      {depth && (
+        <Section tone={tone()} labelledBy="own-title">
+          <div className="grid gap-12 lg:grid-cols-[0.8fr_1.4fr] lg:items-center lg:gap-16">
+            <div>
+              <SectionHeading id="own-title" eyebrow="How it fits your team" title={<Title t={["Clear Ownership.", "No Overlap."]} />} lead={depth.ownership.note} />
+              <ArrowLink href="/how-we-work" className="mt-8">
+                See how we work
+              </ArrowLink>
+            </div>
+            <AgencyIntegration
+              frame={depth.ownership.frame}
+              ownerLabel={depth.ownership.clientLabel}
+              agencyOwns={depth.ownership.clientOwns}
+              trafficommSupports={depth.ownership.trafficommSupports}
+              note="Every engagement runs on the same operating model: an accountable account manager, platform specialists and a dedicated QA step."
+            />
+          </div>
+        </Section>
+      )}
+
+      <Section tone={tone()} labelledBy="outcome-title">
         <SectionHeading id="outcome-title" eyebrow="Why teams use Trafficomm" title="What changes for your team" />
         <div className="mt-14 grid gap-4 md:grid-cols-2">
           {service.outcomes.map((o, i) => (
@@ -111,52 +232,77 @@ export function ServiceTemplate({ service }: { service: Service }) {
         </div>
       </Section>
 
-      <Section tone="white" labelledBy="pl-title">
+      <Section tone={tone()} labelledBy="pl-title">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
           <div>
-            <SectionHeading id="pl-title" eyebrow="Platforms" title="Where we run it" />
+            <SectionHeading id="pl-title" eyebrow="Platform experience" title="Where we run it" />
             <ul className="mt-10 flex flex-wrap gap-2">
               {pls.map((p) => (
                 <li key={p.slug}>
-                  <Link href={`/platforms/${p.slug}`} className="inline-flex items-center gap-2 rounded-full bg-paper px-4 py-2.5 text-[0.92rem] text-ink ring-1 ring-line transition-colors hover:ring-ink">
-                    <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                  <Link href={`/platforms/${p.slug}`} className="inline-flex h-11 items-center gap-2.5 rounded-full bg-paper pl-1.5 pr-4 text-[0.92rem] text-ink ring-1 ring-line transition-colors hover:ring-ink">
+                    <PlatformMark slug={p.slug} size={32} className="rounded-full ring-0" />
                     {p.name}
                   </Link>
                 </li>
               ))}
             </ul>
+            <p className="mt-6 max-w-md text-[0.8rem] leading-relaxed text-steel">
+              Platform names and marks are trademarks of their respective owners and indicate operational experience only — not partnership, certification or endorsement.
+            </p>
           </div>
           <div>
-            <SectionHeading eyebrow="Other capabilities" title="Pairs well with" />
+            <SectionHeading eyebrow="Related" title="Explore further" />
             <div className="mt-10">
-              <LinkList items={others.map((s) => ({ href: `/services/${s.slug}`, label: s.name, meta: s.code }))} />
+              <LinkList items={depth?.links ?? []} />
             </div>
           </div>
         </div>
       </Section>
 
-      {related.length > 0 && (
-        <Section tone="paper" labelledBy="rel-title">
-          <SectionHeading id="rel-title" eyebrow="Documented results" title="Related case studies" />
-          <div className="mt-14 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {related.map((cs) => (
-              <CaseStudyCard key={cs.slug} cs={cs} />
-            ))}
-          </div>
+      {(depth?.proof?.length || related.length > 0) && (
+        <Section tone={tone()} labelledBy="rel-title">
+          <SectionHeading id="rel-title" eyebrow="Documented results" title="Evidence from anonymized engagements" />
+          {depth?.proof && depth.proof.length > 0 && (
+            <ul className="mt-14 grid gap-4 md:grid-cols-2">
+              {depth.proof.map((p) => (
+                <li key={p.slug + p.value}>
+                  <Link href={`/case-studies/${p.slug}`} className="group flex h-full items-end justify-between gap-6 rounded-[var(--radius-card)] bg-white p-7 ring-1 ring-line transition-shadow hover:ring-line-strong sm:p-9">
+                    <span className="flex flex-col">
+                      <span className="order-2 eyebrow mt-3 text-graphite">{p.label}</span>
+                      <span className="order-1 text-[clamp(2.6rem,1.8rem+2.4vw,4rem)] leading-none tracking-[-0.05em] text-signal">
+                        <Metric value={p.value} />
+                      </span>
+                      <span className="order-3 mt-2 text-[0.92rem] text-steel">{p.context}</span>
+                    </span>
+                    <span className="flex shrink-0 items-center gap-2 text-[0.94rem] font-medium text-ink">
+                      View case study <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+          {related.length > 0 && (
+            <div className="mt-4 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {related.map((cs) => (
+                <CaseStudyCard key={cs.slug} cs={cs} />
+              ))}
+            </div>
+          )}
           <ConfidentialNote className="mt-8" />
         </Section>
       )}
 
       {service.faqs.length > 0 && (
-        <Section tone="white" labelledBy="faq-title">
+        <Section tone={tone()} labelledBy="faq-title">
           <div className="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
-            <SectionHeading id="faq-title" eyebrow="FAQ" title="Questions we hear" />
+            <SectionHeading id="faq-title" eyebrow="FAQ" title={`${service.name} questions`} />
             <FAQList faqs={service.faqs} />
           </div>
         </Section>
       )}
 
-      <CTABand />
+      <CTABand title={depth?.cta.title} body={depth?.cta.body} />
       <JsonLd data={serviceSchema({ name: service.name, description: service.seo.description, path: `/services/${service.slug}` })} />
     </>
   );

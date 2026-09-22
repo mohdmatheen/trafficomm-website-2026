@@ -108,7 +108,7 @@ export default function AboutPage() {
       </Section>
 
       <GlobalExperience index={null} />
-      <CTABand />
+      <CTABand title="Talk to the team behind the campaigns." />
     </>
   );
 }

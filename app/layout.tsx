@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "Trafficomm is the performance operations layer behind agencies, ad-tech companies, publishers and brands: ad operations, performance marketing, programmatic, measurement and reporting since 2015.",
   applicationName: company.name,
   openGraph: { siteName: company.name, type: "website", locale: "en_US" },
-  twitter: { card: "summary_large_image" },
+  twitter: { card: "summary" },
   formatDetection: { telephone: false, email: false, address: false },
   // noindex, nofollow unless the deployment explicitly opts in (see lib/deployment.ts).
   ...(isIndexable ? {} : { robots: { index: false, follow: false } }),
