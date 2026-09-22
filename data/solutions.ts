@@ -31,7 +31,7 @@ export const solutions: Solution[] = [
       },
       {
         title: "Centralized multi-office operations",
-        body: "One structured team serving multiple offices — the model behind our 7+ year partnership with a leading MENA advertising agency.",
+        body: "One structured team serving multiple offices — the model behind a 7+ year engagement with a leading MENA advertising agency.",
       },
       {
         title: "Overflow and peak capacity",

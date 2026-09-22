@@ -12,22 +12,24 @@ import type { Stat } from "./types";
  *  - 250+ (company) is the PEAK / largest monthly campaign volume, not a
  *    current monthly run-rate. 250+ (performance case study) is the total
  *    number of campaigns managed on that engagement. They are different facts.
- *  - $10M is campaign / media scale handled. It is not revenue, billing,
- *    profit or annual media spend.
+ *  - ~$10M is the approximate campaign value / media scale of one of the
+ *    largest UAE tourism campaigns Trafficomm handled. It is not revenue,
+ *    client revenue, annual spend or cumulative spend.
  *  - 4 → ~30 is a HISTORICAL team scale on one engagement. It is not the
  *    current team size and must never be phrased as "today" or "currently".
- *  - 70+ is peak team scale across Trafficomm's operations, not current headcount.
+ *  - 70+ is the largest historical Trafficomm team size, not current headcount.
+ *  - 7+ years (Case 01) is the span of the engagement; never "current" or "ongoing".
  */
 
 type Metric = Stat & { id: string };
 
 export const companyMetrics = {
   founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "A decade of operating behind the campaign" },
-  campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Across social, search, programmatic and ad serving, since 2015" },
-  creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements", detail: "Audited, trafficked, QA'd and monitored" },
-  campaignScale: { id: "campaignScale", value: 10, prefix: "$", suffix: "M", label: "Campaign scale", detail: "Approximate campaign / media scale handled (USD) — not revenue" },
+  campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Historical, company-wide since 2015" },
+  creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements handled", detail: "Historical, company-wide since inception" },
+  campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "Campaign value handled on one of the largest UAE tourism campaigns — not revenue or cumulative spend" },
   peakMonthly: { id: "peakMonthly", value: 250, suffix: "+", label: "Peak monthly campaign volume", detail: "Largest monthly campaign volume handled" },
-  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Peak team scale", detail: "Operations specialists at peak" },
+  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Peak historical team size", detail: "Largest historical team size — not current headcount" },
 } satisfies Record<string, Metric>;
 
 /** Order used wherever the full company scale grid is shown. */
@@ -42,7 +44,7 @@ export const scaleStats: Stat[] = [
 
 /** One-line sentence form, for FAQs and body copy. */
 export const companyScaleSentence =
-  "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+ and a peak team of 70+ across its operations.";
+  "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+ and a largest historical team size of 70+.";
 
 export const caseMetrics = {
   /** Leading MENA agency (Case 01). Historical: never "today" or "current". */
@@ -56,7 +58,7 @@ export const caseMetrics = {
   },
   menaCost: { value: "50%", label: "Resource cost reduction" },
   menaQuality: { value: "99.34%", label: "Work quality" },
-  menaPartnership: { value: "7+ years", short: "7+ yrs", label: "Partnership" },
+  menaPartnership: { value: "7+ years", short: "7+ yrs", label: "Engagement span" },
   /** International agency, performance marketing (Case 02): total campaigns on that engagement. */
   perfCampaigns: { value: "250+", label: "Campaigns managed" },
   /** International ad network (Case 03). */

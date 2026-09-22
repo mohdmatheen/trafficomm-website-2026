@@ -53,8 +53,8 @@ tests/                Playwright suites (development only)
 ## Content rules
 
 - Every recurring figure lives in **`data/metrics.ts`** (single source of truth) — never hard-code a number in a component.
-  - Company scale: founded 2015 · 10K+ campaigns · 1M+ creatives & placements · $10M campaign / media scale (**not revenue**) · 250+ **peak** monthly campaign volume (not a current run-rate) · 70+ peak team.
-  - Case-study figures describe one anonymized engagement only: 4 → ~30 team scale (**historical** — never "today"/"current"), 50%, 99.34%, 7+ years (Case 01); 250+ campaigns managed (Case 02 — a different fact from the company peak); 300+ rich media creatives (Case 03); 50+ campaigns managed (Case 04).
+  - Company scale: founded 2015 · 10K+ campaigns · 1M+ creatives & placements · ~$10M campaign scale — campaign value of one of the largest UAE tourism campaigns handled (**not revenue, not cumulative/annual spend**) · 250+ **peak** monthly campaign volume (not a current run-rate) · 70+ peak historical team size (not current headcount).
+  - Case-study figures describe one anonymized engagement only: 4 → ~30 team scale (**historical** — never "today"/"current"), 50%, 99.34%, 7+ year engagement span — never "current/ongoing" (Case 01); 250+ campaigns managed (Case 02 — a different fact from the company peak); 300+ rich media creatives (Case 03); 50+ campaigns managed (Case 04).
 - Client identities are never published; case studies are anonymized. "Client identity withheld…" belongs only on case studies and case-study references; Contact uses the enquiry confidentiality line (`data/site.ts`).
 - Platform marks indicate **platform experience** only — never partnership, certification or endorsement. The TikTok mark is a placeholder: **official asset required**.
 - Platform logos (`data/platform-logos.ts`): official assets only, never redrawn, recoloured or stretched. `inline` sets the compact logo + name size; `mono: true` marks brands whose guidelines permit a one-colour version (neutral by default, supplied colours on hover/focus/selection). Google product marks are always shown as supplied.
@@ -117,8 +117,5 @@ QA artefacts are excluded via `.vercelignore`.
 
 ### Factual items awaiting Trafficomm confirmation
 
-- **$10M campaign scale** — cumulative since 2015 or annual? Should it read "~$10M"? Currently shown as "$10M · Campaign scale" with the note "approximate campaign / media scale handled (USD) — not revenue".
-- **70+ peak team** and **10K+ / 1M+** — confirm these are company-wide since 2015 (current wording).
-- **7+ year partnership (Case 01)** — confirm whether the engagement is ongoing or historical; copy currently avoids implying either.
-- **Chennai, India** delivery location (Case 01 solution text) — confirm it may be published.
-- **Performance Lab** — articles are authored by "Trafficomm Performance Lab"; confirm whether a named author should be shown. "Building vs Outsourcing" was reclassified from Research to Guide (it is a decision framework, not original research).
+- **Chennai, India** delivery location (Case 01 solution text, `data/case-studies.ts`) — retained for preview as non-client-identifying context; decide before production.
+- Metrics confirmed by Trafficomm on 2026-09-22: ~$10M (single UAE tourism campaign value), 10K+ and 1M+ (company-wide since 2015), 70+ (peak historical team), 4 → ~30 (historical), 7+ year engagement span (not stated as ongoing). Performance Lab author: "Trafficomm Performance Lab".

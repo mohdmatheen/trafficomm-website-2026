@@ -13,7 +13,7 @@ import { observeVisibility } from "@/lib/motion/visibility";
  */
 const STAGES = [
   { text: "10,000+", label: "Campaigns" },
-  { text: "1M+", label: "Creatives & placements" },
+  { text: "1M+", label: "Creatives & placements handled" },
 ] as const;
 
 type Phase = "seed" | "influx" | "form0" | "break" | "form1";

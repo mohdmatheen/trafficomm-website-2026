@@ -142,7 +142,7 @@ export const articles: Article[] = [
       { type: "h2", text: "What good looks like", id: "results" },
       {
         type: "p",
-        text: "On Trafficomm's longest-running agency engagement — a leading MENA advertising agency operating from approximately 12 offices — the dedicated team scaled from four specialists to approximately thirty as the agency's operational requirements grew, over a partnership of more than seven years.",
+        text: "On Trafficomm's longest-running agency engagement — a leading MENA advertising agency operating from approximately 12 offices — the dedicated team scaled from four specialists to approximately thirty as the agency's operational requirements grew, over an engagement spanning more than seven years.",
       },
       {
         type: "chart",

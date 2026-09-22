@@ -19,7 +19,7 @@ export const caseStudies: CaseStudy[] = [
     seo: {
       title: "Case Study: Scaling Ad Operations for a Leading MENA Agency",
       description:
-        "How Trafficomm centralized ad operations for a MENA advertising agency with ~12 offices — 50% lower resource costs, 99.34% work quality and a dedicated team that scaled from 4 to approximately 30 specialists over a 7+ year partnership.",
+        "How Trafficomm centralized ad operations for a MENA advertising agency with ~12 offices — 50% lower resource costs, 99.34% work quality and a dedicated team that scaled from 4 to approximately 30 specialists over an engagement spanning 7+ years.",
     },
     headlineStat: { value: cm.menaTeam.value, label: cm.menaTeam.cardLabel },
     scan: { challenge: "Distributed ad operations across ~12 offices, key-person dependency and inconsistent QA.", role: "Centralized ad operations team with account management, task allocation and dedicated QA." },
@@ -49,10 +49,10 @@ export const caseStudies: CaseStudy[] = [
       { title: "50% reduction in resource costs", body: "Optimized workflow and centralized resources halved resource costs." },
       { title: "99.34% work quality", body: "Rigorous QA delivered consistently high-quality ad operations." },
       { title: "Team scaled from 4 to ~30", body: cm.menaTeam.copy },
-      { title: "7+ year partnership", body: "A collaboration sustained for more than seven years." },
+      { title: "7+ year engagement", body: "The engagement spanned more than seven years." },
     ],
     conclusion:
-      "By centralizing delivery, structuring the workflow and making quality assurance a dedicated function, Trafficomm gave the agency a scalable ad operations model — one that grew alongside the agency over a partnership of more than seven years.",
+      "By centralizing delivery, structuring the workflow and making quality assurance a dedicated function, Trafficomm gave the agency a scalable ad operations model — one that grew alongside the agency over an engagement spanning more than seven years.",
     services: ["ad-operations", "reporting"],
     platforms: [],
   },
