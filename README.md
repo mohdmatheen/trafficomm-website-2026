@@ -113,9 +113,10 @@ QA artefacts are excluded via `.vercelignore`.
 - [ ] Add confirmed contact details (email, phone, booking link) in `data/site.ts`.
 - [ ] Legal review of platform-mark usage (Google product marks in particular; monochrome Meta mark treatment in the hero).
 - [ ] Confirm the open factual items from the content audit (below) before launch.
-- [ ] Brand film (approved storyboard) and full cost calculator — deferred, not started.
+- [ ] Brand film — **postponed until the site is finished**. The homepage section was removed on 2026-09-23; `components/sections/home/VideoFeature.tsx`, `components/ui/VideoPlayer.tsx` and `brandFilm` in `data/site.ts` are kept unused so the finished film can be reintroduced by rendering `<VideoFeature />` in `app/page.tsx` (renumber the following section eyebrows) and setting `brandFilm.src`. Concept: "60 Seconds with Trafficomm — see what happens behind thousands of digital campaigns."
+- [ ] Full cost calculator — deferred, not started; the homepage keeps the preview only.
 
 ### Factual items awaiting Trafficomm confirmation
 
-- **Chennai, India** delivery location (Case 01 solution text, `data/case-studies.ts`) — retained for preview as non-client-identifying context; decide before production.
+- **Chennai, India** delivery location (Case 01 solution text, `data/case-studies.ts`) — approved as operational context on 2026-09-22; no client identity or address is given.
 - Metrics confirmed by Trafficomm on 2026-09-22: ~$10M (single UAE tourism campaign value), 10K+ and 1M+ (company-wide since 2015), 70+ (peak historical team), 4 → ~30 (historical), 7+ year engagement span (not stated as ongoing). Performance Lab author: "Trafficomm Performance Lab".

@@ -38,7 +38,7 @@ export const caseStudies: CaseStudy[] = [
       { title: "Talent", body: "Finding and retaining the right ad operations talent was a persistent problem." },
     ],
     solution: [
-      { title: "Centralized offshore operations", body: "An offshore team was established in Chennai, India, to centralize ad operations processes for the agency's offices." },
+      { title: "Centralized offshore operations", body: "A dedicated offshore team was established in Chennai, India, centralizing ad operations across the agency's regional offices." },
       { title: "Structured team", body: "Dedicated account managers and ad operations specialists, organized to streamline workflow and increase accountability." },
       { title: "Account management & SLAs", body: "Account managers act as the primary point of contact, oversee deliverables and ensure adherence to SLAs." },
       { title: "Structured task allocation", body: "Account managers allocate work across the ad operations team for a centralized, efficient workflow." },

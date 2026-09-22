@@ -10,14 +10,14 @@ export async function InsightsPreview() {
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <SectionHeading
           id="lab-title"
-          index="13"
+          index="12"
           eyebrow="Performance Lab"
           title={
             <>
               Insights From <span className="block text-steel/70">Behind the Campaign.</span>
             </>
           }
-          lead="Research, guides and market outlooks from the team that sets up, checks and reports campaigns every day."
+          lead="Guides, frameworks and market outlooks from the team that sets up, checks and reports campaigns every day."
         />
         <ArrowLink href="/insights" className="shrink-0 md:pb-3">
           All reports

@@ -24,12 +24,12 @@ import type { Stat } from "./types";
 type Metric = Stat & { id: string };
 
 export const companyMetrics = {
-  founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "A decade of operating behind the campaign" },
-  campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Historical, company-wide since 2015" },
-  creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements handled", detail: "Historical, company-wide since inception" },
-  campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "Campaign value handled on one of the largest UAE tourism campaigns — not revenue or cumulative spend" },
-  peakMonthly: { id: "peakMonthly", value: 250, suffix: "+", label: "Peak monthly campaign volume", detail: "Largest monthly campaign volume handled" },
-  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Peak historical team size", detail: "Largest historical team size — not current headcount" },
+  founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "A decade behind the campaign" },
+  campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Since 2015" },
+  creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements", detail: "Since inception" },
+  campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "UAE tourism campaign" },
+  peakMonthly: { id: "peakMonthly", value: 250, suffix: "+", label: "Peak monthly campaign volume", detail: "Largest single month" },
+  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Peak historical team size", detail: "Not current headcount" },
 } satisfies Record<string, Metric>;
 
 /** Order used wherever the full company scale grid is shown. */
@@ -45,6 +45,12 @@ export const scaleStats: Stat[] = [
 /** One-line sentence form, for FAQs and body copy. */
 export const companyScaleSentence =
   "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+ and a largest historical team size of 70+.";
+
+/**
+ * One supporting line for the scale grid. Keeps the necessary clarification
+ * out of the metric labels themselves (hierarchy: figure → what it is → context).
+ */
+export const campaignScaleNote = "~$10M is the campaign value handled on a single UAE tourism campaign; it is not Trafficomm revenue.";
 
 export const caseMetrics = {
   /** Leading MENA agency (Case 01). Historical: never "today" or "current". */

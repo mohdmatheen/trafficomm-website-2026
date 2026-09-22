@@ -76,24 +76,27 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
 
         <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${active}`} className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
           <div className="flex items-center justify-between border-b border-line px-6 py-3.5">
-            <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-steel">Operating workflow</span>
+            <span className="font-mono text-[0.75rem] uppercase tracking-[0.12em] text-ink">{item.name}</span>
             <span className="flex items-center gap-2 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">
-              <span className="size-1.5 rounded-full bg-signal animate-pulse-dot" aria-hidden="true" /> Work in motion
+              <span className="size-1.5 rounded-full bg-signal animate-pulse-dot" aria-hidden="true" /> Specialist team
             </span>
           </div>
           <div className="p-6 xl:p-8">
             <p key={`${item.slug}-lede`} className="max-w-xl text-[1.06rem] leading-relaxed text-steel animate-enter">
               <span className="text-ink">{item.name}.</span> {item.short}
             </p>
+            {/* The specialism comes first; the lifecycle track below shows where it plugs into the operating engine. */}
+            <p className="eyebrow mt-7 mb-3 !text-[0.68rem] text-steel">What this team handles</p>
+            <ul key={`${item.slug}-caps`} className="flex flex-wrap gap-1.5 animate-enter" aria-label={`${item.name} capabilities`}>
+              {item.explorer.capabilities.map((c) => (
+                <li key={c} className="rounded-md bg-paper px-2.5 py-1.5 text-[0.9rem] text-ink ring-1 ring-inset ring-line">
+                  {c}
+                </li>
+              ))}
+            </ul>
+            <p className="eyebrow mt-8 !text-[0.68rem] text-steel">Where it plugs into the operating engine</p>
             <WorkflowTrack key={item.slug} stages={item.explorer.flow} />
-            <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-line pt-6">
-              <ul className="flex flex-wrap gap-1.5" aria-label={`${item.name} capabilities`}>
-                {item.explorer.capabilities.map((c) => (
-                  <li key={c} className="rounded-md bg-paper px-2.5 py-1 text-[0.86rem] text-graphite ring-1 ring-inset ring-line">
-                    {c}
-                  </li>
-                ))}
-              </ul>
+            <div className="mt-8 flex justify-end border-t border-line pt-6">
               <Link href={`/services/${item.slug}`} className="group inline-flex shrink-0 items-center gap-2 text-[0.96rem] font-medium text-ink">
                 Explore {item.name} <ArrowRight className="text-signal transition-transform group-hover:translate-x-1" />
               </Link>
@@ -119,7 +122,16 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
               </button>
               {open && <div id={pid} className="pb-7">
                 <p className="text-[1.03rem] leading-relaxed text-steel">{it.short}</p>
-                <ol className="mt-6" aria-label={`${it.name} operating workflow`}>
+                <p className="eyebrow mt-6 mb-3 !text-[0.66rem] text-steel">What this team handles</p>
+                <ul className="flex flex-wrap gap-1.5" aria-label={`${it.name} capabilities`}>
+                  {it.explorer.capabilities.map((c) => (
+                    <li key={c} className="rounded-md bg-paper px-2.5 py-1.5 text-[0.88rem] text-ink ring-1 ring-inset ring-line">
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+                <p className="eyebrow mt-7 mb-3 !text-[0.66rem] text-steel">Where it plugs into the lifecycle</p>
+                <ol aria-label={`${it.name} operating workflow`}>
                   {it.explorer.flow.map((s, k) => (
                     <li key={s.label} className="relative flex gap-4 pb-5 last:pb-0">
                       {k < it.explorer.flow.length - 1 && <span className="absolute left-[11px] top-7 h-[calc(100%-20px)] w-px bg-line-strong" aria-hidden="true" />}

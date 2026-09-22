@@ -8,7 +8,11 @@ test.describe("homepage interactions", () => {
     if (desktop(viewport!.width)) {
       const tab = page.getByRole("tab", { name: /Programmatic Operations/ });
       await tab.click();
-      await expect(page.getByRole("tabpanel").filter({ hasText: "Operating workflow" })).toContainText("DV360 structure");
+      const panel = page.getByRole("tabpanel").filter({ hasText: "Specialist team" });
+      // Specialism first, then where it plugs into the operating engine.
+      await expect(panel).toContainText("What this team handles");
+      await expect(panel).toContainText("DV360");
+      await expect(panel).toContainText("Where it plugs into the operating engine");
       await tab.press("ArrowDown");
       await expect(page.getByRole("tab", { name: /Measurement & Analytics/ })).toHaveAttribute("aria-selected", "true");
     } else {

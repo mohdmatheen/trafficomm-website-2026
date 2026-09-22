@@ -14,7 +14,6 @@ import { Problem } from "@/components/sections/home/Problem";
 import { ScaleStats } from "@/components/sections/home/ScaleStats";
 import { ScaleVisualization } from "@/components/sections/home/ScaleVisualization";
 import { ServicesGrid } from "@/components/sections/home/ServicesGrid";
-import { VideoFeature } from "@/components/sections/home/VideoFeature";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -42,10 +41,9 @@ export default function Home() {
       <CaseStudies />
       <GlobalExperience />
       <AIOperations />
-      <VideoFeature />
       <InsightsPreview />
       <CalculatorTeaser />
-      <Conversion index="15" />
+      <Conversion index="14" />
     </>
   );
 }

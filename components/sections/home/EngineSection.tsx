@@ -19,7 +19,7 @@ export function EngineSection({ index = "03" }: { index?: string | null }) {
             }
           />
           <p className="max-w-sm text-[1rem] leading-relaxed text-fog lg:pb-2" data-reveal>
-            Seven stages, one accountable team. Your strategists hand over a plan; Trafficomm runs everything required to turn it into measured performance.
+            Seven stages, one accountable team — the same lifecycle behind every campaign, whichever specialist capabilities you use. Your strategists hand over a plan; Trafficomm runs everything required to turn it into measured performance.
           </p>
         </div>
         <OperatingEngine />

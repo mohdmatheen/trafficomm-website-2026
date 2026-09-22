@@ -78,8 +78,9 @@ export function ServiceTemplate({ service }: { service: Service }) {
               <ul className="mt-3 flex flex-wrap gap-1.5">
                 {pls.map((p) => (
                   <li key={p.slug}>
-                    <Link href={`/platforms/${p.slug}`} aria-label={`${p.name} operations`} title={p.name} className="block rounded-[10px] ring-1 ring-line transition-shadow hover:ring-ink">
+                    <Link href={`/platforms/${p.slug}`} title={p.name} className="block rounded-[10px] ring-1 ring-line transition-shadow hover:ring-ink">
                       <PlatformMark slug={p.slug} size={36} className="rounded-[10px] ring-0" />
+                      <span className="sr-only">{p.name} operations</span>
                     </Link>
                   </li>
                 ))}

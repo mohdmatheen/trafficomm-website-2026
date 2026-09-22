@@ -1,6 +1,6 @@
 import { Metric } from "@/components/ui/Metric";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { scaleStats } from "@/data/site";
+import { campaignScaleNote, scaleStats } from "@/data/metrics";
 
 export function ScaleStats() {
   return (
@@ -19,6 +19,7 @@ export function ScaleStats() {
           }
           lead="A decade of campaigns run behind agencies, ad networks, publishers and brands — measured in volume, not claims."
         />
+        <div>
         <dl className="grid grid-cols-2 border-t border-l border-line md:grid-cols-3">
           {scaleStats.map((s, i) => (
             <div
@@ -36,6 +37,8 @@ export function ScaleStats() {
             </div>
           ))}
         </dl>
+          <p className="mt-5 max-w-xl text-[0.84rem] leading-relaxed text-steel">{campaignScaleNote}</p>
+        </div>
       </div>
     </Section>
   );

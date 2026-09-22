@@ -17,7 +17,7 @@ export function ServicesGrid() {
               One Partner. <span className="block text-steel/70">Six Specialized Capabilities.</span>
             </>
           }
-          lead="Select a capability to see how the work actually moves — from input to output."
+          lead="The operating engine is the same for every campaign. These are the specialist teams that plug into it — select one to see what it handles."
         />
         <ArrowLink href="/services" className="shrink-0 md:pb-3">
           All capabilities
