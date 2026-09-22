@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
-import { useInView } from "@/components/motion/useInView";
+import { useRef, useState, type ReactNode } from "react";
+import { useInView, usePauseSvgWhenHidden } from "@/components/motion/useInView";
 import { cn } from "@/lib/cn";
 
 export type MapMarket = {
@@ -32,6 +32,8 @@ export function MarketsMap({
 }) {
   const [active, setActive] = useState<string | null>(null);
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.2 });
+  const svgRef = useRef<SVGSVGElement>(null);
+  usePauseSvgWhenHidden(svgRef);
   const viewBox = `0 0 ${width} ${height}`;
 
   const arc = (to: { x: number; y: number }) => {
@@ -45,7 +47,7 @@ export function MarketsMap({
       {/* On small screens the map is enlarged and shifted to the Europe–Asia–Oceania region where all markets sit. */}
       <div className="relative overflow-hidden">
         <div className="max-md:ml-[-88%] max-md:w-[188%]">
-        <svg viewBox={viewBox} className="h-auto w-full" role="img" aria-label="World map highlighting markets supported: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia, connected to Trafficomm's centralized operations.">
+        <svg ref={svgRef} viewBox={viewBox} className="h-auto w-full" role="img" aria-label="World map highlighting markets supported: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia, connected to Trafficomm's centralized operations.">
           {children}
 
           {markets.map((m, i) => (

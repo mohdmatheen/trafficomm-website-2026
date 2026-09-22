@@ -111,7 +111,7 @@ export function PlatformOrbit() {
           aria-labelledby={`${baseId}-tab-${active}`}
           className="rounded-[var(--radius-panel)] bg-ink-2 p-8 ring-1 ring-line-dark"
         >
-          <div key={p.slug} className="[animation:engine-in_0.5s_var(--ease-out-expo)]">
+          <div key={p.slug} className="animate-enter">
             <div className="flex items-center justify-between">
               <p className="eyebrow text-signal">{p.category}</p>
               <p className="eyebrow text-mute">

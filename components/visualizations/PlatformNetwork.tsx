@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState } from "react";
-import { usePrefersReducedMotion } from "@/components/motion/useInView";
+import { useEffect, useId, useRef, useState } from "react";
+import { useMediaQuery, usePauseSvgWhenHidden, usePrefersReducedMotion } from "@/components/motion/useInView";
 import { ArrowRight, ChevronDown } from "@/components/ui/Icons";
 import { LogoMark } from "@/components/ui/Logo";
 import { PlatformMark } from "@/components/ui/PlatformMark";
@@ -24,7 +24,18 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
   const [active, setActive] = useState(0);
   const [openMobile, setOpenMobile] = useState<number | null>(0);
   const reduced = usePrefersReducedMotion();
-  const id = useId();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const rawId = useId();
+  // SMIL syncbase references (id.begin / id.end) need a plain identifier.
+  const id = rawId.replace(/[^a-zA-Z0-9_-]/g, "");
+  const svgRef = useRef<SVGSVGElement>(null);
+  const handshake = useRef<SVGAnimateMotionElement>(null);
+  usePauseSvgWhenHidden(svgRef);
+
+  // Handshake: when a platform becomes active, one signal travels Trafficomm → platform → Trafficomm.
+  useEffect(() => {
+    if (!reduced) handshake.current?.beginElement();
+  }, [active, reduced]);
   const n = items.length;
   const p = items[active];
 
@@ -48,10 +59,11 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
 
   return (
     <>
-      {/* Desktop network */}
+      {/* Desktop network. Both variants server-render (no layout shift); the unused one unmounts after hydration. */}
+      {isDesktop !== false && (
       <div className="hidden items-center gap-12 lg:grid lg:grid-cols-[1.2fr_0.8fr] xl:gap-16">
         <div className="relative mx-auto aspect-square w-full max-w-[640px]">
-          <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
+          <svg ref={svgRef} viewBox="0 0 100 100" className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
             <circle cx="50" cy="50" r={R} fill="none" stroke="white" strokeOpacity="0.07" strokeWidth="0.15" />
             <circle cx="50" cy="50" r={R * 0.62} fill="none" stroke="white" strokeOpacity="0.06" strokeWidth="0.15" strokeDasharray="0.4 1.2" />
             {items.map((it, i) => {
@@ -71,6 +83,18 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                 </g>
               );
             })}
+            {!reduced && (
+              <circle r="1.1" fill="#ea3e3a" opacity="0">
+                <animateMotion ref={handshake} id={`${id}-hs`} begin="indefinite" dur="0.5s" keyPoints="1;0" keyTimes="0;1" calcMode="linear" fill="freeze">
+                  <mpath href={`#${id}-p${active}`} />
+                </animateMotion>
+                <animateMotion begin={`${id}-hs.end`} dur="0.5s" fill="freeze">
+                  <mpath href={`#${id}-p${active}`} />
+                </animateMotion>
+                <set attributeName="opacity" to="1" begin={`${id}-hs.begin`} />
+                <set attributeName="opacity" to="0" begin={`${id}-hs.end+0.5s`} />
+              </circle>
+            )}
           </svg>
 
           {/* Trafficomm operations node */}
@@ -107,7 +131,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                         focusTab((i - 1 + n) % n);
                       }
                     }}
-                    className="group flex flex-col items-center gap-2 rounded-2xl p-1"
+                    className="group relative flex flex-col items-center gap-2 rounded-2xl p-1"
                   >
                     <span
                       className={cn(
@@ -117,6 +141,11 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     >
                       <PlatformMark slug={it.slug} size={56} />
                     </span>
+                    {on && !reduced && (
+                      <span key={`pulse-${active}`} className="pointer-events-none absolute left-1/2 top-[32px] -translate-x-1/2 -translate-y-1/2" aria-hidden="true">
+                        <span className="block size-14 rounded-[16px] opacity-0 ring-1 ring-signal [animation:ring-out_var(--dur-burst)_var(--ease-out-expo)]" />
+                      </span>
+                    )}
                     <span className={cn("whitespace-nowrap font-mono text-[0.7rem] uppercase tracking-[0.1em] transition-colors", on ? "text-white" : "text-mute")}>{it.name}</span>
                   </button>
                 </li>
@@ -132,7 +161,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
               {String(active + 1).padStart(2, "0")} / {n}
             </span>
           </div>
-          <div key={p.slug} className="p-7 [animation:engine-in_0.45s_var(--ease-out-expo)]">
+          <div key={p.slug} className="p-7 animate-enter">
             <div className="flex items-center gap-4">
               <PlatformMark slug={p.slug} size={64} scale={1.05} />
               <div>
@@ -148,7 +177,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
               {p.ecosystem.map((c, i) => (
                 <li
                   key={c}
-                  className="flex items-center justify-between bg-ink-2 px-4 py-2.5 text-[1.0rem] text-white [animation:engine-in_0.45s_var(--ease-out-expo)_both]"
+                  className="flex items-center justify-between bg-ink-2 px-4 py-2.5 text-[1.0rem] text-white animate-enter"
                   style={{ animationDelay: `${60 + i * 40}ms` }}
                 >
                   <span className="flex items-center gap-3">
@@ -166,7 +195,10 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
         </div>
       </div>
 
+      )}
+
       {/* Mobile: trunk-and-branch list */}
+      {isDesktop !== true && (
       <div className="lg:hidden">
         <div className="flex items-center gap-3 rounded-[var(--radius-card)] bg-ink-3 px-4 py-3 ring-1 ring-line-dark-strong">
           <span className="flex size-10 items-center justify-center rounded-full bg-ink ring-1 ring-signal/40">
@@ -193,7 +225,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     </span>
                     <ChevronDown className={cn("size-4 text-fog transition-transform duration-300", open && "rotate-180 text-signal")} />
                   </button>
-                  <div id={pid} hidden={!open} className="px-3 pb-4">
+                  {open && <div id={pid} className="px-3 pb-4">
                     <ul className="flex flex-wrap gap-1.5">
                       {it.ecosystem.map((c) => (
                         <li key={c} className="rounded-full bg-white/[0.06] px-3 py-1.5 text-[0.88rem] text-fog">
@@ -204,13 +236,14 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     <Link href={`/platforms/${it.slug}`} className="mt-4 inline-flex items-center gap-2 text-[0.96rem] text-white">
                       {it.name} operations <ArrowRight className="text-signal" />
                     </Link>
-                  </div>
+                  </div>}
                 </div>
               </li>
             );
           })}
         </ul>
       </div>
+      )}
     </>
   );
 }

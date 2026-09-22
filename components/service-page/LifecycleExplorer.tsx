@@ -1,6 +1,7 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { useMediaQuery, usePrefersReducedMotion } from "@/components/motion/useInView";
 import { Plus } from "@/components/ui/Icons";
 import type { ServicePageContent } from "@/data/service-pages/types";
 import { cn } from "@/lib/cn";
@@ -8,27 +9,96 @@ import { cn } from "@/lib/cn";
 type Stage = ServicePageContent["lifecycle"]["stages"][number];
 
 /**
- * Desktop: horizontal stage rail + detail panel (click, hover, focus, arrows).
- * Mobile: vertical accordion lifecycle.
+ * Desktop: horizontal stage rail + detail panel. Scrolling through the section
+ * moves a red signal along the rail and advances the stage (GSAP ScrollTrigger,
+ * no pin). Click, hover, focus or arrow keys select a stage directly; a manual
+ * selection holds until the section leaves the viewport.
+ * Mobile: vertical accordion lifecycle with a scroll-drawn connector.
  */
 export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
   const [active, setActive] = useState(0);
   const [open, setOpen] = useState<number | null>(0);
   const id = useId();
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
+  const reduced = usePrefersReducedMotion();
   const n = stages.length;
+  const railRef = useRef<HTMLDivElement>(null);
+  const fillRef = useRef<HTMLDivElement>(null);
+  const dotRef = useRef<HTMLSpanElement>(null);
+  const manual = useRef(false);
+  const [linked, setLinked] = useState(false);
+
+  // Rail geometry: the signal travels between the first and last node centres.
+  const start = 0.5 / n;
+  const span = (n - 1) / n;
+
+  useEffect(() => {
+    if (isDesktop !== true || reduced || !railRef.current) return;
+    let cancelled = false;
+    let kill: (() => void) | undefined;
+    (async () => {
+      const [{ gsap }, { ScrollTrigger }] = await Promise.all([import("gsap"), import("gsap/ScrollTrigger")]);
+      if (cancelled || !railRef.current) return;
+      gsap.registerPlugin(ScrollTrigger);
+      const st = ScrollTrigger.create({
+        trigger: railRef.current,
+        start: "top 78%",
+        end: "bottom 30%",
+        onUpdate: (self) => {
+          if (manual.current) return;
+          const p = self.progress;
+          if (fillRef.current) fillRef.current.style.width = `${p * span * 100}%`;
+          if (dotRef.current) dotRef.current.style.left = `${(start + p * span) * 100}%`;
+          setActive(Math.min(n - 1, Math.round(p * (n - 1))));
+        },
+        // Leaving the section releases a manual selection back to scroll control.
+        onLeave: () => (manual.current = false),
+        onLeaveBack: () => (manual.current = false),
+      });
+      setLinked(true);
+      kill = () => st.kill();
+    })();
+    return () => {
+      cancelled = true;
+      kill?.();
+      setLinked(false);
+    };
+  }, [isDesktop, reduced, n, start, span]);
+
+  const choose = (i: number) => {
+    manual.current = true;
+    setActive(i);
+    const f = i / Math.max(1, n - 1);
+    if (fillRef.current) fillRef.current.style.width = `${f * span * 100}%`;
+    if (dotRef.current) dotRef.current.style.left = `${(start + f * span) * 100}%`;
+  };
   const s = stages[active];
 
   const focusTab = (i: number) => {
-    setActive(i);
+    choose(i);
     document.getElementById(`${id}-t${i}`)?.focus();
   };
 
   return (
     <>
+{isDesktop !== false && (
       <div className="hidden lg:block">
-        <div className="relative">
-          <div className="absolute left-0 right-0 top-[22px] h-px bg-line-strong" aria-hidden="true" />
-          <div className="absolute left-0 top-[22px] h-[2px] bg-signal transition-[width] duration-500 ease-[var(--ease-out-expo)]" style={{ width: `${((active + 0.5) / n) * 100}%` }} aria-hidden="true" />
+        <div ref={railRef} className="relative">
+          <div className="absolute top-[22px] h-px bg-line-strong" style={{ left: `${start * 100}%`, right: `${start * 100}%` }} aria-hidden="true" />
+          <div
+            ref={fillRef}
+            className="absolute top-[22px] h-[2px] bg-signal transition-[width] duration-[var(--dur-fast)] ease-linear"
+            style={{ left: `${start * 100}%`, width: `${(active / Math.max(1, n - 1)) * span * 100}%` }}
+            aria-hidden="true"
+          />
+          {linked && (
+            <span
+              ref={dotRef}
+              className="absolute top-[22px] z-10 size-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_0_5px_rgb(234_62_58/0.18)] transition-[left] duration-[var(--dur-fast)] ease-linear"
+              style={{ left: `${(start + (active / Math.max(1, n - 1)) * span) * 100}%` }}
+              aria-hidden="true"
+            />
+          )}
           <ol role="tablist" aria-label="Campaign lifecycle stages" className="relative grid" style={{ gridTemplateColumns: `repeat(${n}, minmax(0, 1fr))` }}>
             {stages.map((st, i) => {
               const on = i === active;
@@ -42,9 +112,8 @@ export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
                     aria-selected={on}
                     aria-controls={`${id}-p`}
                     tabIndex={on ? 0 : -1}
-                    onClick={() => setActive(i)}
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
+                    onClick={() => choose(i)}
+                    onFocus={() => choose(i)}
                     onKeyDown={(e) => {
                       if (e.key === "ArrowRight") {
                         e.preventDefault();
@@ -73,7 +142,7 @@ export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
         </div>
 
         <div id={`${id}-p`} role="tabpanel" aria-labelledby={`${id}-t${active}`} className="mt-10 grid grid-cols-[1fr_1.35fr] overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
-          <div key={s.code} className="p-9 [animation:engine-in_0.4s_var(--ease-out-expo)_both]">
+          <div key={s.code} className="p-9 animate-enter">
             <p className="font-mono text-[0.79rem] uppercase tracking-[0.12em] text-signal-ink">
               Stage {s.code} / {String(n).padStart(2, "0")}
             </p>
@@ -86,7 +155,7 @@ export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
               {s.items.map((it, k) => (
                 <li
                   key={it}
-                  className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 text-[1rem] text-ink ring-1 ring-line [animation:engine-in_0.4s_var(--ease-out-expo)_both]"
+                  className="flex items-center gap-3 rounded-lg bg-white px-4 py-3 text-[1rem] text-ink ring-1 ring-line animate-enter"
                   style={{ animationDelay: `${50 + k * 40}ms` }}
                 >
                   <span className="size-1.5 shrink-0 rounded-full bg-signal" aria-hidden="true" />
@@ -98,19 +167,27 @@ export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
         </div>
       </div>
 
+)}
+
+{isDesktop !== true && (
       <ol className="lg:hidden" aria-label="Campaign lifecycle stages">
         {stages.map((st, i) => {
           const isOpen = open === i;
           const pid = `${id}-m${i}`;
           return (
             <li key={st.code} className="relative pl-12">
-              {i < n - 1 && <span className="absolute bottom-0 left-[19px] top-10 w-px bg-line-strong" aria-hidden="true" />}
+              {i < n - 1 && (
+                <>
+                  <span className="absolute bottom-0 left-[19px] top-10 w-px bg-line-strong" aria-hidden="true" />
+                  <span className="scroll-draw-y absolute bottom-0 left-[19px] top-10 w-px bg-signal" aria-hidden="true" />
+                </>
+              )}
               <span className={cn("absolute left-0 top-3 flex size-10 items-center justify-center rounded-full font-mono text-[0.72rem]", isOpen ? "bg-ink text-white" : "bg-white text-ink ring-1 ring-line-strong")}>{st.code}</span>
               <button type="button" aria-expanded={isOpen} aria-controls={pid} onClick={() => setOpen(isOpen ? null : i)} className="flex w-full items-center justify-between gap-4 py-5 text-left">
                 <span className="text-[1.2rem] tracking-[-0.02em] text-ink">{st.title}</span>
                 <Plus className={cn("size-5 shrink-0 transition-transform duration-300", isOpen ? "rotate-45 text-signal" : "text-steel")} />
               </button>
-              <div id={pid} hidden={!isOpen} className="pb-6">
+              {isOpen && <div id={pid} className="pb-6">
                 <p className="text-[1rem] leading-relaxed text-steel">{st.summary}</p>
                 <ul className="mt-4 flex flex-wrap gap-2">
                   {st.items.map((it) => (
@@ -119,11 +196,12 @@ export function LifecycleExplorer({ stages }: { stages: readonly Stage[] }) {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div>}
             </li>
           );
         })}
       </ol>
+)}
     </>
   );
 }

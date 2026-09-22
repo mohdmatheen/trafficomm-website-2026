@@ -43,6 +43,9 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
     };
   }, [open, onClose]);
 
+  // Mount only while open: keeps ~90 hidden elements out of every page's HTML.
+  if (!open) return null;
+
   return (
     <div
       id="mobile-nav"
@@ -50,7 +53,6 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
       role="dialog"
       aria-modal="true"
       aria-label="Site menu"
-      hidden={!open}
       className="fixed inset-0 z-[60] flex flex-col bg-paper xl:hidden"
     >
       <div className="container-site flex h-16 shrink-0 items-center justify-between">

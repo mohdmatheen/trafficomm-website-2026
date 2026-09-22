@@ -5,8 +5,10 @@ import { usePrefersReducedMotion } from "@/components/motion/useInView";
 import { Check } from "@/components/ui/Icons";
 import { LogoMark } from "@/components/ui/Logo";
 import { cn } from "@/lib/cn";
+import { duration } from "@/lib/motion/tokens";
+import { observeVisibility } from "@/lib/motion/visibility";
 
-const STEP_MS = 1300;
+const STEP_MS = duration.signalStep;
 
 /**
  * Service hero visual: a campaign moving down its lifecycle, with Trafficomm
@@ -24,13 +26,12 @@ export function LifecycleRail({ stages }: { stages: readonly string[] }) {
   useEffect(() => {
     if (reduced || !ref.current) return;
     let timer: ReturnType<typeof setInterval> | undefined;
-    const io = new IntersectionObserver(([e]) => {
+    const off = observeVisibility(ref.current, (visible) => {
       clearInterval(timer);
-      if (e.isIntersecting) timer = setInterval(() => setTick((t) => t + 1), STEP_MS);
+      if (visible) timer = setInterval(() => setTick((t) => t + 1), STEP_MS);
     });
-    io.observe(ref.current);
     return () => {
-      io.disconnect();
+      off();
       clearInterval(timer);
     };
   }, [reduced]);

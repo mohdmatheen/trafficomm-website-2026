@@ -3,7 +3,7 @@ import { CTABand } from "@/components/sections/shared/CTABand";
 import { PageHero } from "@/components/sections/shared/PageHero";
 import { GlobalExperience } from "@/components/sections/home/GlobalExperience";
 import { ButtonLink } from "@/components/ui/Button";
-import { Counter } from "@/components/ui/Counter";
+import { Metric } from "@/components/ui/Metric";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { company, scaleStats } from "@/data/site";
 import { buildMetadata } from "@/lib/seo";
@@ -68,7 +68,7 @@ export default function AboutPage() {
             <div key={s.label} className="flex flex-col border-b border-r border-line bg-white p-5 sm:p-6">
               <dt className="eyebrow order-2 mt-3 !text-[0.62rem] text-steel">{s.label}</dt>
               <dd className="order-1 whitespace-nowrap text-[clamp(2rem,1.4rem+1.6vw,3rem)] leading-none tracking-[-0.045em] text-ink">
-                <Counter stat={s} />
+                <Metric stat={s} />
               </dd>
             </div>
           ))}

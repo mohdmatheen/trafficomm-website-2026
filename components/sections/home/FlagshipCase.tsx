@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/Badge";
+import { Metric } from "@/components/ui/Metric";
 import { ButtonLink } from "@/components/ui/Button";
 import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -102,7 +103,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
           ].map((m, i) => (
             <div key={m.l} className={`flex flex-col py-8 md:py-10 ${i === 0 ? "md:border-r md:border-line md:pr-10" : "border-t border-line md:border-t-0 md:pl-10"}`} data-reveal>
               <dt className="eyebrow order-2 mt-5 text-graphite">{m.l}</dt>
-              <dd className="order-1 whitespace-nowrap text-[clamp(4.5rem,2rem+9vw,10.5rem)] leading-[0.85] tracking-[-0.06em] text-signal">{m.v}</dd>
+              <dd className="order-1 whitespace-nowrap text-[clamp(4.5rem,2rem+9vw,10.5rem)] leading-[0.85] tracking-[-0.06em] text-signal"><Metric value={m.v} /></dd>
             </div>
           ))}
         </dl>
@@ -113,7 +114,7 @@ export function FlagshipCase({ index = "06", eyebrow, context }: { index?: strin
           ].map((m, i) => (
             <div key={m.l} className={`flex flex-col py-7 ${i === 0 ? "sm:border-r sm:border-line sm:pr-10" : "border-t border-line sm:border-t-0 sm:pl-10"}`} data-reveal>
               <dt className="eyebrow order-2 mt-3 text-steel">{m.l}</dt>
-              <dd className="order-1 whitespace-nowrap text-[clamp(2.6rem,1.6rem+3vw,4.5rem)] leading-none tracking-[-0.05em] text-ink">{m.v}</dd>
+              <dd className="order-1 whitespace-nowrap text-[clamp(2.6rem,1.6rem+3vw,4.5rem)] leading-none tracking-[-0.05em] text-ink"><Metric value={m.v} /></dd>
             </div>
           ))}
         </dl>

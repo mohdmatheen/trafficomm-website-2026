@@ -1,7 +1,7 @@
 // Generates a compact dot-grid world map (data/world-dots.json) from Natural Earth
 // 110m land/country shapes. Run once: `node scripts/generate-world-dots.mjs`.
 // Output is committed so the site ships no geo libraries at runtime.
-import { readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { feature } from "topojson-client";
 import { geoContains, geoCentroid } from "d3-geo";
@@ -51,3 +51,12 @@ writeFileSync(
   JSON.stringify({ cols, rows, dots, byCountry, centroids }),
 );
 console.log(`dots: ${dots.length}`, Object.fromEntries(Object.entries(byCountry).map(([k, v]) => [k, v.length])));
+
+// Static base layer: the full dot field as one cacheable SVG, so it never ships inside page HTML.
+const S = 6;
+const d = dots.map(([c, r]) => `M${c * S + S / 2} ${r * S + S / 2}h0`).join("");
+mkdirSync(new URL("../public/maps/", import.meta.url), { recursive: true });
+writeFileSync(
+  new URL("../public/maps/world-dots.svg", import.meta.url),
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${cols * S} ${rows * S}"><path d="${d}" fill="none" stroke="#0c0c0d" stroke-opacity="0.27" stroke-width="3" stroke-linecap="round"/></svg>`,
+);

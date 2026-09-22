@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "@/components/motion/useInView";
 import { engineStages } from "@/data/operations";
 import { cn } from "@/lib/cn";
 import { Check } from "@/components/ui/Icons";
@@ -21,6 +22,7 @@ export function OperatingEngine() {
   const [progress, setProgress] = useState(0);
   const [pinned, setPinned] = useState(false);
   const n = engineStages.length;
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   useEffect(() => {
     let cancelled = false;
@@ -60,7 +62,7 @@ export function OperatingEngine() {
       cancelled = true;
       cleanup?.();
     };
-  }, [n]);
+  }, [n, isDesktop]);
 
   const go = (i: number) => {
     const st = trigger.current;
@@ -79,13 +81,20 @@ export function OperatingEngine() {
   return (
     <div ref={rootRef}>
       {/* Desktop pinned engine */}
+{isDesktop !== false && (
       <div ref={pinRef} className="hidden pt-10 lg:block">
         <div>
           <div className="relative">
             <div className="absolute left-0 right-0 top-[27px] h-px bg-line-dark-strong" aria-hidden="true" />
             <div
-              className="absolute left-0 top-[27px] h-px bg-signal shadow-[0_0_12px_rgb(234_62_58/0.8)] transition-[width] duration-200"
+              className="absolute left-0 top-[27px] h-px bg-signal transition-[width] duration-[var(--dur-fast)] ease-linear"
               style={{ width: `${Math.max(0.02, fill) * 100}%` }}
+              aria-hidden="true"
+            />
+            {/* Signal at the head of the progress line: the work currently in motion. */}
+            <span
+              className="absolute top-[27px] z-10 size-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-signal shadow-[0_0_0_4px_rgb(234_62_58/0.2)] transition-[left] duration-[var(--dur-fast)] ease-linear"
+              style={{ left: `${Math.max(0.02, fill) * 100}%` }}
               aria-hidden="true"
             />
             <ol className="relative grid grid-cols-7" role="tablist" aria-label="Operating workflow stages">
@@ -129,7 +138,7 @@ export function OperatingEngine() {
             aria-labelledby={`eng-tab-${stage.key}`}
             className="mt-8 grid min-h-[356px] grid-cols-[1fr_1.1fr] overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark"
           >
-            <div key={stage.key} className="p-10 [animation:engine-in_0.6s_var(--ease-out-expo)]">
+            <div key={stage.key} className="p-10 animate-enter">
               <p className="eyebrow text-signal">
                 Stage 0{active + 1} / 0{n}
               </p>
@@ -147,7 +156,7 @@ export function OperatingEngine() {
                 {stage.functions.map((f, i) => (
                   <li
                     key={f}
-                    className="flex items-center justify-between py-3.5 text-[1rem] text-white [animation:engine-in_0.6s_var(--ease-out-expo)_both]"
+                    className="flex items-center justify-between py-3.5 text-[1rem] text-white animate-enter"
                     style={{ animationDelay: `${i * 70}ms` }}
                   >
                     <span className="flex items-center gap-4">
@@ -163,10 +172,14 @@ export function OperatingEngine() {
         </div>
       </div>
 
+)}
+
       {/* Mobile / tablet vertical workflow */}
+{isDesktop !== true && (
       <div className="lg:hidden">
         <div className="relative mt-12">
         <span className="absolute bottom-6 left-[19px] top-6 w-px bg-line-dark-strong" aria-hidden="true" />
+        <span className="scroll-draw-y absolute bottom-6 left-[19px] top-6 w-px bg-signal" aria-hidden="true" />
         <ol className="relative space-y-4" aria-label="Operating workflow stages">
           {engineStages.map((s, i) => (
             <li key={s.key} className="relative pl-14" data-reveal>
@@ -189,6 +202,7 @@ export function OperatingEngine() {
         </ol>
         </div>
       </div>
+)}
     </div>
   );
 }

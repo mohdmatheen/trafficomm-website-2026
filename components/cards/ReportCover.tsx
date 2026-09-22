@@ -65,15 +65,18 @@ export function ReportCover({ article, index, className }: { article: Article; i
 function SaudiArt() {
   const { cols, rows, dots } = saudi as { cols: number; rows: number; dots: [number, number][] };
   // A handful of highlighted points as abstract signal markers — not data.
+  // Keep in sync with MARKED in scripts/generate-saudi-dots.mjs (base dots live in public/maps/saudi-dots.svg).
   const marked = new Set([97, 260, 388, 455, 512, 640, 731, 820]);
   return (
     <div className="flex h-full flex-col">
+      {/* Base dot field is a static, cacheable asset; only the highlighted markers are inline. */}
       <svg viewBox={`-2 -2 ${cols + 4} ${rows + 4}`} className="min-h-0 w-full flex-1" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-        {dots.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r={marked.has(i) ? 0.6 : 0.28} fill={marked.has(i) ? "#ea3e3a" : "#ffffff"} opacity={marked.has(i) ? 1 : 0.42} />
-        ))}
+        <image href="/maps/saudi-dots.svg" x={-2} y={-2} width={cols + 4} height={rows + 4} />
         {[...marked].map((i) => (
-          <circle key={`r${i}`} cx={dots[i][0]} cy={dots[i][1]} r="1.6" fill="none" stroke="#ea3e3a" strokeOpacity="0.45" strokeWidth="0.12" />
+          <g key={i}>
+            <circle cx={dots[i][0]} cy={dots[i][1]} r="0.6" fill="#ea3e3a" />
+            <circle cx={dots[i][0]} cy={dots[i][1]} r="1.6" fill="none" stroke="#ea3e3a" strokeOpacity="0.45" strokeWidth="0.12" />
+          </g>
         ))}
       </svg>
       <p className="mt-3 flex flex-wrap gap-x-2 font-mono text-[0.62rem] uppercase tracking-[0.12em] text-mute" aria-hidden="true">
@@ -126,12 +129,15 @@ function MatrixArt() {
             <text x="0" y={y + 6} fontSize="6.6" fill="#ffffff" className="font-mono uppercase" letterSpacing="0.6">
               {d}
             </text>
-            {Array.from({ length: 5 }, (_, k) => (
-              <rect key={`b${k}`} x={96 + k * 8} y={y} width="5" height="5" rx="1" fill="#fff" opacity={0.18} />
-            ))}
-            {Array.from({ length: 5 }, (_, k) => (
-              <rect key={`o${k}`} x={150 + k * 8} y={y} width="5" height="5" rx="1" fill={r === 1 && k === 2 ? "#ea3e3a" : "#fff"} opacity={r === 1 && k === 2 ? 1 : 0.18} />
-            ))}
+            <path
+              d={Array.from({ length: 10 }, (_, k) => [k < 5 ? 96 + k * 8 : 150 + (k - 5) * 8, k])
+                .filter(([, k]) => !(r === 1 && k === 7))
+                .map(([x]) => `M${x} ${y}h5v5h-5z`)
+                .join("")}
+              fill="#fff"
+              opacity="0.18"
+            />
+            {r === 1 && <rect x={166} y={y} width="5" height="5" rx="1" fill="#ea3e3a" />}
           </g>
         );
       })}

@@ -3,6 +3,7 @@ import { CTABand } from "@/components/sections/shared/CTABand";
 import { LinkList } from "@/components/sections/shared/LinkList";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
+import { Metric } from "@/components/ui/Metric";
 import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
 import { ArrowRight, Lock } from "@/components/ui/Icons";
 import { Eyebrow, Section, SectionHeading } from "@/components/ui/Section";
@@ -47,7 +48,7 @@ export function CaseStudyTemplate({ cs }: { cs: CaseStudy }) {
             {cs.metrics.map((m, k) => (
               <div key={m.label} className="flex flex-col bg-ink-2 p-6 sm:p-8">
                 <dt className="eyebrow order-2 mt-4 !text-[0.64rem] text-mute">{m.label}</dt>
-                <dd className={`order-1 whitespace-nowrap text-[clamp(2.4rem,1.6rem+2.2vw,3.75rem)] leading-none tracking-[-0.045em] ${k === 0 ? "text-signal" : "text-white"}`}>{m.value}</dd>
+                <dd className={`order-1 whitespace-nowrap text-[clamp(2.4rem,1.6rem+2.2vw,3.75rem)] leading-none tracking-[-0.045em] ${k === 0 ? "text-signal" : "text-white"}`}><Metric value={m.value} /></dd>
               </div>
             ))}
           </dl>

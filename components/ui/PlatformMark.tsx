@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { platformLogos } from "@/data/platform-logos";
 import { cn } from "@/lib/cn";
 
@@ -16,13 +15,15 @@ export function PlatformMark({ slug, size = 56, className, scale = 1 }: { slug: 
       className={cn("inline-flex shrink-0 items-center justify-center rounded-[14px] bg-white ring-1 ring-black/5", className)}
       style={{ width: size, height: size }}
     >
-      <Image
+      {/* Plain <img>: logos are pre-sized static assets (SVG, or PNG exported at 480px for HiDPI), so the image optimizer adds markup without benefit. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         src={logo.src}
         alt={logo.alt}
         width={Math.round(logo.box.w * k)}
         height={Math.round(logo.box.h * k)}
-        unoptimized={logo.src.endsWith(".svg")}
-        sizes={`${Math.round(logo.box.w * k)}px`}
+        loading="lazy"
+        decoding="async"
         className="object-contain"
         style={{ width: Math.round(logo.box.w * k), height: Math.round(logo.box.h * k) }}
       />

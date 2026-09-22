@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useId, useRef, useState } from "react";
-import { usePrefersReducedMotion } from "@/components/motion/useInView";
+import { useMediaQuery, usePrefersReducedMotion } from "@/components/motion/useInView";
 import { ArrowRight, Plus } from "@/components/ui/Icons";
 import type { Service } from "@/data/types";
 import { cn } from "@/lib/cn";
+import { duration } from "@/lib/motion/tokens";
+import { observeVisibility } from "@/lib/motion/visibility";
 
 type Item = Pick<Service, "slug" | "name" | "code" | "short" | "explorer">;
 type Stage = Service["explorer"]["flow"][number];
@@ -22,6 +24,7 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
   const hoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const id = useId();
   const item = items[active];
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const select = (i: number) => {
     if (hoverTimer.current) clearTimeout(hoverTimer.current);
@@ -34,6 +37,7 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
 
   return (
     <>
+{isDesktop !== false && (
       <div className="hidden gap-10 lg:grid lg:grid-cols-[35%_1fr] xl:gap-14">
         <ol role="tablist" aria-orientation="vertical" aria-label="Capabilities" className="border-t border-line">
           {items.map((it, i) => {
@@ -78,7 +82,7 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
             </span>
           </div>
           <div className="p-6 xl:p-8">
-            <p key={`${item.slug}-lede`} className="max-w-xl text-[1.06rem] leading-relaxed text-steel [animation:engine-in_0.4s_var(--ease-out-expo)_both]">
+            <p key={`${item.slug}-lede`} className="max-w-xl text-[1.06rem] leading-relaxed text-steel animate-enter">
               <span className="text-ink">{item.name}.</span> {item.short}
             </p>
             <WorkflowTrack key={item.slug} stages={item.explorer.flow} />
@@ -98,7 +102,10 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
         </div>
       </div>
 
+)}
+
       {/* Mobile accordion */}
+{isDesktop !== true && (
       <ul className="divide-y divide-line border-y border-line lg:hidden">
         {items.map((it, i) => {
           const open = openMobile === i;
@@ -110,7 +117,7 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
                 <span className="flex-1 text-[1.35rem] leading-tight tracking-[-0.025em] text-ink">{it.name}</span>
                 <Plus className={cn("size-5 shrink-0 transition-transform duration-300", open ? "rotate-45 text-signal" : "text-steel")} />
               </button>
-              <div id={pid} hidden={!open} className="pb-7">
+              {open && <div id={pid} className="pb-7">
                 <p className="text-[1.03rem] leading-relaxed text-steel">{it.short}</p>
                 <ol className="mt-6" aria-label={`${it.name} operating workflow`}>
                   {it.explorer.flow.map((s, k) => (
@@ -127,16 +134,17 @@ export function CapabilityExplorer({ items }: { items: Item[] }) {
                 <Link href={`/services/${it.slug}`} className="mt-6 inline-flex items-center gap-2 text-[0.98rem] font-medium text-ink">
                   Explore {it.name} <ArrowRight className="text-signal" />
                 </Link>
-              </div>
+              </div>}
             </li>
           );
         })}
       </ul>
+)}
     </>
   );
 }
 
-const STEP_MS = 1500;
+const STEP_MS = duration.signalStep;
 
 /**
  * Horizontal operating workflow. A red signal travels the track at constant
@@ -158,9 +166,9 @@ export function WorkflowTrack({ stages, tone = "light" }: { stages: readonly Sta
   useEffect(() => {
     if (reduced || !ref.current) return;
     let timer: ReturnType<typeof setInterval> | undefined;
-    const io = new IntersectionObserver(([e]) => {
+    const off = observeVisibility(ref.current, (visible) => {
       clearInterval(timer);
-      if (!e.isIntersecting) return;
+      if (!visible) return;
       timer = setInterval(() => {
         // After a manual jump, hold the chosen stage for a few beats.
         if (pauseTicks.current > 0) {
@@ -173,9 +181,8 @@ export function WorkflowTrack({ stages, tone = "light" }: { stages: readonly Sta
         setCurrent(next);
       }, STEP_MS);
     });
-    io.observe(ref.current);
     return () => {
-      io.disconnect();
+      off();
       clearInterval(timer);
     };
   }, [n, reduced]);
@@ -247,7 +254,7 @@ export function WorkflowTrack({ stages, tone = "light" }: { stages: readonly Sta
           <p className={cn("font-mono text-[0.75rem] uppercase tracking-[0.12em]", dark ? "text-signal" : "text-signal-ink")}>
             Stage {String(current + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}
           </p>
-          <p key={stage.label} className={cn("mt-2 text-[1.6rem] leading-none tracking-[-0.03em] [animation:engine-in_0.35s_var(--ease-out-expo)_both]", dark ? "text-white" : "text-ink")}>
+          <p key={stage.label} className={cn("mt-2 text-[1.6rem] leading-none tracking-[-0.03em] animate-enter", dark ? "text-white" : "text-ink")}>
             {stage.label}
           </p>
         </div>
@@ -256,7 +263,7 @@ export function WorkflowTrack({ stages, tone = "light" }: { stages: readonly Sta
             <li
               key={d}
               className={cn(
-                "flex items-center gap-2 rounded-md px-3 py-1.5 text-[0.96rem] ring-1 [animation:engine-in_0.35s_var(--ease-out-expo)_both]",
+                "flex items-center gap-2 rounded-md px-3 py-1.5 text-[0.96rem] ring-1 animate-enter",
                 dark ? "bg-white/[0.05] text-white ring-line-dark" : "bg-white text-ink ring-line",
               )}
               style={{ animationDelay: `${60 + k * 50}ms` }}

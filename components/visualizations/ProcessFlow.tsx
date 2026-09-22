@@ -41,7 +41,7 @@ export function ProcessFlow() {
           {flow.steps.map((s, i) => (
             <li
               key={s.title}
-              className="relative flex flex-col rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line [animation:engine-in_0.5s_var(--ease-out-expo)_both]"
+              className="relative flex flex-col rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-line animate-enter"
               style={{ animationDelay: `${i * 50}ms` }}
             >
               <div className="flex items-center justify-between">

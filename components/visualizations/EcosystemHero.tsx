@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { usePrefersReducedMotion } from "@/components/motion/useInView";
+import { usePauseSvgWhenHidden, usePrefersReducedMotion, useVisibilityEffect } from "@/components/motion/useInView";
+import { duration } from "@/lib/motion/tokens";
 
 /**
  * Hero visual, read top to bottom:
@@ -10,6 +11,9 @@ import { usePrefersReducedMotion } from "@/components/motion/useInView";
  * Inbound particles arrive irregularly (operational complexity); outbound
  * particles leave at a fixed cadence on four clean lanes (organized output).
  * All motion is written to the DOM from one rAF loop that pauses off-screen.
+ *
+ * Interaction: hovering, focusing or clicking a platform sends one short
+ * burst — platform → Trafficomm → the active output — and highlights that path.
  */
 
 const W = 640;
@@ -100,12 +104,27 @@ const IN_P = inbound.flatMap((_, i) =>
 const OUT_PER_LANE = 3;
 const OUT_P = outbound.flatMap((_, lane) => Array.from({ length: OUT_PER_LANE }, (_, k) => ({ lane, offset: k / OUT_PER_LANE })));
 
+const BURST = 4;
+const BURST_KEYS = Array.from({ length: BURST }, (_, k) => k);
+
 export function EcosystemHero() {
   const svgRef = useRef<SVGSVGElement>(null);
   const inRefs = useRef<(SVGRectElement | null)[]>([]);
   const outRefs = useRef<(SVGRectElement | null)[]>([]);
+  const burstRefs = useRef<(SVGRectElement | null)[]>([]);
+  const coreRing = useRef<SVGCircleElement>(null);
   const [active, setActive] = useState(0);
+  const [hot, setHot] = useState<number | null>(null);
   const animate = !usePrefersReducedMotion();
+  const loop = useRef<{ start: () => void; stop: () => void } | null>(null);
+  const burst = useRef<{ lane: number; out: number; t: number } | null>(null);
+  const activeRef = useRef(0);
+  const hotTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const visible = useRef(false);
+
+  useEffect(() => {
+    activeRef.current = active;
+  }, [active]);
 
   useEffect(() => {
     if (!animate) return;
@@ -115,69 +134,97 @@ export function EcosystemHero() {
     let t = 0;
     let stageClock = 0;
 
+    const place = (el: SVGRectElement | null, c: Curve, prog: number, half: number, opacity: number) => {
+      if (!el) return;
+      const [x, y] = point(c, prog);
+      el.setAttribute("x", (x - half).toFixed(1));
+      el.setAttribute("y", (y - half).toFixed(1));
+      el.setAttribute("opacity", opacity.toFixed(2));
+    };
+
     const frame = (now: number) => {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       t += dt;
       stageClock += dt;
       IN_P.forEach((p, i) => {
-        const el = inRefs.current[i];
-        if (!el) return;
         const prog = (p.offset + t * p.speed) % 1;
-        const [x, y] = point(inbound[p.lane], prog);
-        el.setAttribute("x", (x - 1.75).toFixed(1));
-        el.setAttribute("y", (y - 1.75).toFixed(1));
-        el.setAttribute("opacity", Math.min(1, Math.sin(prog * Math.PI) * 1.4).toFixed(2));
+        place(inRefs.current[i], inbound[p.lane], prog, 1.75, Math.min(1, Math.sin(prog * Math.PI) * 1.4));
       });
       OUT_P.forEach((p, i) => {
-        const el = outRefs.current[i];
-        if (!el) return;
         const prog = (p.offset + t * 0.28) % 1;
-        const [x, y] = point(outbound[p.lane], prog);
-        el.setAttribute("x", (x - 2).toFixed(1));
-        el.setAttribute("y", (y - 2).toFixed(1));
-        el.setAttribute("opacity", Math.min(1, Math.sin(prog * Math.PI) * 1.6).toFixed(2));
+        place(outRefs.current[i], outbound[p.lane], prog, 2, Math.min(1, Math.sin(prog * Math.PI) * 1.6));
       });
-      if (stageClock > 2.2) {
+      // User-triggered burst: in along the platform's lane, a core pulse, then out along the active output.
+      const b = burst.current;
+      if (b) {
+        const e = (now - b.t) / 1000;
+        const half = duration.burst / 2000;
+        for (let k = 0; k < BURST; k++) {
+          const lag = k * 0.06;
+          const el = burstRefs.current[k];
+          if (e - lag < half) place(el, inbound[b.lane], Math.max(0, (e - lag) / half), 2.25, 1);
+          else if (e - lag < half * 2) place(el, outbound[b.out], Math.min(1, (e - lag - half) / half), 2.25, 1);
+          else el?.setAttribute("opacity", "0");
+        }
+        const ring = coreRing.current;
+        if (ring) {
+          const pulse = Math.max(0, 1 - Math.abs(e - half) / 0.25);
+          ring.setAttribute("r", String(CORE_R + 6 + pulse * 10));
+          ring.setAttribute("stroke-opacity", (pulse * 0.8).toFixed(2));
+        }
+        if (e > half * 2 + BURST * 0.06) burst.current = null;
+      }
+      if (stageClock > 2.2 && !burst.current) {
         stageClock = 0;
         setActive((a) => (a + 1) % OUTPUTS.length);
       }
       if (running) raf = requestAnimationFrame(frame);
     };
 
-    const start = () => {
-      if (running) return;
-      running = true;
-      last = performance.now();
-      raf = requestAnimationFrame(frame);
+    loop.current = {
+      start: () => {
+        if (running) return;
+        running = true;
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      },
+      stop: () => {
+        running = false;
+        cancelAnimationFrame(raf);
+      },
     };
-    const stop = () => {
-      running = false;
-      cancelAnimationFrame(raf);
-    };
-
-    let visible = false;
-    const io = new IntersectionObserver(([e]) => {
-      visible = e.isIntersecting;
-      if (visible && !document.hidden) start();
-      else stop();
-    });
-    if (svgRef.current) io.observe(svgRef.current);
-    const onVis = () => (document.hidden || !visible ? stop() : start());
-    document.addEventListener("visibilitychange", onVis);
+    // The loop can be created after the first visibility event (motion preference resolves post-hydration).
+    if (visible.current) loop.current.start();
     return () => {
-      stop();
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
+      loop.current?.stop();
+      loop.current = null;
     };
   }, [animate]);
+
+  useVisibilityEffect(svgRef, (v) => {
+    visible.current = v;
+    if (v) loop.current?.start();
+    else loop.current?.stop();
+  });
+  usePauseSvgWhenHidden(svgRef);
+
+  // `at` is the event timestamp (same clock as requestAnimationFrame).
+  const trigger = (lane: number, at: number) => {
+    if (hotTimer.current) clearTimeout(hotTimer.current);
+    setHot(lane);
+    hotTimer.current = setTimeout(() => setHot(null), duration.burst + 600);
+    if (!animate) return;
+    if (burst.current && burst.current.lane === lane && at - burst.current.t < duration.burst) return;
+    burst.current = { lane, out: activeRef.current, t: at };
+  };
 
   return (
     <svg
       ref={svgRef}
       viewBox={`0 0 ${W} ${H}`}
       className="h-auto w-full select-none"
-      role="img"
+      role="group"
       aria-label="Diagram: campaign activity from Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, DV360, CM360, Search Ads 360 and Amazon Ads flows into Trafficomm, which organizes it into four outputs: execute, optimize, measure and report."
     >
       <defs>
@@ -206,7 +253,15 @@ export function EcosystemHero() {
 
       {/* inbound lines */}
       {inbound.map((c, i) => (
-        <path key={i} d={c.d} fill="none" stroke="#0c0c0d" strokeOpacity="0.13" />
+        <path
+          key={i}
+          d={c.d}
+          fill="none"
+          stroke={hot === i ? "#ea3e3a" : "#0c0c0d"}
+          strokeOpacity={hot === i ? 0.9 : hot !== null ? 0.08 : 0.13}
+          strokeWidth={hot === i ? 1.5 : 1}
+          style={{ transition: "stroke var(--dur-fast), stroke-opacity var(--dur-base)" }}
+        />
       ))}
 
       {/* outbound lanes */}
@@ -261,7 +316,21 @@ export function EcosystemHero() {
         );
       })}
 
+      {BURST_KEYS.map((k) => (
+        <rect
+          key={k}
+          ref={(el) => {
+            burstRefs.current[k] = el;
+          }}
+          width="4.5"
+          height="4.5"
+          fill="#ea3e3a"
+          opacity="0"
+        />
+      ))}
+
       {/* core */}
+      <circle ref={coreRing} cx={CX} cy={CY} r={CORE_R + 6} fill="none" stroke="#ea3e3a" strokeOpacity="0" strokeWidth="1.5" />
       <circle cx={CX} cy={CY} r={CORE_R + 22} fill="none" stroke="#0c0c0d" strokeOpacity="0.1" strokeDasharray="1.5 4.5">
         {animate && <animateTransform attributeName="transform" type="rotate" from={`0 ${CX} ${CY}`} to={`360 ${CX} ${CY}`} dur="60s" repeatCount="indefinite" />}
       </circle>
@@ -279,10 +348,36 @@ export function EcosystemHero() {
       </text>
 
       {/* platform nodes */}
-      {nodes.map((n) => (
-        <g key={n.label} transform={`translate(${n.x} ${n.y})`}>
-          <rect x={-n.w / 2} y={-14} width={n.w} height={28} rx={14} fill="#fff" stroke="#0c0c0d" strokeOpacity="0.14" />
-          <circle cx={-n.w / 2 + 13} cy={0} r={2.6} fill="#0c0c0d" fillOpacity="0.45" />
+      {nodes.map((n, i) => (
+        <g
+          key={n.label}
+          transform={`translate(${n.x} ${n.y})`}
+          tabIndex={0}
+          role="button"
+          aria-label={`Trace ${n.label} through Trafficomm`}
+          className="cursor-pointer outline-none [&:focus-visible>rect:first-child]:stroke-[#ea3e3a] [&:focus-visible>rect:first-child]:[stroke-opacity:1]"
+          onMouseEnter={(e) => trigger(i, e.timeStamp)}
+          onFocus={(e) => trigger(i, e.timeStamp)}
+          onClick={(e) => trigger(i, e.timeStamp)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              trigger(i, e.timeStamp);
+            }
+          }}
+        >
+          <rect
+            x={-n.w / 2}
+            y={-14}
+            width={n.w}
+            height={28}
+            rx={14}
+            fill="#fff"
+            stroke={hot === i ? "#ea3e3a" : "#0c0c0d"}
+            strokeOpacity={hot === i ? 1 : 0.14}
+            style={{ transition: "stroke var(--dur-fast), stroke-opacity var(--dur-fast)" }}
+          />
+          <circle cx={-n.w / 2 + 13} cy={0} r={2.6} fill={hot === i ? "#ea3e3a" : "#0c0c0d"} fillOpacity={hot === i ? 1 : 0.45} />
           <text x={7} y={0.5} textAnchor="middle" dominantBaseline="middle" fontSize="12.5" fill="#0c0c0d" letterSpacing="-0.1">
             {n.label}
           </text>

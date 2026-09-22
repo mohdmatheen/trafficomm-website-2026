@@ -1,4 +1,4 @@
-import { Counter } from "@/components/ui/Counter";
+import { Metric } from "@/components/ui/Metric";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { scaleStats } from "@/data/site";
 
@@ -30,7 +30,7 @@ export function ScaleStats() {
               <span className="absolute left-0 top-0 h-px w-0 bg-signal transition-[width] duration-700 group-hover:w-full" aria-hidden="true" />
               <dt className="eyebrow order-2 mt-4 !text-[0.72rem] text-steel">{s.label}</dt>
               <dd className="order-1 whitespace-nowrap text-[clamp(2.4rem,1.4rem+2.6vw,4.25rem)] leading-none tracking-[-0.045em] text-ink">
-                <Counter stat={s} />
+                <Metric stat={s} />
               </dd>
               {s.detail && <dd className="order-3 mt-3 text-[0.9rem] leading-snug text-steel">{s.detail}</dd>}
             </div>

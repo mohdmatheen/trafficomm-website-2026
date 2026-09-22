@@ -2,6 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { reducedMotionQuery } from "@/lib/motion/tokens";
+import { observeVisibility } from "@/lib/motion/visibility";
 
 /**
  * One IntersectionObserver for the whole app. Any element with `data-reveal`
@@ -13,23 +15,23 @@ export function RevealObserver() {
 
   useEffect(() => {
     const els = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]:not([data-revealed='true'])"));
-    if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (window.matchMedia(reducedMotionQuery).matches) {
       els.forEach((el) => (el.dataset.revealed = "true"));
       return;
     }
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            (entry.target as HTMLElement).dataset.revealed = "true";
-            io.unobserve(entry.target);
-          }
-        }
-      },
-      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    const offs = els.map((el) => {
+      const off = observeVisibility(
+        el,
+        (visible) => {
+          if (!visible) return;
+          el.dataset.revealed = "true";
+          off();
+        },
+        { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+      );
+      return off;
+    });
+    return () => offs.forEach((off) => off());
   }, [pathname]);
 
   return null;

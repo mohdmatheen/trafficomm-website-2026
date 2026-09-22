@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { observeVisibility } from "@/lib/motion/visibility";
 
 /**
  * Campaign-scale signature animation, rendered to one <canvas>:
@@ -64,7 +65,8 @@ export function ParticleScale() {
       o.textBaseline = "middle";
       o.fillText(text, w / 2, h / 2);
       const data = o.getImageData(0, 0, w, h).data;
-      const gap = w < 640 ? 4 : 5;
+      // Sample every 5px. Mobile previously sampled every 4px; 5px cuts its particle count by ~36%.
+      const gap = 5;
       const pts: { x: number; y: number }[] = [];
       for (let y = 0; y < h; y += gap) for (let x = 0; x < w; x += gap) if (data[(y * w + x) * 4 + 3] > 140) pts.push({ x, y });
       // Shuffle so particles fill the figure evenly rather than scanline by scanline.
@@ -203,20 +205,31 @@ export function ParticleScale() {
       setStage(0);
     };
 
-    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
-      if (disposed) return;
+    // Lazy init: glyph sampling and particle allocation happen only once the
+    // section first comes into view (and the webfont is ready).
+    let fontsReady = false;
+    const init = () => {
+      if (ready || disposed || !fontsReady || !wantRun) return;
       setup();
       ready = true;
       if (reduce) showStatic();
-      else if (wantRun) start();
+      else start();
+    };
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+      fontsReady = true;
+      init();
     });
 
-    const io = new IntersectionObserver(([entry]) => {
-      wantRun = entry.isIntersecting;
-      if (wantRun) start();
-      else stop();
-    });
-    io.observe(wrap);
+    const offVisibility = observeVisibility(
+      wrap,
+      (visible) => {
+        wantRun = visible;
+        if (!ready) return init();
+        if (visible) start();
+        else stop();
+      },
+      { rootMargin: "200px 0px" },
+    );
 
     let resizeTimer: ReturnType<typeof setTimeout>;
     let lastW = wrap.getBoundingClientRect().width;
@@ -236,7 +249,7 @@ export function ParticleScale() {
     return () => {
       disposed = true;
       stop();
-      io.disconnect();
+      offVisibility();
       ro.disconnect();
       clearTimeout(resizeTimer);
     };

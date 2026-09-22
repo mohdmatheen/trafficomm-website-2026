@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { usePrefersReducedMotion } from "@/components/motion/useInView";
+import { usePauseSvgWhenHidden, usePrefersReducedMotion } from "@/components/motion/useInView";
 import { Play } from "./Icons";
 
 /**
@@ -78,9 +78,14 @@ const STAGES = ["Plan", "Build", "QA", "Launch", "Optimize", "Measure", "Report"
 function PosterArt({ animate }: { animate: boolean }) {
   const cx = 800;
   const cy = 450;
+  const ref = useRef<SVGSVGElement>(null);
+  usePauseSvgWhenHidden(ref);
   return (
-    <svg viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+    <svg ref={ref} viewBox="0 0 1600 900" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <defs>
+        <pattern id="vp-grid" width="64" height="64" patternUnits="userSpaceOnUse">
+          <path d="M64 0H0V64" fill="none" stroke="#fff" strokeOpacity="0.035" />
+        </pattern>
         <radialGradient id="vp-glow" cx="50%" cy="50%" r="50%">
           <stop offset="0" stopColor="#ea3e3a" stopOpacity="0.16" />
           <stop offset="1" stopColor="#ea3e3a" stopOpacity="0" />
@@ -92,12 +97,7 @@ function PosterArt({ animate }: { animate: boolean }) {
         </linearGradient>
       </defs>
       <rect width="1600" height="900" fill="#0e0e10" />
-      {Array.from({ length: 26 }, (_, i) => (
-        <line key={`v${i}`} x1={i * 64} y1="0" x2={i * 64} y2="900" stroke="#fff" strokeOpacity="0.035" />
-      ))}
-      {Array.from({ length: 15 }, (_, i) => (
-        <line key={`h${i}`} x1="0" y1={i * 64} x2="1600" y2={i * 64} stroke="#fff" strokeOpacity="0.035" />
-      ))}
+      <rect width="1600" height="900" fill="url(#vp-grid)" />
       <text x={cx} y={cy + 70} textAnchor="middle" fontSize="260" fontWeight="600" fill="none" stroke="#fff" strokeOpacity="0.045" letterSpacing="-8" className="font-brand">
         Trafficomm
       </text>

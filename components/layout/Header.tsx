@@ -147,11 +147,8 @@ function MegaTrigger({ group, open, active, onToggle, inverted }: { group: NavGr
         <ChevronDown className={cn("size-3.5 transition-transform duration-300", open && "rotate-180")} />
       </button>
 
-      <div
-        id={panelId}
-        hidden={!open}
-        className="absolute left-1/2 top-full w-[min(760px,90vw)] -translate-x-1/2 pt-3"
-      >
+      {open && (
+      <div id={panelId} className="absolute left-1/2 top-full w-[min(760px,90vw)] -translate-x-1/2 pt-3">
         <div className="overflow-hidden rounded-[var(--radius-panel)] bg-white shadow-[0_24px_60px_-20px_rgb(0_0_0/0.25)] ring-1 ring-line">
           <div className="grid grid-cols-[1fr_15rem]">
             <div className="p-6">
@@ -188,6 +185,7 @@ function MegaTrigger({ group, open, active, onToggle, inverted }: { group: NavGr
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 }

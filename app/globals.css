@@ -56,6 +56,18 @@
   --radius-panel: 20px;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Motion tokens (mirrored in lib/motion/tokens.ts) */
+  --dur-instant: 120ms;
+  --dur-fast: 200ms;
+  --dur-base: 400ms;
+  --dur-slow: 700ms;
+  --dur-reveal: 900ms;
+  --dur-signal-step: 1400ms;
+  --dur-burst: 900ms;
+
+  --animate-enter: engine-in var(--dur-base) var(--ease-out-expo) both;
 
   --animate-pulse-dot: pulse-dot 2.4s var(--ease-out-expo) infinite;
   --animate-marquee: marquee 40s linear infinite;
@@ -181,9 +193,36 @@
   opacity: 0;
   transform: translateY(18px);
   transition:
-    opacity 0.9s var(--ease-out-expo),
-    transform 0.9s var(--ease-out-expo);
+    opacity var(--dur-reveal) var(--ease-out-expo),
+    transform var(--dur-reveal) var(--ease-out-expo);
   transition-delay: var(--reveal-delay, 0ms);
+}
+
+/* Metric "settle": smaller rise, then a short red baseline draws in. */
+.metric {
+  position: relative;
+  display: inline-block;
+}
+.js [data-reveal="settle"] {
+  transform: translateY(10px);
+  transition-duration: var(--dur-slow);
+}
+.metric[data-line]::after {
+  content: "";
+  position: absolute;
+  left: 0.04em;
+  bottom: -0.14em;
+  width: min(1.1em, 100%);
+  height: 2px;
+  background: var(--color-signal);
+  transform-origin: left;
+}
+.js .metric[data-line]::after {
+  transform: scaleX(0);
+  transition: transform var(--dur-slow) var(--ease-out-expo) calc(var(--reveal-delay, 0ms) + 250ms);
+}
+.js .metric[data-line][data-revealed="true"]::after {
+  transform: scaleX(1);
 }
 .js [data-reveal][data-revealed="true"] {
   opacity: 1;
@@ -191,6 +230,7 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .js [data-reveal] { opacity: 1; transform: none; }
+  .js .metric[data-line]::after { transform: none; }
 }
 
 /* Long-form article typography */
@@ -255,4 +295,24 @@
 @keyframes gate-flash {
   0%, 6% { opacity: 1; }
   14%, 100% { opacity: 0; }
+}
+
+/* Scroll-driven connector fill (native CSS scroll timelines, no JS).
+   Browsers without support simply show the neutral line underneath. */
+.scroll-draw-y {
+  transform: scaleY(0);
+  transform-origin: top;
+}
+@supports (animation-timeline: view()) {
+  .scroll-draw-y {
+    animation: draw-y linear both;
+    animation-timeline: view();
+    animation-range: entry 30% cover 60%;
+  }
+}
+@keyframes draw-y {
+  to { transform: scaleY(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-draw-y { display: none; }
 }
