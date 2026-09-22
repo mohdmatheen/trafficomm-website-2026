@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# QA output (development only)
+/test-results/
+/playwright-report/
+/tests/__screenshots__/
+/.lighthouseci/

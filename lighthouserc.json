@@ -1,0 +1,80 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "npx next start -p 3500",
+      "startServerReadyPattern": "Ready",
+      "url": [
+        "http://localhost:3500/",
+        "http://localhost:3500/services/ad-operations"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "chromeFlags": "--headless=new --no-sandbox",
+        "throttlingMethod": "devtools"
+      },
+      "_comment": "Applied (devtools) mobile throttling. Lighthouse's default simulation counts every framework chunk requested before first paint as an LCP dependency, which over-states LCP for Next.js App Router pages (observed LCP = FCP here)."
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": [
+          "warn",
+          {
+            "minScore": 0.9
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:best-practices": [
+          "warn",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:seo": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "largest-contentful-paint": [
+          "error",
+          {
+            "maxNumericValue": 2500
+          }
+        ],
+        "cumulative-layout-shift": [
+          "error",
+          {
+            "maxNumericValue": 0.05
+          }
+        ],
+        "total-blocking-time": [
+          "warn",
+          {
+            "maxNumericValue": 300
+          }
+        ],
+        "dom-size": [
+          "warn",
+          {
+            "maxNumericValue": 2500
+          }
+        ],
+        "resource-summary:script:size": [
+          "error",
+          {
+            "maxNumericValue": 286720
+          }
+        ]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}

@@ -90,7 +90,7 @@ export function LifecycleRail({ stages }: { stages: readonly string[] }) {
                   </span>
                   <span className="font-mono text-[0.72rem] text-steel">{String(i + 1).padStart(2, "0")}</span>
                   <span className={cn("flex-1 text-[1.02rem] tracking-[-0.01em] transition-colors", done || on ? "text-ink" : "text-steel")}>{s}</span>
-                  <span className={cn("font-mono text-[0.7rem] uppercase tracking-[0.1em]", on ? "text-signal-ink" : done ? "text-graphite" : "text-steel/70")}>
+                  <span className={cn("font-mono text-[0.7rem] uppercase tracking-[0.1em]", on ? "text-signal-ink" : done ? "text-graphite" : "text-steel")}>
                     {done ? "Complete" : on ? "In progress" : "Queued"}
                   </span>
                 </li>

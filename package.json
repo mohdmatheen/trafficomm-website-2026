@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:e2e": "next build && playwright test",
+    "test:quality": "playwright test tests/quality.spec.ts tests/interactions.spec.ts",
+    "test:visual": "playwright test tests/visual.spec.ts",
+    "test:visual:update": "playwright test tests/visual.spec.ts --update-snapshots",
+    "lhci": "next build && lhci autorun",
+    "maps": "node scripts/generate-world-dots.mjs && node scripts/generate-saudi-dots.mjs"
   },
   "dependencies": {
     "gsap": "^3.15.0",
@@ -15,6 +21,8 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.15.1",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/d3-geo": "^3.1.1",
     "@types/node": "^20",

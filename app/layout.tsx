@@ -8,7 +8,9 @@ import { company, siteUrl } from "@/data/site";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
+// Mono is used only for small labels. "optional" avoids a late swap re-wrapping label lines (CLS on slow
+// connections); first slow visits keep the near-identical system monospace, cached visits use Geist Mono.
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "optional" });
 // Poppins SemiBold is used only for the wordmark, matching the brand logotype.
 const poppins = Poppins({ variable: "--font-poppins", subsets: ["latin"], weight: "600", display: "swap" });
 

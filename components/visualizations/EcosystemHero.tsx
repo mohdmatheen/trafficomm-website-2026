@@ -354,7 +354,7 @@ export function EcosystemHero() {
           transform={`translate(${n.x} ${n.y})`}
           tabIndex={0}
           role="button"
-          aria-label={`Trace ${n.label} through Trafficomm`}
+          aria-label={`${n.label}: trace its signal through Trafficomm`}
           className="cursor-pointer outline-none [&:focus-visible>rect:first-child]:stroke-[#ea3e3a] [&:focus-visible>rect:first-child]:[stroke-opacity:1]"
           onMouseEnter={(e) => trigger(i, e.timeStamp)}
           onFocus={(e) => trigger(i, e.timeStamp)}

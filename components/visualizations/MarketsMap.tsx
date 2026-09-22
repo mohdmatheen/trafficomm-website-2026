@@ -118,10 +118,9 @@ export function MarketsMap({
                   "flex w-full items-center justify-between py-3.5 text-left text-[1.05rem] tracking-[-0.01em] transition-colors",
                   active === m.code ? "text-signal-ink" : "text-ink",
                 )}
-                aria-label={`Highlight ${m.name} on the map`}
               >
                 <span className="flex items-center gap-3">
-                  <span className="font-mono text-[0.75rem] text-steel">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="font-mono text-[0.75rem] text-steel" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
                   {m.name}
                 </span>
                 <span className="size-2 rounded-full bg-signal" aria-hidden="true" />
