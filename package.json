@@ -11,7 +11,7 @@
     "test:quality": "playwright test tests/quality.spec.ts tests/interactions.spec.ts",
     "test:visual": "playwright test tests/visual.spec.ts",
     "test:visual:update": "playwright test tests/visual.spec.ts --update-snapshots",
-    "lhci": "next build && lhci autorun",
+    "lhci": "next build && npx --yes @lhci/cli@0.15.1 autorun",
     "maps": "node scripts/generate-world-dots.mjs && node scripts/generate-saudi-dots.mjs"
   },
   "dependencies": {
@@ -21,7 +21,6 @@
     "react-dom": "19.2.8"
   },
   "devDependencies": {
-    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/d3-geo": "^3.1.1",

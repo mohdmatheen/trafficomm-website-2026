@@ -15,10 +15,16 @@ Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS v4 · GSAP / S
 | `npm run test:quality` | Runtime health + interaction tests (needs a prior build) |
 | `npm run test:visual` | Screenshot regression against local baselines |
 | `npm run test:visual:update` | Regenerate visual baselines (`--update-snapshots`) |
-| `npm run lhci` | Build, then Lighthouse CI with performance budgets |
+| `npm run lhci` | Build, then Lighthouse CI with performance budgets (fetched on demand via `npx`, pinned version) |
 | `npm run maps` | Regenerate the static dot-map assets |
 
-Playwright uses the locally installed Google Chrome (`channel: "chrome"`); no browser download is required. Lighthouse CI needs `CHROME_PATH` pointing at Chrome when it cannot find it automatically.
+Playwright uses the locally installed Google Chrome (`channel: "chrome"`); no browser download is required.
+
+Lighthouse CI is **not** a project dependency (its dependency tree carries dev-only advisories). It runs on demand from the npx cache using the pinned version in the `lhci` script, with budgets from `lighthouserc.json`. If it cannot find Chrome:
+
+```bash
+CHROME_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" npm run lhci
+```
 
 ## Structure
 
