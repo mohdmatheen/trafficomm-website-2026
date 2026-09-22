@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { validateAssessment, type AssessmentInput } from "@/lib/assessment";
+import { isPreviewDeployment } from "@/lib/deployment";
 
 /**
  * Receives Operations Assessment requests.
@@ -36,6 +37,13 @@ export async function POST(request: Request) {
 
   const webhook = process.env.ASSESSMENT_WEBHOOK_URL;
   if (!webhook) {
+    // Preview deployments never forward data anywhere; they say so plainly.
+    if (isPreviewDeployment) {
+      return NextResponse.json(
+        { ok: false, message: "This is a preview deployment — form submissions are disabled. Nothing was sent." },
+        { status: 503 },
+      );
+    }
     if (process.env.NODE_ENV === "production") {
       return NextResponse.json(
         { ok: false, message: "Submissions are temporarily unavailable. Please try again later." },

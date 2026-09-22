@@ -1,14 +1,10 @@
 import type { MetadataRoute } from "next";
 import { siteUrl } from "@/data/site";
+import { isIndexable } from "@/lib/deployment";
 
-/**
- * Preview and staging deployments are never indexable: on Vercel, anything
- * other than the production environment disallows all crawling.
- */
-const isProduction = !process.env.VERCEL_ENV || process.env.VERCEL_ENV === "production";
-
+/** Disallow all crawling unless the deployment explicitly opts in (SITE_INDEXABLE=true). */
 export default function robots(): MetadataRoute.Robots {
-  if (!isProduction) return { rules: [{ userAgent: "*", disallow: "/" }] };
+  if (!isIndexable) return { rules: [{ userAgent: "*", disallow: "/" }] };
   return {
     rules: [{ userAgent: "*", allow: "/", disallow: ["/api/"] }],
     sitemap: `${siteUrl}/sitemap.xml`,

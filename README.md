@@ -91,4 +91,21 @@ See `.env.example`. `ASSESSMENT_WEBHOOK_URL` is server-only. Never commit `.env*
 
 ## Deployment
 
-Prepared for **Vercel preview deployments** only. Non-production Vercel environments are automatically `noindex` (robots + metadata). QA artefacts are excluded via `.vercelignore`. No production domain, DNS or live site is connected to this repository.
+Prepared for **Vercel preview deployments** only (branch `website-review`). No production domain, DNS or live site is connected to this repository.
+
+| Variable | Scope | Purpose |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Production at launch only | Canonical origin. Unset on Vercel → the deployment's own URL is used automatically. |
+| `ASSESSMENT_WEBHOOK_URL` | Server-only secret | Form delivery. Unset on previews → submissions are disabled with a clear message; nothing is sent. |
+| `SITE_INDEXABLE` | Production at launch only | `true` allows indexing. Unset (default) → `noindex, nofollow` via header, robots.txt and meta on every deployment, including the `*.vercel.app` project URL. |
+
+QA artefacts are excluded via `.vercelignore`.
+
+## Pre-production checklist
+
+- [ ] **Official TikTok asset required** — replace `public/platforms/tiktok.svg` (placeholder) with the official mark from TikTok's brand portal.
+- [ ] Set `ASSESSMENT_WEBHOOK_URL` to the agreed CRM/webhook endpoint.
+- [ ] At trafficomm.com launch only: set `NEXT_PUBLIC_SITE_URL=https://www.trafficomm.com` and `SITE_INDEXABLE=true` in Vercel **Production**.
+- [ ] Add confirmed contact details (email, phone, booking link) in `data/site.ts`.
+- [ ] Legal review of platform-mark usage (Google product marks in particular).
+- [ ] Brand film (approved storyboard) and full cost calculator — deferred, not started.

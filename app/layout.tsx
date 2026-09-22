@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { RevealObserver } from "@/components/motion/RevealObserver";
 import { JsonLd, organizationSchema, websiteSchema } from "@/components/seo/JsonLd";
 import { company, siteUrl } from "@/data/site";
+import { isIndexable } from "@/lib/deployment";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
@@ -26,8 +27,8 @@ export const metadata: Metadata = {
   openGraph: { siteName: company.name, type: "website", locale: "en_US" },
   twitter: { card: "summary_large_image" },
   formatDetection: { telephone: false, email: false, address: false },
-  // Belt and braces for previews: noindex on any non-production Vercel deployment.
-  ...(process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production" ? { robots: { index: false, follow: false } } : {}),
+  // noindex, nofollow unless the deployment explicitly opts in (see lib/deployment.ts).
+  ...(isIndexable ? {} : { robots: { index: false, follow: false } }),
 };
 
 export const viewport: Viewport = {

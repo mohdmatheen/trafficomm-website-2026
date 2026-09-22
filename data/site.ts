@@ -36,7 +36,14 @@ export const brandFilm = {
   durationLabel: "01:00",
 };
 
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+/**
+ * Canonical origin. Explicit NEXT_PUBLIC_SITE_URL wins; on Vercel it falls back
+ * to the deployment's own URL (production alias or branch URL) so previews
+ * never emit localhost canonicals; locally it is http://localhost:3000.
+ */
+const vercelHost =
+  process.env.VERCEL_ENV === "production" ? process.env.VERCEL_PROJECT_PRODUCTION_URL : (process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL);
+export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || (vercelHost ? `https://${vercelHost}` : "http://localhost:3000")).replace(/\/$/, "");
 
 export const scaleStats: Stat[] = [
   { value: 2015, display: "2015", label: "Founded", detail: "A decade of operating behind the campaign" },
