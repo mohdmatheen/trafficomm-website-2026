@@ -6,6 +6,8 @@ import { defineConfig } from "@playwright/test";
  * Uses the locally installed Chrome (no browser download required).
  */
 const PORT = 3300;
+// Point the suite at another server (e.g. a baseline build) with BASE_URL; otherwise a local production server is started.
+const external = process.env.BASE_URL;
 
 const widths = [
   { name: "w1440", width: 1440, height: 900 },
@@ -25,7 +27,7 @@ export default defineConfig({
   reporter: [["list"], ["html", { open: "never", outputFolder: "playwright-report" }]],
   expect: { toHaveScreenshot: { maxDiffPixelRatio: 0.01, animations: "disabled" } },
   use: {
-    baseURL: `http://localhost:${PORT}`,
+    baseURL: external ?? `http://localhost:${PORT}`,
     channel: "chrome",
     trace: "retain-on-failure",
   },
@@ -33,10 +35,12 @@ export default defineConfig({
     name: w.name,
     use: { viewport: { width: w.width, height: w.height }, hasTouch: Boolean(w.touch), isMobile: Boolean(w.touch) },
   })),
-  webServer: {
-    command: `npx next start -p ${PORT}`,
-    url: `http://localhost:${PORT}`,
-    reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
-  },
+  webServer: external
+    ? undefined
+    : {
+        command: `npx next start -p ${PORT}`,
+        url: `http://localhost:${PORT}`,
+        reuseExistingServer: !process.env.CI,
+        timeout: 60_000,
+      },
 });

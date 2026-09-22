@@ -26,7 +26,7 @@ test.describe("homepage interactions", () => {
       await meta.press("ArrowRight");
       await expect(page.getByRole("tab", { name: "Google Ads" })).toHaveAttribute("aria-selected", "true");
     } else {
-      const dv = page.getByRole("button", { name: /DV360/ });
+      const dv = page.locator("button[aria-expanded]").filter({ hasText: "DV360" });
       await dv.click();
       await expect(dv).toHaveAttribute("aria-expanded", "true");
     }

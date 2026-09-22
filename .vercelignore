@@ -1,0 +1,5 @@
+# Keep QA artefacts out of preview uploads.
+tests/__screenshots__
+test-results
+playwright-report
+.lighthouseci
