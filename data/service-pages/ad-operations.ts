@@ -36,7 +36,9 @@ export const adOperationsPage: ServicePageContent = {
   },
   lifecycle: {
     title: ["From Media Plan", "to Final Report."],
-    lead: "Every campaign moves through the same eight stages. Trafficomm can run all of them, or the ones where your team needs capacity.",
+    // The pipeline visual carries the stage-by-stage explanation; the lead only frames it.
+    lead: "Trafficomm can run every stage, or the ones where your team needs capacity.",
+    visual: "campaign-pipeline",
     stages: [
       { code: "01", title: "Campaign intake", summary: "The approved plan becomes an executable brief, received through your existing channel or ticketing tool.", items: ["Media plan review", "Campaign requirements", "Specs", "Assets", "Timelines"] },
       { code: "02", title: "Campaign build", summary: "Campaigns are set up and trafficked in the ad server and platforms, to your conventions.", items: ["Campaign setup", "Trafficking", "Ad-server setup", "Platform setup", "Tags", "Naming conventions"] },
@@ -61,7 +63,7 @@ export const adOperationsPage: ServicePageContent = {
   },
   qaGates: {
     title: ["Quality Is a Process.", "Not a Final Check."],
-    lead: "Work passes five gates between intake and reporting. Each gate has its own checks, and QA is performed separately from the build.",
+    lead: "QA is performed separately from the build, at five gates between intake and reporting.",
     gates: [
       { code: "Gate 01", title: "Input QA", checks: ["Media plan", "Assets", "Specs"] },
       { code: "Gate 02", title: "Build QA", checks: ["Campaign settings", "Budget", "Dates", "Targeting"] },

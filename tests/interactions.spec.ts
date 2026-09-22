@@ -77,14 +77,17 @@ test.describe("homepage interactions", () => {
 });
 
 test.describe("ad operations lifecycle", () => {
-  test("click selects a stage independently of scroll", async ({ page, viewport }) => {
+  // The scroll-linked lifecycle explorer was replaced by the campaign pipeline
+  // (visual storytelling prototype). Same guarantee, new component: a stage the
+  // visitor selects stays selected, and scrolling never moves it for them.
+  test("selecting a stage pins it against scroll and the auto sequence", async ({ page, viewport }) => {
     test.skip(!desktop(viewport!.width), "desktop rail");
     await page.goto("/services/ad-operations");
-    const stage = page.getByRole("tab", { name: /Campaign QA/ });
+    const stage = page.locator("div.hidden.lg\\:block ol[role=tablist]").first().getByRole("tab", { name: /Validate/ });
     await stage.click();
     await expect(stage).toHaveAttribute("aria-selected", "true");
     await page.mouse.wheel(0, 120);
-    await page.waitForTimeout(400);
+    await page.waitForTimeout(2200);
     await expect(stage).toHaveAttribute("aria-selected", "true");
   });
 });

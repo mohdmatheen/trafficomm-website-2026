@@ -12,6 +12,7 @@ import { ProofStrip } from "@/components/service-page/ProofStrip";
 import { QAGates } from "@/components/service-page/QAGates";
 import { ReportingCadence } from "@/components/service-page/ReportingCadence";
 import { ServiceHero } from "@/components/service-page/ServiceHero";
+import { CampaignPipeline } from "@/components/visual/CampaignPipeline";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { PlatformNetwork } from "@/components/visualizations/PlatformNetwork";
 import { platforms } from "@/data/platforms";
@@ -43,10 +44,18 @@ export function ServiceDetailPage({ content, name }: { content: ServicePageConte
         </div>
       </Section>
 
-      <Section tone="white" labelledBy="lifecycle-title">
-        <SectionHeading id="lifecycle-title" eyebrow="What Trafficomm handles" title={<Title t={c.lifecycle.title} />} lead={c.lifecycle.lead} />
-        <div className="mt-14">
-          <LifecycleExplorer stages={c.lifecycle.stages} />
+      {/* The campaign pipeline is the page's signature visual, so it sits on the dark canvas. */}
+      <Section tone={c.lifecycle.visual ? "dark" : "white"} labelledBy="lifecycle-title" className="overflow-hidden">
+        {c.lifecycle.visual && <div className="grid-bg-dark mask-fade-y pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />}
+        <div className="relative">
+          <SectionHeading
+            id="lifecycle-title"
+            tone={c.lifecycle.visual ? "dark" : "light"}
+            eyebrow="What Trafficomm handles"
+            title={<Title t={c.lifecycle.title} dark={Boolean(c.lifecycle.visual)} />}
+            lead={c.lifecycle.lead}
+          />
+          <div className="mt-14">{c.lifecycle.visual === "campaign-pipeline" ? <CampaignPipeline /> : <LifecycleExplorer stages={c.lifecycle.stages} />}</div>
         </div>
       </Section>
 

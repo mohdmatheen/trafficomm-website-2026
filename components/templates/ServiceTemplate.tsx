@@ -11,6 +11,9 @@ import { CapabilitySplit } from "@/components/service-page/CapabilitySplit";
 import { OptimizationSystem } from "@/components/service-page/OptimizationSystem";
 import { ReportingCadence } from "@/components/service-page/ReportingCadence";
 import { StageChain } from "@/components/service-page/StageChain";
+import { ReportingDashboard } from "@/components/visual/ReportingDashboard";
+import { SignalJourney } from "@/components/visual/SignalJourney";
+import { SignalPipeline } from "@/components/visual/SignalPipeline";
 import { ArrowLink, ButtonLink } from "@/components/ui/Button";
 import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
 import { ArrowRight } from "@/components/ui/Icons";
@@ -21,6 +24,7 @@ import { ModuleViz } from "@/components/visualizations/ModuleViz";
 import { caseStudies } from "@/data/case-studies";
 import { platforms } from "@/data/platforms";
 import { serviceDepth } from "@/data/service-depth";
+import { reportingPipeline } from "@/data/visual/reporting-dashboard";
 import type { Service } from "@/data/types";
 
 const Title = ({ t, dark = false }: { t: [string, string]; dark?: boolean }) => (
@@ -141,7 +145,14 @@ export function ServiceTemplate({ service }: { service: Service }) {
             <div className="mt-14">
               {sys.kind === "optimization" && <OptimizationSystem levers={sys.levers} kpis={sys.kpis} loop={sys.loop} note={sys.note} />}
               {sys.kind === "split" && <CapabilitySplit sides={sys.sides} connectors={sys.connectors} />}
-              {sys.kind === "chain" && <StageChain stages={sys.stages} label={`${service.name}: ${sys.title.join(" ")}`} />}
+              {sys.kind === "chain" &&
+                (sys.visual === "signal-journey" ? (
+                  <SignalJourney />
+                ) : sys.visual === "reporting-pipeline" ? (
+                  <SignalPipeline stages={reportingPipeline} label="Reporting pipeline" ownerLabels={{ client: "Platforms", trafficomm: "Trafficomm", output: "Delivered" }} />
+                ) : (
+                  <StageChain stages={sys.stages} label={`${service.name}: ${sys.title.join(" ")}`} />
+                ))}
             </div>
             {sys.kind === "chain" && sys.limits && (
               <div className="mt-10 grid gap-4 rounded-[var(--radius-panel)] bg-ink-2 p-6 ring-1 ring-line-dark sm:p-8 lg:grid-cols-[0.8fr_2fr] lg:gap-10" data-reveal>
@@ -171,15 +182,9 @@ export function ServiceTemplate({ service }: { service: Service }) {
       {sys?.kind === "chain" && sys.distinction && (
         <Section tone={tone()} labelledBy="dist-title">
           <SectionHeading id="dist-title" eyebrow="Reporting · Analysis · Insight" title={<Title t={sys.distinction.title} />} />
-          <ol className="mt-14 grid gap-4 md:grid-cols-3">
-            {sys.distinction.items.map((d, i) => (
-              <li key={d.label} className={`rounded-[var(--radius-panel)] p-7 sm:p-9 ${i === 2 ? "bg-ink text-white" : "bg-paper ring-1 ring-line"}`} data-reveal style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}>
-                <p className={`font-mono text-[0.74rem] uppercase tracking-[0.12em] ${i === 2 ? "text-signal" : "text-signal-ink"}`}>{d.label}</p>
-                <h3 className={`mt-6 text-h3 ${i === 2 ? "text-white" : "text-ink"}`}>{d.question}</h3>
-                <p className={`mt-3 text-[0.98rem] leading-relaxed ${i === 2 ? "text-fog" : "text-steel"}`}>{d.body}</p>
-              </li>
-            ))}
-          </ol>
+          <div className="mt-14" data-reveal>
+            <ReportingDashboard definitions={sys.distinction.items} />
+          </div>
           {depth?.cadences && (
             <div className="mt-20">
               <SectionHeading eyebrow="Cadence" title="Daily to end of campaign." />

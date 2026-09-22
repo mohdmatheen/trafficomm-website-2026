@@ -35,6 +35,8 @@ export type ServiceSystem =
       title: [string, string];
       lead: string;
       stages: ChainStage[];
+      /** Visual storytelling prototype: replaces the static chain with an animated signal pipeline. */
+      visual?: "signal-journey" | "reporting-pipeline";
       /** Optional supporting disciplines shown under the chain. */
       disciplines?: { title: [string, string]; items: { label: string; body: string }[] };
       /** Optional "what this can and cannot do" note. */
@@ -181,7 +183,8 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       kind: "chain",
       eyebrow: "Measurement chain",
       title: ["From User Action", "to Validated Signal."],
-      lead: "Each link in the chain is defined, implemented, tested and documented — so a number in a report can be traced back to the action that produced it.",
+      visual: "signal-journey",
+      lead: "Follow one event through the stack. Every link is defined, implemented, tested and documented.",
       stages: [
         { label: "User action", items: ["Conversion", "Key event"], owner: "client" },
         { label: "Data layer / event", items: ["Event name", "Parameters"] },
@@ -240,7 +243,8 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       kind: "chain",
       eyebrow: "Reporting pipeline",
       title: ["From Platform Data", "to Client Decision."],
-      lead: "Data is validated before it is aggregated, analyzed before it is shared, and delivered with a recommendation — in your templates and under your brand.",
+      visual: "reporting-pipeline",
+      lead: "Validated before it is aggregated, analyzed before it is shared, delivered with a recommendation.",
       stages: [
         { label: "Raw platform data", items: ["Ad platforms", "Ad servers", "Analytics"], owner: "client" },
         { label: "Validation", items: ["Totals", "Discrepancies"] },

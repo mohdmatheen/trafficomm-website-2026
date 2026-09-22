@@ -26,6 +26,8 @@ export type ServicePageContent = {
     title: [string, string];
     lead: string;
     stages: { code: string; title: string; summary: string; items: string[] }[];
+    /** Visual storytelling prototype: render the animated campaign pipeline instead of the stage explorer. */
+    visual?: "campaign-pipeline";
   };
   operatingChain?: {
     title: [string, string];
