@@ -24,7 +24,7 @@ import type { Stat } from "./types";
 type Metric = Stat & { id: string };
 
 export const companyMetrics = {
-  founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "A decade behind the campaign" },
+  founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "Operating since 2015" },
   campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Since 2015" },
   creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements", detail: "Since inception" },
   campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "UAE tourism campaign" },
