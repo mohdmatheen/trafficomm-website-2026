@@ -25,7 +25,7 @@ import { ArrowRight } from "@/components/ui/Icons";
 import { Metric } from "@/components/ui/Metric";
 import { PlatformMark } from "@/components/ui/PlatformMark";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { ModuleViz } from "@/components/visualizations/ModuleViz";
+import { ServiceIllustrationFluid } from "@/components/visual/ServiceIllustration";
 import { caseStudies } from "@/data/case-studies";
 import { platforms } from "@/data/platforms";
 import { serviceDepth } from "@/data/service-depth";
@@ -79,8 +79,20 @@ export function ServiceTemplate({ service }: { service: Service }) {
               <p className="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-ink">{service.name}</p>
               <p className="mt-1 font-mono text-[0.64rem] uppercase tracking-[0.12em] text-steel">{service.scopeLine.join(" · ")}</p>
             </div>
-            <div className={depth?.heroVisual ? "text-ink" : "h-40 px-6 pt-6 text-ink"}>
-              {depth?.heroVisual === "signal-board" ? <PerformanceSignalBoard /> : depth?.heroVisual === "format-board" ? <CreativeFormatBoard /> : <ModuleViz kind={service.viz} />}
+            {/* The old module diagram was drawn into a fixed 160px box; the
+                illustration sets its own height from its 9:5 ratio instead. */}
+            <div className={depth?.heroVisual ? "text-ink" : "px-6 py-7 text-ink"}>
+              {/* Performance and Creative have their own approved hero boards. The rest
+                  showed a generic module diagram; they now open with the service's
+                  illustration, and the operating systems further down the page are
+                  untouched. */}
+              {depth?.heroVisual === "signal-board" ? (
+                <PerformanceSignalBoard />
+              ) : depth?.heroVisual === "format-board" ? (
+                <CreativeFormatBoard />
+              ) : (
+                <ServiceIllustrationFluid slug={service.slug} className="mx-auto max-w-[24rem]" />
+              )}
             </div>
             <div className="border-t border-line p-5">
               <p className="eyebrow !text-[0.62rem] text-steel">Platforms involved</p>

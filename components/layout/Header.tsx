@@ -9,7 +9,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { ArrowRight, ChevronDown, Menu } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
 import { PlatformMark } from "@/components/ui/PlatformMark";
-import { ServiceGlyph } from "@/components/visual/ServiceGlyph";
+import { ServiceIllustration } from "@/components/visual/ServiceIllustration";
 import { SolutionGlyph } from "@/components/visual/SolutionGlyph";
 import { MobileNav } from "./MobileNav";
 
@@ -135,12 +135,12 @@ export function Header() {
 const slugOf = (href: string) => href.split("/").filter(Boolean).pop() ?? "";
 
 /**
- * The menu shows what each service does rather than naming it twice: a
- * miniature of its operating model sits beside every link, so the six
- * capabilities are distinguishable before the label is read. Solutions use
- * layer diagrams instead, because they answer a different question — where
- * Trafficomm sits in your organisation. Every glyph is decorative; the link
- * text is the accessible name.
+ * The menu shows what each service does rather than naming it twice: the
+ * service's own illustration sits beside every link, at the size it was drawn
+ * for, so the six capabilities are distinguishable before the label is read.
+ * Solutions use layer diagrams instead, because they answer a different
+ * question — where Trafficomm sits in your organisation. Both are decorative;
+ * the link text is the accessible name.
  */
 function MegaTrigger({ group, open, active, onToggle, inverted }: { group: NavGroup; open: boolean; active: boolean; onToggle: () => void; inverted: boolean }) {
   const panelId = useId();
@@ -165,27 +165,34 @@ function MegaTrigger({ group, open, active, onToggle, inverted }: { group: NavGr
       {open && (
         <div
           id={panelId}
-          className={cn("left-1/2 -translate-x-1/2 pt-3", wide ? "fixed top-16 w-[min(60rem,92vw)] lg:top-[4.5rem]" : "absolute top-full w-[min(760px,90vw)]")}
+          className={cn(
+            "left-1/2 -translate-x-1/2 pt-3",
+            // Services carry full-size illustrations, so that panel is wider —
+            // enough that a name like "Performance Marketing" stays on one line.
+            wide ? cn("fixed top-16 lg:top-[4.5rem]", kind === "service" ? "w-[min(70rem,94vw)]" : "w-[min(60rem,92vw)]") : "absolute top-full w-[min(760px,90vw)]",
+          )}
         >
           <div className="overflow-hidden rounded-[var(--radius-panel)] bg-white shadow-[0_24px_60px_-20px_rgb(0_0_0/0.25)] ring-1 ring-line">
             <div className="grid grid-cols-[1fr_15rem]">
               <div className="p-6">
                 <p className="eyebrow mb-4 text-steel">{group.intro}</p>
-                <ul className={cn("grid gap-1", kind === "platform" ? "grid-cols-3" : "grid-cols-2")}>
+                <ul className={cn("grid", kind === "platform" ? "grid-cols-3 gap-1" : kind === "service" ? "grid-cols-2 gap-1.5" : "grid-cols-2 gap-1")}>
                   {group.links.map((l) => {
                     const slug = slugOf(l.href);
                     return (
                       <li key={l.href}>
-                        <Link href={l.href} className="group flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-paper">
+                        <Link href={l.href} className={cn("group flex items-start rounded-xl px-3 transition-colors hover:bg-paper", kind === "service" ? "gap-5 py-3" : "gap-3 py-2.5")}>
                           {kind === "platform" ? (
                             <PlatformMark slug={slug} size={26} className="mt-0.5 shrink-0 rounded-md" />
+                          ) : kind === "service" ? (
+                            <ServiceIllustration slug={slug} width={144} className="mt-0.5 shrink-0" />
                           ) : (
                             <span className="mt-1 w-[4.5rem] shrink-0 transition-opacity duration-300 group-hover:opacity-100 sm:opacity-90">
-                              {kind === "service" ? <ServiceGlyph slug={slug} /> : <SolutionGlyph slug={slug} />}
+                              <SolutionGlyph slug={slug} />
                             </span>
                           )}
                           <span className="min-w-0 flex-1">
-                            <span className="flex items-center justify-between gap-2 text-[0.92rem] text-ink">
+                            <span className={cn("flex items-center justify-between gap-2 text-[0.92rem] text-ink", kind === "service" && "whitespace-nowrap")}>
                               {l.label}
                               <ArrowRight className="size-3.5 -translate-x-1 text-signal opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                             </span>

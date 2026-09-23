@@ -63,16 +63,29 @@ test.describe("services mega-menu", () => {
 test.describe("homepage service explorer", () => {
   const explorer = (page: Page) => page.locator("section[aria-labelledby=services-title]");
 
-  test("six capabilities, each with its own operating model", async ({ page }) => {
+  // The panel used to draw a miniature built from stage words ("Brief", "Plan").
+  // It now shows the service's supplied illustration, so the panel is checked by
+  // which illustration it carries rather than by stage text inside the drawing.
+  test("six capabilities, each with its own illustration", async ({ page }) => {
     await page.goto("/");
     const tabs = explorer(page).getByRole("tab");
     await expect(tabs).toHaveCount(6);
     await expect(tabs.first()).toHaveAttribute("aria-selected", "true");
-    await expect(explorer(page).getByRole("tabpanel")).toContainText("Brief");
+    await expect(explorer(page).getByRole("tabpanel").locator("img")).toHaveAttribute("src", "/illustrations/services/ad-operations.svg");
 
     await tabs.nth(2).click();
     await expect(explorer(page).getByRole("tabpanel")).toContainText("DV360");
+    await expect(explorer(page).getByRole("tabpanel").locator("img")).toHaveAttribute("src", "/illustrations/services/programmatic.svg");
     await expect(explorer(page).getByRole("tabpanel").getByRole("link", { name: /Programmatic Operations/ })).toHaveAttribute("href", "/services/programmatic");
+  });
+
+  test("all six services are distinguishable by artwork alone", async ({ page }) => {
+    await page.goto("/services");
+    // Six cards, six different illustrations — no two services share one.
+    const srcs = await page.locator("main a[href^='/services/'] img").evaluateAll((els) => els.map((e) => e.getAttribute("src")));
+    expect(srcs).toHaveLength(6);
+    expect(new Set(srcs).size).toBe(6);
+    for (const s of srcs) expect(s).toMatch(/^\/illustrations\/services\/.+\.svg$/);
   });
 
   test("arrow keys move between capabilities", async ({ page }) => {

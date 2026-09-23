@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useId, useState } from "react";
 import { ArrowRight } from "@/components/ui/Icons";
-import { ServiceGlyph, glyphCaption } from "@/components/visual/ServiceGlyph";
+import { ServiceIllustration, ServiceIllustrationFluid, serviceCaption } from "@/components/visual/ServiceIllustration";
 import { cn } from "@/lib/cn";
 
 type Item = { slug: string; name: string; short: string };
@@ -12,14 +12,16 @@ type Item = { slug: string; name: string; short: string };
  * The company in one interface: six capabilities, and the operating model
  * behind whichever one you select.
  *
- * It is a preview, not a copy of the service pages — each glyph is the
- * miniature used in navigation, shown large enough to read. The point is that
- * a visitor can tell what Ad Operations is by looking at it, and only then
+ * It is a preview, not a copy of the service pages — the panel shows the
+ * service's own illustration at the size it was drawn for, and the service
+ * page underneath explains how the work is actually run. The point is that a
+ * visitor can tell what Ad Operations is by looking at it, and only then
  * decide whether to read the page.
  *
  * Static by design: selection changes the picture, nothing animates on its
  * own, so there is nothing to wait for and nothing to disable under reduced
- * motion. Panel height is reserved so switching never moves the page.
+ * motion. All six illustrations share one aspect ratio, so the panel is a
+ * fixed height and switching never moves the page.
  */
 export function ServiceExplorer({ items }: { items: Item[] }) {
   const id = useId();
@@ -61,10 +63,10 @@ export function ServiceExplorer({ items }: { items: Item[] }) {
                   on ? "bg-white ring-signal" : "bg-white/60 ring-line hover:ring-line-strong",
                 )}
               >
-                <ServiceGlyph slug={it.slug} className="shrink-0" />
+                <ServiceIllustration slug={it.slug} width={72} className="shrink-0" />
                 <span className="min-w-0">
                   <span className={cn("block text-[1rem] leading-tight tracking-[-0.01em]", on ? "text-ink" : "text-graphite")}>{it.name}</span>
-                  <span className="mt-0.5 block font-mono text-[0.62rem] uppercase tracking-[0.08em] text-steel">{glyphCaption[it.slug]}</span>
+                  <span className="mt-0.5 block font-mono text-[0.62rem] uppercase tracking-[0.08em] text-steel">{serviceCaption[it.slug]}</span>
                 </span>
               </button>
             </li>
@@ -75,11 +77,11 @@ export function ServiceExplorer({ items }: { items: Item[] }) {
       <div id={`${id}-p`} role="tabpanel" aria-label={`${item.name} operating model`} className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
           <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink">{item.name}</span>
-          <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-steel">{glyphCaption[item.slug]}</span>
+          <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-steel">{serviceCaption[item.slug]}</span>
         </div>
-        <div key={item.slug} className="flex min-h-[19rem] flex-col justify-between gap-6 p-6 sm:min-h-[17rem] sm:p-8 animate-enter">
-          <div className="flex flex-1 items-center justify-center rounded-[var(--radius-card)] bg-paper px-5 py-8 ring-1 ring-line sm:px-8">
-            <ServiceGlyph slug={item.slug} full className="w-full max-w-[36rem]" />
+        <div key={item.slug} className="flex min-h-[17rem] flex-col justify-between gap-6 p-6 sm:min-h-[16rem] sm:p-8 animate-enter">
+          <div className="flex flex-1 items-center justify-center rounded-[var(--radius-card)] bg-paper px-5 py-6 ring-1 ring-line sm:px-8">
+            <ServiceIllustrationFluid slug={item.slug} className="max-w-[30rem]" />
           </div>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <p className="max-w-md text-[0.98rem] leading-relaxed text-steel">{item.short}</p>

@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { Close, Plus } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
 import { PlatformMark } from "@/components/ui/PlatformMark";
-import { ServiceGlyph } from "@/components/visual/ServiceGlyph";
+import { ServiceIllustration } from "@/components/visual/ServiceIllustration";
 import { SolutionGlyph } from "@/components/visual/SolutionGlyph";
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -99,11 +99,22 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                       const slug = l.href.split("/").filter(Boolean).pop() ?? "";
                       return (
                         <li key={l.href}>
-                          <Link href={l.href} onClick={onClose} className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-[1rem] text-graphite active:bg-white">
+                          <Link
+                            href={l.href}
+                            onClick={onClose}
+                            className={cn(
+                              "flex min-h-11 items-center rounded-lg px-3 py-2.5 text-[1rem] text-graphite active:bg-white",
+                              group.label === "Services" ? "gap-4" : "gap-3",
+                            )}
+                          >
                             {group.label === "Platforms" ? (
                               <PlatformMark slug={slug} size={24} className="shrink-0 rounded-md" />
+                            ) : group.label === "Services" ? (
+                              <ServiceIllustration slug={slug} width={92} className="shrink-0" />
                             ) : (
-                              <span className="w-12 shrink-0">{group.label === "Services" ? <ServiceGlyph slug={slug} /> : <SolutionGlyph slug={slug} />}</span>
+                              <span className="w-12 shrink-0">
+                                <SolutionGlyph slug={slug} />
+                              </span>
                             )}
                             {l.label}
                           </Link>

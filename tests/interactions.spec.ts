@@ -4,20 +4,22 @@ const desktop = (w: number) => w >= 1024;
 
 test.describe("homepage interactions", () => {
   /**
-   * The homepage capability explorer now shows each service's operating model
-   * instead of a generic workflow with stage text, and it uses the same tab
-   * composition at every width rather than an accordion on mobile. The
-   * guarantee under test is unchanged: selecting a capability changes the
-   * panel, and the keyboard moves between capabilities.
+   * The homepage capability explorer now shows each service's supplied
+   * illustration instead of a miniature built from stage labels, so the panel
+   * no longer contains words like "Plan". The guarantee under test is
+   * unchanged: selecting a capability changes the panel to that capability,
+   * and the keyboard moves between capabilities. What the panel must carry is
+   * the service's own caption, its summary and a link to its page.
    */
-  test("service explorer switches operating model (click + keyboard)", async ({ page }) => {
+  test("service explorer switches capability (click + keyboard)", async ({ page }) => {
     await page.goto("/");
     const explorer = page.locator("section[aria-labelledby=services-title]");
     const tab = explorer.getByRole("tab", { name: /Programmatic Operations/ });
     await tab.click();
     const panel = explorer.getByRole("tabpanel");
     await expect(panel).toContainText("DV360");
-    await expect(panel).toContainText("Plan");
+    await expect(panel).toContainText("Bid, scan inventory, win the impression");
+    await expect(panel.locator("img")).toHaveAttribute("src", "/illustrations/services/programmatic.svg");
     await expect(panel.getByRole("link", { name: /Programmatic Operations/ })).toHaveAttribute("href", "/services/programmatic");
     await tab.press("ArrowDown");
     await expect(explorer.getByRole("tab", { name: /Measurement & Analytics/ })).toHaveAttribute("aria-selected", "true");

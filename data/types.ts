@@ -34,7 +34,6 @@ export type Service = {
   platforms: string[];
   relatedCases: string[];
   faqs: FAQ[];
-  viz: "pacing" | "funnel" | "lineitems" | "tags" | "report" | "creative";
   /** Homepage capability explorer: operational flow and headline capabilities. */
   explorer: { flow: { label: string; details: string[] }[]; capabilities: string[] };
 };

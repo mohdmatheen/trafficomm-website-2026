@@ -78,7 +78,6 @@ export const services: Service[] = [
         a: "Through a phased transition: knowledge acquisition, secondary shadowing, primary shadowing and steady state — sequenced by complexity and business criticality. See How We Work for the full model.",
       },
     ],
-    viz: "pacing",
     explorer: {
       flow: [
         { label: "Plan", details: ["Media plan review", "Requirements", "Specs & assets"] },
@@ -156,7 +155,6 @@ export const services: Service[] = [
         a: "The ones your clients are judged on — typically CPL, CPA, CPV, VTR and ROAS — defined at the start of each engagement.",
       },
     ],
-    viz: "funnel",
     explorer: {
       flow: [
         { label: "Data", details: ["Historical performance", "Account structure", "Tracking check"] },
@@ -224,7 +222,6 @@ export const services: Service[] = [
         a: "Yes. The typical model is that your traders own strategy and buying decisions while Trafficomm handles structure, trafficking, approvals, troubleshooting and reporting.",
       },
     ],
-    viz: "lineitems",
     explorer: {
       flow: [
         { label: "Media plan", details: ["Approved plan", "Booking order", "Materials"] },
@@ -292,7 +289,6 @@ export const services: Service[] = [
         a: "No. We typically implement and validate the tracking layer and support your analysts and media teams with reliable data.",
       },
     ],
-    viz: "tags",
     explorer: {
       flow: [
         { label: "User action", details: ["Conversions", "Key events"] },
@@ -360,7 +356,6 @@ export const services: Service[] = [
         a: "Yes. Reports can be produced in your templates and under your brand, so Trafficomm stays invisible to your clients if you prefer.",
       },
     ],
-    viz: "report",
     explorer: {
       flow: [
         { label: "Platform data", details: ["Ad platforms", "Ad servers", "Analytics"] },
@@ -429,7 +424,6 @@ export const services: Service[] = [
         a: "Yes. For publishers we design advertising inventory frameworks, integrate Google Ad Manager, manage campaigns and automate inventory and billing reporting.",
       },
     ],
-    viz: "creative",
     explorer: {
       flow: [
         { label: "Brief", details: ["Objectives", "Formats", "Placements"] },
