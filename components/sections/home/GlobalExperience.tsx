@@ -1,7 +1,7 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { WorldMap } from "@/components/visualizations/WorldMap";
 
-export function GlobalExperience({ index = "10" }: { index?: string | null }) {
+export function GlobalExperience({ index = "08" }: { index?: string | null }) {
   return (
     <Section tone="paper" labelledBy="global-title" className="overflow-hidden">
       <SectionHeading

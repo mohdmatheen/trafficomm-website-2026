@@ -10,7 +10,7 @@ export function ServicesGrid() {
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <SectionHeading
           id="services-title"
-          index="04"
+          index="03"
           eyebrow="Capabilities"
           title={
             <>

@@ -31,9 +31,9 @@ export default function CaseStudiesPage() {
       />
       <Section tone="paper" className="!pt-0">
         <div className="grid gap-4 md:grid-cols-2">
-          <CaseStudyCard cs={flagship} tone="dark" detailed />
+          <CaseStudyCard cs={flagship} tone="dark" detailed as="h2" />
           {rest.map((cs) => (
-            <CaseStudyCard key={cs.slug} cs={cs} detailed />
+            <CaseStudyCard key={cs.slug} cs={cs} detailed as="h2" />
           ))}
         </div>
       </Section>

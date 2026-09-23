@@ -10,7 +10,7 @@ export async function InsightsPreview() {
       <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
         <SectionHeading
           id="lab-title"
-          index="12"
+          index="10"
           eyebrow="Performance Lab"
           title={
             <>

@@ -5,8 +5,14 @@ import { ArrowRight } from "@/components/ui/Icons";
 import { CaseMotif } from "@/components/visualizations/CaseMotif";
 import { EvidenceMark } from "@/components/visual/EvidenceMark";
 
-/** `detailed` adds challenge and Trafficomm role lines for the case-study index. */
-export function CaseStudyCard({ cs, className, tone = "light", detailed = false }: { cs: CaseStudy; className?: string; tone?: "light" | "dark"; detailed?: boolean }) {
+/**
+ * `detailed` adds challenge and Trafficomm role lines for the case-study index.
+ *
+ * `as` sets the card title's heading level: h3 under a section heading, h2 on
+ * the case-study index where the cards are the page's top-level content and an
+ * h3 there would skip a level.
+ */
+export function CaseStudyCard({ cs, className, tone = "light", detailed = false, as: Title = "h3" }: { cs: CaseStudy; className?: string; tone?: "light" | "dark"; detailed?: boolean; as?: "h2" | "h3" }) {
   const dark = tone === "dark";
   return (
     <Link
@@ -33,7 +39,7 @@ export function CaseStudyCard({ cs, className, tone = "light", detailed = false 
         <p className="mt-5 whitespace-nowrap text-stat text-signal">{cs.headlineStat.value}</p>
         <EvidenceMark value={cs.headlineStat.value} tone={tone} className="mt-3" />
         <p className={cn("eyebrow mt-3 !text-[0.7rem]", dark ? "text-fog" : "text-graphite")}>{cs.headlineStat.label}</p>
-        <h3 className={cn("mt-6 text-[1.35rem] leading-tight tracking-[-0.025em]", dark ? "text-white" : "text-ink")}>{cs.cardTitle}</h3>
+        <Title className={cn("mt-6 text-[1.35rem] leading-tight tracking-[-0.025em]", dark ? "text-white" : "text-ink")}>{cs.cardTitle}</Title>
         <p className={cn("mt-2 text-[0.96rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{cs.client}</p>
         {detailed && cs.metrics.length > 1 && (
           <ul className={cn("mt-5 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.68rem] uppercase tracking-[0.1em]", dark ? "text-fog" : "text-steel")}>

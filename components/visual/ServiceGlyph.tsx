@@ -86,18 +86,53 @@ function Lanes({ full, dark }: { full: boolean; dark: boolean }) {
   const laneNames = ["Agency", "Trafficomm", "Supply"];
   const cx = (i: number) => ((i + 0.5) / 4) * 100;
   const cy = (l: number) => (l + 0.5) * (100 / 3);
-  return (
-    <div className={cn("grid w-full gap-x-2", full ? "grid-cols-[4.5rem_1fr]" : "grid-cols-1")}>
-      {full && (
-        <div className="grid grid-rows-3">
-          {laneNames.map((n) => (
-            <span key={n} className="flex items-center">
-              <L dark={dark}>{n}</L>
-            </span>
+
+  // Menu size: three lanes and one route stepping through them. No labels, no
+  // boxes — at 72px the shape has to carry it on its own.
+  if (!full)
+    return (
+      <span className="relative block h-9 w-full">
+        <span className="absolute inset-0 grid grid-rows-3 gap-[3px]" aria-hidden="true">
+          {laneNames.map((n, i) => (
+            <span key={n} className={cn("rounded-[2px]", i === 1 ? (dark ? "bg-white/[0.12]" : "bg-ink/[0.10]") : dark ? "bg-white/[0.04]" : "bg-ink/[0.04]")} />
           ))}
-        </div>
-      )}
-      <div className={cn("relative grid grid-cols-4 grid-rows-3", full ? "h-[5.5rem]" : "h-9")}>
+        </span>
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full" aria-hidden="true">
+          {nodes.slice(0, -1).map((n, i) => {
+            const mid = (cx(i) + cx(i + 1)) / 2;
+            return (
+              <path
+                key={n.label}
+                d={`M ${cx(i)} ${cy(n.lane)} L ${mid} ${cy(n.lane)} L ${mid} ${cy(nodes[i + 1].lane)} L ${cx(i + 1)} ${cy(nodes[i + 1].lane)}`}
+                fill="none"
+                className="stroke-signal"
+                strokeWidth="2"
+                vectorEffect="non-scaling-stroke"
+              />
+            );
+          })}
+        </svg>
+        {nodes.map((n, i) => (
+          <span
+            key={n.label}
+            className={cn("absolute size-[7px] -translate-x-1/2 -translate-y-1/2 rounded-[2px]", i === 3 ? "bg-signal" : dark ? "bg-white" : "bg-ink")}
+            style={{ left: `${cx(i)}%`, top: `${cy(n.lane)}%` }}
+            aria-hidden="true"
+          />
+        ))}
+      </span>
+    );
+
+  return (
+    <div className="grid w-full grid-cols-[4.5rem_1fr] gap-x-2">
+      <div className="grid grid-rows-3">
+        {laneNames.map((n) => (
+          <span key={n} className="flex items-center">
+            <L dark={dark}>{n}</L>
+          </span>
+        ))}
+      </div>
+      <div className="relative grid h-[5.5rem] grid-cols-4 grid-rows-3">
         <div className="pointer-events-none absolute inset-0 grid grid-rows-3" aria-hidden="true">
           {laneNames.map((n, i) => (
             <span key={n} className={cn("rounded-[3px]", i === 1 && (dark ? "bg-white/[0.06]" : "bg-paper ring-1 ring-inset ring-line"))} />
@@ -120,8 +155,8 @@ function Lanes({ full, dark }: { full: boolean; dark: boolean }) {
         </svg>
         {nodes.map((n, i) => (
           <span key={n.label} className="relative z-10 flex items-center justify-center p-0.5" style={{ gridColumn: i + 1, gridRow: n.lane + 1 }}>
-            <span className={cn(CELL, "flex w-full items-center justify-center px-1", full ? "h-6" : "h-3.5", dark ? "bg-ink-2 ring-line-dark-strong" : "bg-white ring-line-strong")}>
-              {full && <L dark={dark} className="truncate">{n.label}</L>}
+            <span className={cn(CELL, "flex h-6 w-full items-center justify-center px-1", dark ? "bg-ink-2 ring-line-dark-strong" : "bg-white ring-line-strong")}>
+              <L dark={dark} className="truncate">{n.label}</L>
             </span>
           </span>
         ))}
@@ -131,9 +166,23 @@ function Lanes({ full, dark }: { full: boolean; dark: boolean }) {
 }
 
 function SignalPath({ full, dark }: { full: boolean; dark: boolean }) {
-  const node = (label: string, key?: string) => (
-    <span key={key ?? label} className={cn(CELL, "flex items-center justify-center px-1", full ? "h-6" : "h-3.5", dark ? "bg-white/[0.06] ring-line-dark-strong" : "bg-paper ring-line-strong")}>
-      {full && <L dark={dark} className="truncate">{label}</L>}
+  if (!full)
+    return (
+      <span className="block w-full">
+        <svg viewBox="0 0 72 34" className="h-9 w-full" aria-hidden="true">
+          <path d="M6 17h16M34 17h6M52 10h8M52 24h8" className="stroke-signal" strokeWidth="2" strokeLinecap="round" />
+          <path d="M40 17c6 0 6-7 12-7M40 17c6 0 6 7 12 7" fill="none" className="stroke-signal" strokeWidth="2" />
+          <rect x="1" y="12" width="6" height="10" rx="1.5" className={dark ? "fill-white" : "fill-ink"} />
+          <rect x="22" y="11" width="12" height="12" rx="2" className={dark ? "fill-white/85" : "fill-ink/85"} />
+          <rect x="60" y="5" width="11" height="10" rx="1.5" className="fill-signal" />
+          <rect x="60" y="19" width="11" height="10" rx="1.5" className={dark ? "fill-white/60" : "fill-ink/50"} />
+        </svg>
+      </span>
+    );
+
+  const node = (label: string, ring = false) => (
+    <span className={cn(CELL, "flex h-6 items-center justify-center px-1", ring ? "bg-signal-soft/10 ring-signal" : dark ? "bg-white/[0.06] ring-line-dark-strong" : "bg-paper ring-line-strong")}>
+      <L dark={dark} className="truncate">{label}</L>
     </span>
   );
   return (
@@ -147,9 +196,7 @@ function SignalPath({ full, dark }: { full: boolean; dark: boolean }) {
         {node("Server")}
       </span>
       <span className="h-px w-3 bg-signal" aria-hidden="true" />
-      <span className={cn(CELL, "flex items-center justify-center px-1 ring-signal", full ? "h-6" : "h-3", dark ? "bg-signal-soft/10" : "bg-signal-soft/10")}>
-        {full && <L dark={dark} className="truncate !text-ink dark:!text-white">Validate</L>}
-      </span>
+      {node("Validate", true)}
     </div>
   );
 }

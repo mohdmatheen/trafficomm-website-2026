@@ -52,7 +52,7 @@ export const systemNodes: readonly SystemNode[] = [
     label: "Build",
     track: "creative",
     summary: "Production in the format the placement calls for — by a creative director, designers and developers who work in advertising formats.",
-    items: ["Static creative", "Video creative", "Rich media", "HTML5", "Celtra", "Bonzai", "Creative development"],
+    items: ["Creative development", "HTML5", "Celtra", "Bonzai"],
   },
   {
     id: "creative-qa",

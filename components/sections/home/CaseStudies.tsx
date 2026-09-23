@@ -5,7 +5,7 @@ import { Lock } from "@/components/ui/Icons";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { caseStudies } from "@/data/case-studies";
 
-export function CaseStudies({ index = "09" }: { index?: string | null }) {
+export function CaseStudies({ index = "07" }: { index?: string | null }) {
   const featured = caseStudies.filter((c) => c.slug !== "mena-agency-ad-operations");
   return (
     <Section tone="white" labelledBy="cases-title">

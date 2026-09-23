@@ -7,7 +7,7 @@ export function CalculatorTeaser() {
       <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
         <SectionHeading
           id="calc-title"
-          index="13"
+          index="11"
           eyebrow="Operations economics"
           title={
             <>

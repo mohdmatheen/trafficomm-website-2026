@@ -59,8 +59,11 @@ test.describe("homepage interactions", () => {
     }
   });
 
+  // The operating engine left the homepage in the final pass — the service pages and the
+  // homepage service explorer already carry the lifecycle — and now lives on /services.
+  // Same component, same guarantee: it pins on desktop and never on a phone.
   test("operating engine pins on desktop only", async ({ page, viewport }) => {
-    await page.goto("/");
+    await page.goto("/services");
     await page.locator("#engine-title").scrollIntoViewIfNeeded();
     await page.waitForTimeout(800);
     const pinned = await page.locator(".pin-spacer").count();
@@ -97,10 +100,13 @@ test.describe("reduced motion", () => {
   test.use({ reducedMotion: "reduce" });
 
   test("no pinning, static final states", async ({ page }) => {
-    await page.goto("/");
+    // Pinning is checked where the engine now lives; the reveal check stays on the homepage.
+    await page.goto("/services");
     await page.locator("#engine-title").scrollIntoViewIfNeeded();
     await page.waitForTimeout(600);
     expect(await page.locator(".pin-spacer").count()).toBe(0);
+    await page.goto("/");
+    await page.waitForTimeout(400);
     // Revealed content is visible without scrolling into view.
     const hidden = await page.evaluate(() => [...document.querySelectorAll("[data-reveal]")].filter((e) => getComputedStyle(e).opacity === "0").length);
     expect(hidden).toBe(0);

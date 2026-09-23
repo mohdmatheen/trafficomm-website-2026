@@ -1,7 +1,7 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { AIPipeline } from "@/components/visualizations/AIPipeline";
 
-export function AIOperations({ index = "11" }: { index?: string | null }) {
+export function AIOperations({ index = "09" }: { index?: string | null }) {
   return (
     <Section tone="white" labelledBy="ai-title">
       <div className="grid gap-8 lg:grid-cols-[1.3fr_1fr] lg:items-end">

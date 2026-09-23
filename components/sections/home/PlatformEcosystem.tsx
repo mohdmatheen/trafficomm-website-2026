@@ -2,7 +2,7 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { PlatformNetwork } from "@/components/visualizations/PlatformNetwork";
 import { platforms } from "@/data/platforms";
 
-export function PlatformEcosystem({ index = "05" }: { index?: string | null }) {
+export function PlatformEcosystem({ index = "04" }: { index?: string | null }) {
   const items = platforms.map(({ slug, name, officialName, category, ecosystem }) => ({ slug, name, officialName, category, ecosystem }));
   return (
     <Section tone="dark" labelledBy="platforms-title" className="overflow-hidden">

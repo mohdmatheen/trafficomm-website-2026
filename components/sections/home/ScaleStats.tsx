@@ -37,7 +37,8 @@ export function ScaleStats() {
             </div>
           ))}
         </dl>
-          <p className="mt-5 max-w-xl text-[0.84rem] leading-relaxed text-steel">{campaignScaleNote}</p>
+          <p className="mt-5 max-w-xl text-[0.9rem] leading-relaxed text-graphite">Behind every number: work that was set up, checked, monitored and reported.</p>
+          <p className="mt-3 max-w-xl text-[0.84rem] leading-relaxed text-steel">{campaignScaleNote}</p>
         </div>
       </div>
     </Section>

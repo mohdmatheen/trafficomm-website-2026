@@ -21,7 +21,7 @@ function Arrow({ vertical = false }: { vertical?: boolean }) {
   );
 }
 
-export function OperatingModel({ index = "08" }: { index?: string | null }) {
+export function OperatingModel({ index = "06" }: { index?: string | null }) {
   return (
     <Section tone="paper" labelledBy="model-title">
       <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">

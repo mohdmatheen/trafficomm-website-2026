@@ -10,7 +10,7 @@ const covers = [
 ];
 
 export function Conversion({
-  index = "14",
+  index = "12",
   eyebrow = "Let's talk operations",
   title = ["What's Slowing", "Your Media Team Down?"],
   lead = "Request an operations assessment. We'll look at how your campaigns move from plan to report — and where a performance operations layer would make the difference.",

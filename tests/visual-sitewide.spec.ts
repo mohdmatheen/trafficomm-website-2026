@@ -141,6 +141,13 @@ test.describe("evidence and objects", () => {
     expect(text).not.toMatch(/~30 (today|now|current)/i);
   });
 
+  test("the case index heading order never skips a level", async ({ page }) => {
+    await page.goto("/case-studies");
+    const levels = await page.evaluate(() => [...document.querySelectorAll("main h1, main h2, main h3, main h4")].map((h) => Number(h.tagName[1])));
+    expect(levels[0]).toBe(1);
+    for (let i = 1; i < levels.length; i++) expect(levels[i] - levels[i - 1]).toBeLessThanOrEqual(1);
+  });
+
   test("platform pages show the platform's own objects", async ({ page }) => {
     await page.goto("/platforms/meta");
     const ops = page.locator("section[aria-labelledby=ops-title]");

@@ -105,7 +105,7 @@ export function CreativeFormatExplorer() {
         </div>
       </div>
 
-      <div id={`${id}-p`} role="tabpanel" aria-label={`${g.label} formats`} className="min-h-[26rem] p-5 sm:min-h-[22rem] sm:p-7">
+      <div id={`${id}-p`} role="tabpanel" aria-label={`${g.label} formats`} className="min-h-[21rem] p-5 sm:min-h-[19rem] sm:p-7">
         <p className="text-[1rem] leading-relaxed text-steel">{g.note}</p>
 
         {g.specimens && (

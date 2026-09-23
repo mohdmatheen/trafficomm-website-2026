@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import { CTABand } from "@/components/sections/shared/CTABand";
 import { PageHero } from "@/components/sections/shared/PageHero";
 import { AIOperations } from "@/components/sections/home/AIOperations";
-import { EngineSection } from "@/components/sections/home/EngineSection";
 import { ButtonLink } from "@/components/ui/Button";
 import { LogoMark } from "@/components/ui/Logo";
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { OperatingRelationship } from "@/components/visual/OperatingRelationship";
 import { ProcessFlow } from "@/components/visualizations/ProcessFlow";
 import { indicativeTransition, transitionPhases } from "@/data/operations";
 import { buildMetadata } from "@/lib/seo";
@@ -158,7 +158,27 @@ export default function HowWeWorkPage() {
         </div>
       </Section>
 
-      <EngineSection index={null} />
+      {/* The engagement as a relationship. The seven-stage engine that used to sit
+          here explains the campaign lifecycle, which the services pages already own;
+          what this page has to answer is who decides what. */}
+      <Section tone="dark" labelledBy="rel-title" className="overflow-hidden">
+        <div className="grid-bg-dark mask-fade-y pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
+        <div className="relative">
+          <SectionHeading
+            id="rel-title"
+            tone="dark"
+            eyebrow="The operating relationship"
+            title={
+              <>
+                Your Team Decides. <span className="block text-mute">Trafficomm Operates.</span>
+              </>
+            }
+          />
+          <div className="mt-14">
+            <OperatingRelationship />
+          </div>
+        </div>
+      </Section>
 
       <Section tone="paper" labelledBy="principles-title">
         <SectionHeading id="principles-title" eyebrow="Operating principles" title="How we hold ourselves accountable" />

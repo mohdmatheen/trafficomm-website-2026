@@ -20,7 +20,7 @@ function StageLabel({ n, label }: { n: string; label: string }) {
 }
 
 export function FlagshipCase({
-  index = "06",
+  index = "05",
   eyebrow,
   context,
   compact = false,

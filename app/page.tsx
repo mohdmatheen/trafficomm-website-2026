@@ -3,7 +3,6 @@ import { AIOperations } from "@/components/sections/home/AIOperations";
 import { CalculatorTeaser } from "@/components/sections/home/CalculatorTeaser";
 import { CaseStudies } from "@/components/sections/home/CaseStudies";
 import { Conversion } from "@/components/sections/home/Conversion";
-import { EngineSection } from "@/components/sections/home/EngineSection";
 import { FlagshipCase } from "@/components/sections/home/FlagshipCase";
 import { GlobalExperience } from "@/components/sections/home/GlobalExperience";
 import { Hero } from "@/components/sections/home/Hero";
@@ -12,7 +11,6 @@ import { OperatingModel } from "@/components/sections/home/OperatingModel";
 import { PlatformEcosystem } from "@/components/sections/home/PlatformEcosystem";
 import { Problem } from "@/components/sections/home/Problem";
 import { ScaleStats } from "@/components/sections/home/ScaleStats";
-import { ScaleVisualization } from "@/components/sections/home/ScaleVisualization";
 import { ServicesGrid } from "@/components/sections/home/ServicesGrid";
 import { buildMetadata } from "@/lib/seo";
 
@@ -32,18 +30,16 @@ export default function Home() {
       <Hero />
       <ScaleStats />
       <Problem />
-      <EngineSection />
       <ServicesGrid />
       <PlatformEcosystem />
       <FlagshipCase />
-      <ScaleVisualization />
       <OperatingModel />
       <CaseStudies />
       <GlobalExperience />
       <AIOperations />
       <InsightsPreview />
       <CalculatorTeaser />
-      <Conversion index="14" />
+      <Conversion index="12" />
     </>
   );
 }
