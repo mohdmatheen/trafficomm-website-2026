@@ -36,7 +36,7 @@ export type ServiceSystem =
       lead: string;
       stages: ChainStage[];
       /** Visual storytelling prototype: replaces the static chain with an animated signal pipeline. */
-      visual?: "signal-journey" | "reporting-pipeline";
+      visual?: "signal-journey" | "reporting-pipeline" | "delivery-architecture";
       /** Optional supporting disciplines shown under the chain. */
       disciplines?: { title: [string, string]; items: { label: string; body: string }[] };
       /** Optional "what this can and cannot do" note. */
@@ -49,13 +49,14 @@ export type ServiceSystem =
       eyebrow: string;
       title: [string, string];
       lead: string;
-      sides: { code: string; label: string; summary: string; items: string[]; flow: string[] }[];
-      connectors: string[];
+      sides: { code: string; label: string; summary: string }[];
     };
 
 export type ServiceDepth = {
   problem: { title: [string, string]; lead: string; points: string[] };
   system: ServiceSystem;
+  /** "absorbed": the Capabilities grid is folded into the system section as a compact scope table. */
+  capabilities?: "absorbed";
   /** Domain-specific heading for the step-by-step workflow; omitted when the system section already shows the flow. */
   workflowTitle?: [string, string];
   /** "strip": one compact row of steps instead of cards (used where a visual already carries the process). */
@@ -107,7 +108,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       ],
       note: "No result is promised in advance. Outcomes are reported only where a case study documents them.",
     },
-    workflowTitle: ["How a performance", "engagement runs."],
+    capabilities: "absorbed",
     ownership: {
       frame: "Your performance team, extended",
       clientLabel: "Agency / brand owns",
@@ -141,6 +142,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       kind: "chain",
       eyebrow: "Programmatic architecture",
       title: ["How the Programmatic", "Operation Moves."],
+      visual: "delivery-architecture",
       lead: "From approved media plan to operational reporting — structured in DV360, trafficked in CM360, checked before launch and monitored in flight.",
       stages: [
         { label: "Media plan", items: ["Approved plan", "Booking order", "Materials"], owner: "client" },
@@ -153,6 +155,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
         { label: "Reporting", items: ["Operational reporting", "Requests logged in your CRM or task tool"], owner: "output" },
       ],
     },
+    capabilities: "absorbed",
     ownership: {
       frame: "Your trading desk, extended",
       clientLabel: "Trading team owns",
@@ -295,24 +298,11 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       title: ["Creative Technology.", "Publisher Operations."],
       lead: "Creative technology produces ad-ready executions. Publisher and ad-tech operations make sure inventory, ad serving and reporting are built to carry them. The same team understands both sides of the tag.",
       sides: [
-        {
-          code: "A",
-          label: "Creative technology",
-          summary: "A creative director, designers and developers who specialize in advertising formats.",
-          items: ["Static", "Video", "Rich media", "Celtra", "Bonzai", "HTML5", "Creative QA", "Third-party tags"],
-          flow: ["Brief", "Concept", "Develop", "Audit"],
-        },
-        {
-          code: "B",
-          label: "Publisher / AdTech operations",
-          summary: "Inventory frameworks, ad serving and reporting for publishers, networks and ad-tech companies.",
-          items: ["Google Ad Manager", "Inventory architecture", "Ad-server integration", "Campaign management", "Reporting"],
-          flow: ["Analyze", "Structure", "Integrate", "Operate", "Report"],
-        },
+        { code: "A", label: "Creative technology", summary: "A creative director, designers and developers who specialize in advertising formats." },
+        { code: "B", label: "Publisher / AdTech operations", summary: "Inventory frameworks, ad serving and reporting for publishers, networks and ad-tech companies." },
       ],
-      connectors: ["Specs & file weights", "Tags & tracking", "Ad-server trafficking", "QA before launch"],
     },
-    workflowTitle: ["From brief to", "ad-ready execution."],
+    capabilities: "absorbed",
     ownership: {
       frame: "Your creative and publishing teams, extended",
       clientLabel: "You own",

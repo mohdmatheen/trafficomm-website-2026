@@ -7,10 +7,12 @@ import { LinkList } from "@/components/sections/shared/LinkList";
 import { PageHero } from "@/components/sections/shared/PageHero";
 import { Steps } from "@/components/sections/shared/Steps";
 import { AgencyIntegration } from "@/components/service-page/AgencyIntegration";
-import { CapabilitySplit } from "@/components/service-page/CapabilitySplit";
-import { OptimizationSystem } from "@/components/service-page/OptimizationSystem";
 import { ReportingCadence } from "@/components/service-page/ReportingCadence";
+import { ScopeTable } from "@/components/service-page/ScopeTable";
 import { StageChain } from "@/components/service-page/StageChain";
+import { ConnectedSystems } from "@/components/visual/ConnectedSystems";
+import { DeliveryArchitecture } from "@/components/visual/DeliveryArchitecture";
+import { OptimizationEngine } from "@/components/visual/OptimizationEngine";
 import { ReportingDashboard } from "@/components/visual/ReportingDashboard";
 import { SignalJourney } from "@/components/visual/SignalJourney";
 import { SignalPipeline } from "@/components/visual/SignalPipeline";
@@ -110,6 +112,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
         </Section>
       )}
 
+      {depth?.capabilities !== "absorbed" && (
       <Section tone={tone()} id="capabilities" labelledBy="cap-title">
         <div className="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
           <SectionHeading id="cap-title" eyebrow="What Trafficomm handles" title="Capabilities" lead={service.summary} />
@@ -136,6 +139,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
           </div>
         </div>
       </Section>
+      )}
 
       {sys && (
         <Section tone="dark" labelledBy="system-title" className="overflow-hidden">
@@ -143,17 +147,20 @@ export function ServiceTemplate({ service }: { service: Service }) {
           <div className="relative">
             <SectionHeading id="system-title" tone="dark" eyebrow={sys.eyebrow} title={<Title t={sys.title} dark />} lead={sys.lead} />
             <div className="mt-14">
-              {sys.kind === "optimization" && <OptimizationSystem levers={sys.levers} kpis={sys.kpis} loop={sys.loop} note={sys.note} />}
-              {sys.kind === "split" && <CapabilitySplit sides={sys.sides} connectors={sys.connectors} />}
+              {sys.kind === "optimization" && <OptimizationEngine levers={sys.levers} kpis={sys.kpis} loop={sys.loop} note={sys.note} />}
+              {sys.kind === "split" && <ConnectedSystems sides={sys.sides} />}
               {sys.kind === "chain" &&
                 (sys.visual === "signal-journey" ? (
                   <SignalJourney />
+                ) : sys.visual === "delivery-architecture" ? (
+                  <DeliveryArchitecture />
                 ) : sys.visual === "reporting-pipeline" ? (
                   <SignalPipeline stages={reportingPipeline} label="Reporting pipeline" ownerLabels={{ client: "Platforms", trafficomm: "Trafficomm", output: "Delivered" }} />
                 ) : (
                   <StageChain stages={sys.stages} label={`${service.name}: ${sys.title.join(" ")}`} />
                 ))}
             </div>
+            {depth?.capabilities === "absorbed" && <ScopeTable groups={service.groups} />}
             {sys.kind === "chain" && sys.limits && (
               <div className="mt-10 grid gap-4 rounded-[var(--radius-panel)] bg-ink-2 p-6 ring-1 ring-line-dark sm:p-8 lg:grid-cols-[0.8fr_2fr] lg:gap-10" data-reveal>
                 <p className="text-h3 text-white">{sys.limits.title}</p>
