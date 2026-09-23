@@ -1,8 +1,9 @@
 "use client";
 
 import { useId } from "react";
-import { autonomyNote, convergedReadout, decisionChain, engineCore, engineInlet, engineSignals, statusLine } from "@/data/visual/optimization-engine";
+import { autonomyNote, convergedReadout, creativeStates, decisionChain, engineCore, engineInlet, engineSignals, heroBoard, statusLine } from "@/data/visual/optimization-engine";
 import { cn } from "@/lib/cn";
+import { AllocationStrip, MiniTrend } from "./HeroBoards";
 import { Chip, Frame, IllustrativeTag } from "./parts";
 import { useSignalSequence } from "./useSignalSequence";
 
@@ -63,15 +64,15 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
     const busY = from === "signals" ? 24 : 16;
     return (
       <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="h-12 w-full" aria-hidden="true">
-        <line x1={X[0]} y1={busY} x2={X[2]} y2={busY} strokeWidth={1} vectorEffect="non-scaling-stroke" className="stroke-signal/25" />
+        <line x1={X[0]} y1={busY} x2={X[2]} y2={busY} strokeWidth={1.5} vectorEffect="non-scaling-stroke" className="stroke-signal/45" />
         <line
           x1={50}
           y1={from === "signals" ? busY : 0}
           x2={50}
           y2={from === "signals" ? 40 : busY}
-          strokeWidth={2}
+          strokeWidth={2.5}
           vectorEffect="non-scaling-stroke"
-          className={cn("transition-opacity duration-300 motion-reduce:transition-none", converged ? "stroke-signal opacity-100" : "stroke-signal opacity-50")}
+          className={cn("transition-opacity duration-300 motion-reduce:transition-none", converged ? "stroke-signal opacity-100" : "stroke-signal opacity-70")}
         />
         {X.map((x, k) => {
           const i = from === "signals" ? k : k + 3;
@@ -83,9 +84,9 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
               y1={from === "signals" ? 0 : busY}
               x2={x}
               y2={from === "signals" ? busY : 40}
-              strokeWidth={on ? 2 : 1}
+              strokeWidth={on ? 2.5 : 1.5}
               vectorEffect="non-scaling-stroke"
-              className={cn("transition-opacity duration-500 ease-out motion-reduce:transition-none", on ? "stroke-signal opacity-100" : drawn(i) ? "stroke-signal opacity-45" : "stroke-signal opacity-10")}
+              className={cn("transition-opacity duration-500 ease-out motion-reduce:transition-none", on ? "stroke-signal opacity-100" : drawn(i) ? "stroke-signal opacity-60" : "stroke-signal opacity-20")}
             />
           );
         })}
@@ -109,7 +110,7 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
           onKeyDown={(e) => onKey(e, i, p)}
           className={cn(
             "flex h-full min-h-11 w-full flex-col justify-center rounded-[var(--radius-card)] p-4 text-left outline-offset-4 ring-1 ring-inset transition-colors duration-200 motion-reduce:transition-none",
-            on ? "bg-signal-soft/10 ring-signal/60" : "bg-ink-2 ring-line-dark hover:ring-line-dark-strong",
+            on ? "bg-signal-soft/10 ring-signal" : "bg-ink-2 ring-line-dark hover:ring-line-dark-strong",
           )}
         >
           <span className="flex items-center gap-2 font-mono text-[0.68rem] uppercase leading-tight tracking-[0.1em] text-white">
@@ -162,6 +163,82 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
       </button>
     </div>
   );
+
+  /**
+   * The right half of the readout: what the operator is actually looking at.
+   * Charts are decorative — every one of them sits beside the same reading in
+   * text, so nothing is carried by colour or shape alone.
+   */
+  const evidence = () => {
+    const head = (t: string) => <p className="font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{t}</p>;
+    const trend = (
+      <>
+        {head(`${heroBoard.trendNote} · illustrative`)}
+        <div className="mt-4 h-20 text-white">
+          <MiniTrend values={heroBoard.trend} target={heroBoard.target} />
+        </div>
+        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[0.62rem] uppercase tracking-[0.1em]">
+          <span className="flex items-center gap-2 text-white">
+            <span className="h-px w-4 bg-signal" aria-hidden="true" />
+            Actual {heroBoard.kpis[0].value}
+          </span>
+          <span className="flex items-center gap-2 text-fog">
+            <span className="h-px w-4 border-t border-dashed border-fog" aria-hidden="true" />
+            Target ${heroBoard.target.toFixed(2)}
+          </span>
+        </p>
+      </>
+    );
+    if (converged || !sig) return trend;
+    if (sig.id === "budget")
+      return (
+        <>
+          {head(`${heroBoard.allocationNote} · illustrative`)}
+          <div className="mt-4">
+            <AllocationStrip rows={heroBoard.allocation} tone="dark" />
+          </div>
+          <p className="mt-4 text-[0.84rem] leading-relaxed text-mute">Most of the budget sits with one platform, which is the thing to question — not a result.</p>
+        </>
+      );
+    if (sig.id === "creative")
+      return (
+        <>
+          {head("Creative status · illustrative")}
+          <ul className="mt-3 grid gap-1.5">
+            {creativeStates.map((c) => (
+              <li key={c.name} className="flex items-center justify-between gap-3 rounded-md bg-white/[0.04] px-3 py-2 ring-1 ring-inset ring-line-dark">
+                <span className="text-[0.86rem] text-white">{c.name}</span>
+                <span className="flex items-center gap-2.5">
+                  <span className="flex gap-0.5" aria-hidden="true">
+                    {[1, 2, 3].map((n) => (
+                      <span key={n} className={cn("h-3 w-1.5", n <= c.level ? "bg-signal" : "bg-white/15")} />
+                    ))}
+                  </span>
+                  <span className="w-16 text-right font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{c.state}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      );
+    return (
+      <>
+        {head("What is examined")}
+        <ul className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.88rem] text-fog">
+          {sig.examines.map((x, i) => (
+            <li key={x} className="flex items-center gap-2">
+              {i > 0 && (
+                <span className="text-signal" aria-hidden="true">
+                  ·
+                </span>
+              )}
+              <span>{x}</span>
+            </li>
+          ))}
+        </ul>
+      </>
+    );
+  };
 
   const row = (label: string, children: React.ReactNode) => (
     <div key={label} className="grid gap-1 px-5 py-3.5 sm:grid-cols-[8.5rem_1fr] sm:gap-6">
@@ -227,29 +304,24 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
             <IllustrativeTag>Illustrative data</IllustrativeTag>
           </span>
         </div>
-        <dl className="min-h-[15rem] divide-y divide-line-dark sm:min-h-[13.5rem]">
-          {row("Target KPI", <span className="font-mono tabular">{engineCore.example}</span>)}
-          {row(
-            "Examining",
-            converged ? (
-              convergedReadout.examining
-            ) : (
-              <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span>{sig!.label}</span>
-                <span className="text-[0.86rem] text-fog">{sig!.examines.join(" · ")}</span>
-              </span>
-            ),
-          )}
-          {row("Observation", converged ? convergedReadout.observation : sig!.observation)}
-          {row("Option", converged ? convergedReadout.option : sig!.option)}
-          {row(
-            "Status",
-            <span className="flex items-center gap-2.5">
-              <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-              {statusLine}
-            </span>,
-          )}
-        </dl>
+        {/* Reserved to the tallest state at each breakpoint: the sequence changes stages on its own, so a growing panel would shift the page. */}
+        <div className="grid min-h-[35.5rem] sm:min-h-[28rem] lg:min-h-[19rem] lg:grid-cols-[1.35fr_1fr]">
+          <dl className="divide-y divide-line-dark">
+            {row("Target KPI", <span className="font-mono tabular">{engineCore.example}</span>)}
+            {row("Examining", converged ? convergedReadout.examining : sig!.label)}
+            {row("Observation", converged ? convergedReadout.observation : sig!.observation)}
+            {row("Option", converged ? convergedReadout.option : sig!.option)}
+            {row(
+              "Status",
+              <span className="flex items-center gap-2.5">
+                <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                {statusLine}
+              </span>,
+            )}
+          </dl>
+          {/* The evidence behind the row above: a small operational view per signal. */}
+          <div className="border-t border-line-dark p-5 lg:border-l lg:border-t-0">{evidence()}</div>
+        </div>
         <div className="border-t border-line-dark px-5 py-4">
           <ol className="flex flex-wrap items-center gap-2">
             {decisionChain.map((d, i) => (
@@ -269,7 +341,8 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
 
       {/* The approved evidence loop, as labels only: the engine keeps running. */}
       <Frame label="The optimization loop" className="mt-4">
-        <ol className="grid grid-cols-2 gap-1.5 sm:grid-cols-4 lg:grid-cols-7">
+        {/* Cards from sm up; one compact line on a phone, where seven cards cost more scroll than they earn. */}
+        <ol className="hidden gap-1.5 sm:grid sm:grid-cols-4 lg:grid-cols-7">
           {loop.map((s, i) => (
             <li key={s.label} className="rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
               <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">
@@ -277,6 +350,18 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span className="mt-1.5 block text-[0.9rem] leading-snug text-white">{s.label}</span>
+            </li>
+          ))}
+        </ol>
+        <ol className="flex flex-wrap items-center gap-x-2 gap-y-1.5 sm:hidden">
+          {loop.map((s, i) => (
+            <li key={s.label} className="flex items-center gap-2 text-[0.9rem] text-white">
+              {i > 0 && (
+                <span className="text-signal" aria-hidden="true">
+                  →
+                </span>
+              )}
+              <span>{s.label}</span>
             </li>
           ))}
         </ol>

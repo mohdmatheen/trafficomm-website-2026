@@ -49,7 +49,7 @@ export const architecture: readonly ArchNode[] = [
     label: "Inventory & deals",
     lane: "platform",
     summary: "What your traders bought has to transact the way it was booked.",
-    items: ["PMP", "Display", "Video", "YouTube"],
+    items: ["PMP", "Deal ID", "Display", "Video", "YouTube"],
   },
   {
     id: "cm360",
@@ -87,6 +87,9 @@ export const architecture: readonly ArchNode[] = [
     items: ["Operational reporting", "CRM / task tool updates"],
   },
 ] as const;
+
+/** What arrives from the trading desk. Field names only — no plan values. */
+export const bookingOrderFields = ["Campaign", "Flight dates", "Budget", "Formats", "Markets", "KPI"] as const;
 
 /** Programmatic QA is configuration QA: what was booked is what is live. */
 export const programmaticChecks = ["Line items", "Targeting", "Creatives", "Tracking", "Deal configuration", "Flight dates", "Budget & pacing"] as const;

@@ -14,8 +14,11 @@ import { duration } from "@/lib/motion/tokens";
  *   so the complete state is always the default. Nothing is hidden by motion.
  * - Selecting a stage pins it and ends the auto sequence — no fighting the user.
  * - The loop never repeats on re-scroll.
+ * - `restOn` decides where the sequence settles. It defaults to the final
+ *   stage; a visual passes its entry or overview index instead so the page
+ *   comes to rest at the beginning of the story, not the end.
  */
-export function useSignalSequence(count: number, stepMs: number = duration.signalStep) {
+export function useSignalSequence(count: number, stepMs: number = duration.signalStep, restOn?: number) {
   const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.35 });
   const reduced = usePrefersReducedMotion();
   // Complete state is the default: SSR, no-JS and reduced motion all show it.
@@ -30,6 +33,7 @@ export function useSignalSequence(count: number, stepMs: number = duration.signa
     setPlaying(true);
     setActive(0);
     let i = 0;
+    let rest: ReturnType<typeof setTimeout> | undefined;
     const id = setInterval(() => {
       if (pinned.current) {
         clearInterval(id);
@@ -41,10 +45,18 @@ export function useSignalSequence(count: number, stepMs: number = duration.signa
       if (i >= count - 1) {
         clearInterval(id);
         setPlaying(false);
+        if (restOn !== undefined && restOn !== count - 1) {
+          rest = setTimeout(() => {
+            if (!pinned.current) setActive(restOn);
+          }, stepMs);
+        }
       }
     }, stepMs);
-    return () => clearInterval(id);
-  }, [inView, reduced, count, stepMs]);
+    return () => {
+      clearInterval(id);
+      if (rest) clearTimeout(rest);
+    };
+  }, [inView, reduced, count, stepMs, restOn]);
 
   /** User selection: pins the stage and stops the sequence. */
   const select = useCallback((i: number) => {

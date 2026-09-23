@@ -141,13 +141,19 @@ test.describe("connected creative and adtech systems", () => {
       await expect(panel(page).getByText(c, { exact: true }).first()).toBeVisible();
     }
     await expect(panel(page)).toContainText("Ready to traffic");
+    // Every row of the sheet passes; none is left pending.
+    await expect(panel(page).getByText("Pass", { exact: true })).toHaveCount(8);
+    await expect(panel(page).getByText("Pending", { exact: true })).toHaveCount(0);
   });
 
   test("format frames and the ad-server view are labelled as examples", async ({ page }) => {
     await page.goto("/services/creative-adtech");
     await pick(page, "Spec check");
+    // The specimen set grew and the frame is now labelled "abstract specimens" rather than
+    // "illustrative examples" — same promise, new wording, so the assertion follows it.
     await expect(panel(page)).toContainText("300 × 250");
-    await expect(panel(page)).toContainText("illustrative examples");
+    await expect(panel(page)).toContainText("728 × 90");
+    await expect(panel(page)).toContainText("abstract specimens");
 
     await pick(page, "Configuration");
     await expect(panel(page)).toContainText("Illustrative interface");
@@ -197,9 +203,124 @@ test.describe("reduced motion shows the complete state", () => {
 
     await page.goto("/services/creative-adtech");
     await expect(tabs(page).nth(10)).toHaveAttribute("aria-selected", "true");
-    // A QA gate reached under reduced motion is validated, never left pending.
+    // The creative QA gate became a specification sheet: the equivalent guarantee is that
+    // every check reads as passed, with nothing left pending.
     await pick(page, "Creative QA");
     await expect(panel(page).getByText("Pending", { exact: true })).toHaveCount(0);
-    await expect(panel(page).getByText("Validated", { exact: true }).first()).toBeVisible();
+    await expect(panel(page).getByText("Pass", { exact: true }).first()).toBeVisible();
+  });
+});
+
+test.describe("refinement: the pages show their subject, not another diagram", () => {
+  test("the performance hero is an operational view, labelled illustrative", async ({ page }) => {
+    await page.goto("/services/performance-marketing");
+    const hero = page.locator("main section").first();
+    await expect(hero.getByText("Illustrative performance view", { exact: true })).toBeVisible();
+    await expect(hero.getByText("CPA", { exact: true }).first()).toBeVisible();
+    await expect(hero.getByText("Budget allocation", { exact: true })).toBeVisible();
+    // Percentages are an allocation split, never a claimed gain.
+    await expect(hero).toContainText("42%");
+  });
+
+  test("the readout carries the evidence behind each signal", async ({ page }) => {
+    await page.goto("/services/performance-marketing");
+    // Default view: the trend the observation is about.
+    await expect(panel(page)).toContainText("CPA vs target");
+    await expect(panel(page)).toContainText("Target $36.00");
+
+    await pick(page, "Budget");
+    await expect(panel(page)).toContainText("Budget allocation · illustrative");
+    await expect(panel(page)).toContainText("Meta");
+    await expect(panel(page)).toContainText("42%");
+
+    await pick(page, "Creative");
+    await expect(panel(page)).toContainText("Creative status · illustrative");
+    await expect(panel(page)).toContainText("Declining");
+  });
+
+  test("the creative hero shows formats, not stock imagery", async ({ page }) => {
+    await page.goto("/services/creative-adtech");
+    const hero = page.locator("main section").first();
+    await expect(hero.getByText("300 × 250", { exact: true })).toBeVisible();
+    await expect(hero.getByText("Abstract format specimens — not client creative", { exact: true })).toBeVisible();
+    // The specimens are CSS frames, not pictures — the only images in the hero are platform marks.
+    await expect(hero.locator("figure img")).toHaveCount(0);
+  });
+
+  test("creative and publisher work are parallel inputs to ad serving", async ({ page }) => {
+    await page.goto("/services/creative-adtech");
+    await pick(page, "Tag");
+    await expect(panel(page)).toContainText("Feeds · Trafficking · Ad serving");
+    await pick(page, "Configuration");
+    await expect(panel(page)).toContainText("Feeds · Trafficking · Ad serving");
+    await pick(page, "Delivery");
+    await expect(panel(page)).toContainText("Out of the ad server");
+  });
+
+  test("publisher inventory is shown as a structure", async ({ page }) => {
+    await page.goto("/services/creative-adtech");
+    await pick(page, "Inventory");
+    await expect(panel(page)).toContainText("Abstract inventory structure");
+    await expect(panel(page).getByText("Placement", { exact: true }).first()).toBeVisible();
+  });
+
+  test("programmatic states where the object is and what is next", async ({ page }) => {
+    await page.goto("/services/programmatic");
+    await pick(page, "Media plan");
+    await expect(panel(page)).toContainText("Media object here");
+    await expect(panel(page)).toContainText("Next · DV360 structure");
+    await expect(panel(page)).toContainText("Trafficomm never publishes a client");
+    await pick(page, "Reporting");
+    await expect(panel(page)).toContainText("End of the operation");
+  });
+
+  test("the rest of the route stays visible as context", async ({ page, viewport }) => {
+    test.skip(viewport!.width < 1024, "desktop route");
+    await page.goto("/services/programmatic");
+    await pick(page, "Media plan");
+    const faintest = await page
+      .locator("section[aria-labelledby=system-title] svg path")
+      .evaluateAll((els) => Math.min(...els.map((e) => Number(getComputedStyle(e).opacity))));
+    // Future stages are quieter than the travelled route, but never close to invisible.
+    expect(faintest).toBeGreaterThanOrEqual(0.4);
+  });
+
+  test("ownership and what changes are one band", async ({ page }) => {
+    for (const path of ["/services/performance-marketing", "/services/programmatic", "/services/creative-adtech"]) {
+      await page.goto(path);
+      const band = page.locator("section[aria-labelledby=own-title]");
+      await expect(band.getByText("Trafficomm handles", { exact: true })).toBeVisible();
+      await expect(band.getByText("What changes operationally", { exact: true })).toBeVisible();
+      // The outcomes survived the merge.
+      await expect(band.getByRole("heading", { level: 3 })).not.toHaveCount(0);
+      await expect(page.getByRole("heading", { name: "What changes for your team" })).toHaveCount(0);
+    }
+  });
+
+  test("no page invents a performance outcome", async ({ page }) => {
+    for (const path of ["/services/performance-marketing", "/services/programmatic", "/services/creative-adtech"]) {
+      await page.goto(path);
+      const text = await page.locator("main").innerText();
+      expect(text).not.toMatch(/\b(uplift|increased?|improved?|reduced?|saved)\b[^.]{0,20}\b\d+\s?%/i);
+      expect(text).not.toMatch(/\b\d+\s?% (increase|uplift|improvement|reduction|saving)/i);
+    }
+  });
+});
+
+test.describe("refinement: resting state is the start of the story", () => {
+  test("the sequence settles on an entry or overview stage", async ({ page, viewport }) => {
+    test.skip(viewport!.width !== 1440, "one width is enough for a timing-sensitive check");
+    test.setTimeout(90_000);
+    await page.goto("/services/programmatic");
+    await page.locator("section[aria-labelledby=system-title]").scrollIntoViewIfNeeded();
+    // Eight stages at 1.4s, plus the settle step.
+    await page.waitForTimeout(14000);
+    await expect(tabs(page).nth(0)).toHaveAttribute("aria-selected", "true");
+
+    await page.goto("/services/creative-adtech");
+    await page.locator("section[aria-labelledby=system-title]").scrollIntoViewIfNeeded();
+    await page.waitForTimeout(18000);
+    // Eleven stages, resting on the ad server where the two systems meet.
+    await expect(tabs(page).nth(8)).toHaveAttribute("aria-selected", "true");
   });
 });

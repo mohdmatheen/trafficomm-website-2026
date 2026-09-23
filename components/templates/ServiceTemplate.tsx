@@ -7,10 +7,12 @@ import { LinkList } from "@/components/sections/shared/LinkList";
 import { PageHero } from "@/components/sections/shared/PageHero";
 import { Steps } from "@/components/sections/shared/Steps";
 import { AgencyIntegration } from "@/components/service-page/AgencyIntegration";
+import { OperatingModel } from "@/components/service-page/OperatingModel";
 import { ReportingCadence } from "@/components/service-page/ReportingCadence";
 import { ScopeTable } from "@/components/service-page/ScopeTable";
 import { StageChain } from "@/components/service-page/StageChain";
 import { ConnectedSystems } from "@/components/visual/ConnectedSystems";
+import { CreativeFormatBoard, PerformanceSignalBoard } from "@/components/visual/HeroBoards";
 import { DeliveryArchitecture } from "@/components/visual/DeliveryArchitecture";
 import { OptimizationEngine } from "@/components/visual/OptimizationEngine";
 import { ReportingDashboard } from "@/components/visual/ReportingDashboard";
@@ -76,8 +78,8 @@ export function ServiceTemplate({ service }: { service: Service }) {
               <p className="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-ink">{service.name}</p>
               <p className="mt-1 font-mono text-[0.64rem] uppercase tracking-[0.12em] text-steel">{service.scopeLine.join(" · ")}</p>
             </div>
-            <div className="h-40 px-6 pt-6 text-ink">
-              <ModuleViz kind={service.viz} />
+            <div className={depth?.heroVisual ? "text-ink" : "h-40 px-6 pt-6 text-ink"}>
+              {depth?.heroVisual === "signal-board" ? <PerformanceSignalBoard /> : depth?.heroVisual === "format-board" ? <CreativeFormatBoard /> : <ModuleViz kind={service.viz} />}
             </div>
             <div className="border-t border-line p-5">
               <p className="eyebrow !text-[0.62rem] text-steel">Platforms involved</p>
@@ -232,17 +234,32 @@ export function ServiceTemplate({ service }: { service: Service }) {
                 See how we work
               </ArrowLink>
             </div>
-            <AgencyIntegration
-              frame={depth.ownership.frame}
-              ownerLabel={depth.ownership.clientLabel}
-              agencyOwns={depth.ownership.clientOwns}
-              trafficommSupports={depth.ownership.trafficommSupports}
-              note="Every engagement runs on the same operating model: an accountable account manager, platform specialists and a dedicated QA step."
-            />
+            {depth.lowerPage !== "compact" && (
+              <AgencyIntegration
+                frame={depth.ownership.frame}
+                ownerLabel={depth.ownership.clientLabel}
+                agencyOwns={depth.ownership.clientOwns}
+                trafficommSupports={depth.ownership.trafficommSupports}
+                note="Every engagement runs on the same operating model: an accountable account manager, platform specialists and a dedicated QA step."
+              />
+            )}
           </div>
+          {depth.lowerPage === "compact" && (
+            <div className="mt-12">
+              <OperatingModel
+                frame={depth.ownership.frame}
+                ownerLabel={depth.ownership.clientLabel}
+                clientOwns={depth.ownership.clientOwns}
+                trafficommSupports={depth.ownership.trafficommSupports}
+                note="Every engagement runs on the same operating model: an accountable account manager, platform specialists and a dedicated QA step."
+                outcomes={service.outcomes}
+              />
+            </div>
+          )}
         </Section>
       )}
 
+      {depth?.lowerPage !== "compact" && (
       <Section tone={tone()} labelledBy="outcome-title">
         <SectionHeading id="outcome-title" eyebrow="Why teams use Trafficomm" title="What changes for your team" />
         <div className="mt-14 grid gap-4 md:grid-cols-2">
@@ -255,6 +272,7 @@ export function ServiceTemplate({ service }: { service: Service }) {
           ))}
         </div>
       </Section>
+      )}
 
       <Section tone={tone()} labelledBy="pl-title">
         <div className="grid gap-14 lg:grid-cols-2 lg:gap-20">
@@ -287,10 +305,10 @@ export function ServiceTemplate({ service }: { service: Service }) {
         <Section tone={tone()} labelledBy="rel-title">
           <SectionHeading id="rel-title" eyebrow="Documented results" title="Evidence from anonymized engagements" />
           {depth?.proof && depth.proof.length > 0 && (
-            <ul className="mt-14 grid gap-4 md:grid-cols-2">
+            <ul className="mt-12 grid gap-4 md:grid-cols-2">
               {depth.proof.map((p) => (
                 <li key={p.slug + p.value}>
-                  <Link href={`/case-studies/${p.slug}`} className="group flex h-full items-end justify-between gap-6 rounded-[var(--radius-card)] bg-white p-7 ring-1 ring-line transition-shadow hover:ring-line-strong sm:p-9">
+                  <Link href={`/case-studies/${p.slug}`} className="group flex h-full items-end justify-between gap-6 rounded-[var(--radius-card)] bg-white p-6 ring-1 ring-line transition-shadow hover:ring-line-strong sm:p-8">
                     <span className="flex flex-col">
                       <span className="order-2 eyebrow mt-3 text-graphite">{p.label}</span>
                       <span className="order-1 text-[clamp(2.6rem,1.8rem+2.4vw,4rem)] leading-none tracking-[-0.05em] text-signal">

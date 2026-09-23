@@ -4,6 +4,7 @@ import { useId } from "react";
 import { PlatformMark } from "@/components/ui/PlatformMark";
 import {
   architecture,
+  bookingOrderFields,
   deliveryStateExample,
   deliveryStates,
   dv360Structure,
@@ -49,7 +50,7 @@ const segment = (i: number) => {
  */
 export function DeliveryArchitecture() {
   const id = useId();
-  const { ref, active, playing, select } = useSignalSequence(N);
+  const { ref, active, playing, select } = useSignalSequence(N, undefined, 0);
   const node = architecture[active];
   const lane = lanes.find((l) => l.id === node.lane)!;
 
@@ -77,6 +78,28 @@ export function DeliveryArchitecture() {
   });
 
   const detail = () => {
+    if (node.id === "plan")
+      return (
+        <Frame label="What arrives from the desk — illustrative booking order" className="mt-5">
+          {/* Rows from sm up; on a phone the field names alone say the same thing in two lines. */}
+          <ul className="hidden gap-1.5 sm:grid sm:grid-cols-2">
+            {bookingOrderFields.map((f) => (
+              <li key={f} className="flex items-center gap-3 rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
+                <span className="w-24 shrink-0 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{f}</span>
+                <span className="h-1.5 flex-1 rounded-full bg-white/10" aria-hidden="true" />
+              </li>
+            ))}
+          </ul>
+          <ul className="flex flex-wrap gap-1.5 sm:hidden">
+            {bookingOrderFields.map((f) => (
+              <li key={f} className="rounded-md bg-white/[0.04] px-2.5 py-1.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog ring-1 ring-inset ring-line-dark">
+                {f}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">Field names only — Trafficomm never publishes a client&rsquo;s plan values.</p>
+        </Frame>
+      );
     if (node.id === "dv360")
       return (
         <Frame label="Plan structure in the platform" className="mt-5">
@@ -183,16 +206,22 @@ export function DeliveryArchitecture() {
             ))}
           </div>
           <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="pointer-events-none absolute inset-0 size-full" aria-hidden="true">
-            {architecture.slice(0, -1).map((s, i) => (
-              <path
-                key={s.id}
-                d={segment(i)}
-                fill="none"
-                strokeWidth={i === active - 1 ? 2 : 1}
-                vectorEffect="non-scaling-stroke"
-                className={cn("stroke-signal transition-opacity duration-500 ease-out motion-reduce:transition-none", i < active ? "opacity-100" : "opacity-15")}
-              />
-            ))}
+            {architecture.slice(0, -1).map((s, i) => {
+              // While the signal is travelling the route lights up behind it; at rest the
+              // whole architecture stays present, because the later stages are context,
+              // not missing steps.
+              const lit = playing ? i < active : true;
+              return (
+                <path
+                  key={s.id}
+                  d={segment(i)}
+                  fill="none"
+                  strokeWidth={lit ? 2 : 1.25}
+                  vectorEffect="non-scaling-stroke"
+                  className={cn("stroke-signal transition-opacity duration-500 ease-out motion-reduce:transition-none", lit ? "opacity-100" : "opacity-40")}
+                />
+              );
+            })}
           </svg>
           <div role="tablist" aria-label="Programmatic delivery architecture" className="contents">
             {architecture.map((s, i) => {
@@ -203,10 +232,11 @@ export function DeliveryArchitecture() {
                   <button
                     {...tabProps(i, "t")}
                     className={cn(
-                      "flex w-full flex-col justify-between rounded-[var(--radius-card)] p-2.5 text-left outline-offset-4 ring-1 ring-inset transition-colors duration-200 motion-reduce:transition-none",
-                      on ? "bg-signal-soft/10 ring-signal/60" : done ? "bg-ink-2 ring-line-dark-strong" : "bg-ink-2 ring-line-dark hover:ring-line-dark-strong",
+                      "relative flex w-full flex-col justify-between overflow-hidden rounded-[var(--radius-card)] p-2.5 text-left outline-offset-4 ring-1 ring-inset transition-colors duration-200 motion-reduce:transition-none",
+                      on ? "bg-signal-soft/10 ring-2 ring-signal" : done ? "bg-ink-2 ring-line-dark-strong" : "bg-ink-2 ring-line-dark hover:ring-line-dark-strong",
                     )}
                   >
+                    {on && <span className="absolute inset-x-0 top-0 h-[3px] bg-signal" aria-hidden="true" />}
                     <span className="flex items-center justify-between gap-1">
                       <span className={cn("font-mono text-[0.6rem]", on ? "text-white" : "text-fog")}>{String(i + 1).padStart(2, "0")}</span>
                       {s.platform && <PlatformMark slug={s.platform} size={18} className="rounded-[5px]" />}
@@ -231,9 +261,10 @@ export function DeliveryArchitecture() {
                 {...tabProps(i, "m")}
                 className={cn(
                   "relative my-1 flex min-h-11 w-full items-center gap-3 rounded-[var(--radius-card)] p-3 text-left outline-offset-4 ring-1 ring-inset transition-colors duration-200 motion-reduce:transition-none",
-                  on ? "bg-signal-soft/10 ring-signal/60" : "bg-ink-2 ring-line-dark",
+                  on ? "bg-signal-soft/10 ring-2 ring-signal" : "bg-ink-2 ring-line-dark",
                 )}
               >
+                {on && <span className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-signal" aria-hidden="true" />}
                 <span className={cn("font-mono text-[0.62rem]", on ? "text-white" : "text-fog")}>{String(i + 1).padStart(2, "0")}</span>
                 {s.platform && <PlatformMark slug={s.platform} size={20} className="rounded-[5px]" />}
                 <span className={cn("flex-1 font-mono text-[0.7rem] uppercase tracking-[0.08em]", on ? "text-white" : "text-fog")}>{s.label}</span>
@@ -258,7 +289,7 @@ export function DeliveryArchitecture() {
             <span className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{lane.label}</span>
           </span>
         </div>
-        <div key={node.id} className="min-h-[32rem] p-5 sm:min-h-[23.5rem] sm:p-7 animate-enter">
+        <div key={node.id} className="min-h-[35.5rem] p-5 sm:min-h-[26rem] sm:p-7 animate-enter">
           <p className="max-w-2xl text-[1.04rem] leading-relaxed text-fog">{node.summary}</p>
           {node.items && (
             <ul className="mt-5 flex flex-wrap gap-1.5">
@@ -270,6 +301,22 @@ export function DeliveryArchitecture() {
             </ul>
           )}
           {detail()}
+          <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fog">
+            <span className="flex items-center gap-2 text-white">
+              <span className="size-1.5 bg-signal" aria-hidden="true" />
+              Media object here
+            </span>
+            {active < N - 1 ? (
+              <>
+                <span className="text-signal" aria-hidden="true">
+                  →
+                </span>
+                <span>Next · {architecture[active + 1].label}</span>
+              </>
+            ) : (
+              <span>End of the operation</span>
+            )}
+          </p>
         </div>
       </div>
     </div>

@@ -93,3 +93,38 @@ export const statusLine = "Recommended — implemented once your team agrees";
 
 /** The boundary, restated inside the visual so it cannot be missed. */
 export const autonomyNote = "Trafficomm analyses, identifies and recommends, and implements the changes your team agrees. Strategy, targets and client commitments stay with you.";
+
+/**
+ * The compact performance view in the page hero, and the small charts inside
+ * the readout.
+ *
+ * ILLUSTRATIVE OPERATIONAL VALUES — what a performance operator looks at, not
+ * Trafficomm or client results. Nothing here states an improvement, and every
+ * surface that shows these values carries a visible "illustrative" label.
+ */
+export const heroBoard = {
+  caption: "Illustrative performance view",
+  kpis: [
+    { label: "CPA", value: "$38.90", note: "Target $36.00" },
+    { label: "ROAS", value: "3.2x", note: "Target 3.0x" },
+    { label: "CTR", value: "1.8%", note: "" },
+  ],
+  /** Twelve periods; the tail drifts above target, which is what an operator would question. */
+  trend: [36.1, 35.4, 36.8, 35.9, 36.4, 37.2, 36.6, 37.5, 38.1, 38.4, 39.2, 38.9],
+  target: 36,
+  trendNote: "CPA vs target · 12 periods",
+  allocation: [
+    { label: "Meta", value: 42 },
+    { label: "Google", value: 31 },
+    { label: "TikTok", value: 17 },
+    { label: "Other", value: 10 },
+  ],
+  allocationNote: "Budget allocation",
+} as const;
+
+/** Creative states an operator reads before proposing a refresh. Illustrative. */
+export const creativeStates = [
+  { name: "Creative A", state: "Stable", level: 3 },
+  { name: "Creative B", state: "Declining", level: 1 },
+  { name: "Creative C", state: "In test", level: 2 },
+] as const;

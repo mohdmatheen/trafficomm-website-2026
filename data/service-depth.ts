@@ -57,6 +57,10 @@ export type ServiceDepth = {
   system: ServiceSystem;
   /** "absorbed": the Capabilities grid is folded into the system section as a compact scope table. */
   capabilities?: "absorbed";
+  /** Replaces the generic module illustration in the hero with a subject-specific board. */
+  heroVisual?: "signal-board" | "format-board";
+  /** "compact": ownership and outcomes render as one operating-model band instead of two sections. */
+  lowerPage?: "compact";
   /** Domain-specific heading for the step-by-step workflow; omitted when the system section already shows the flow. */
   workflowTitle?: [string, string];
   /** "strip": one compact row of steps instead of cards (used where a visual already carries the process). */
@@ -109,6 +113,8 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       note: "No result is promised in advance. Outcomes are reported only where a case study documents them.",
     },
     capabilities: "absorbed",
+    heroVisual: "signal-board",
+    lowerPage: "compact",
     ownership: {
       frame: "Your performance team, extended",
       clientLabel: "Agency / brand owns",
@@ -156,6 +162,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       ],
     },
     capabilities: "absorbed",
+    lowerPage: "compact",
     ownership: {
       frame: "Your trading desk, extended",
       clientLabel: "Trading team owns",
@@ -303,6 +310,8 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       ],
     },
     capabilities: "absorbed",
+    heroVisual: "format-board",
+    lowerPage: "compact",
     ownership: {
       frame: "Your creative and publishing teams, extended",
       clientLabel: "You own",
