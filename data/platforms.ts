@@ -3,6 +3,7 @@ import type { Platform } from "./types";
 export const platforms: Platform[] = [
   {
     slug: "meta",
+    hierarchy: ["Campaign", "Ad set", "Ad", "Pixel / CAPI", "Reporting"],
     name: "Meta",
     short: "Facebook & Instagram",
     category: "Social",
@@ -26,6 +27,7 @@ export const platforms: Platform[] = [
   },
   {
     slug: "google-ads",
+    hierarchy: ["Campaign", "Ad group", "Ad", "Conversion", "Reporting"],
     name: "Google Ads",
     short: "Search, YouTube & more",
     category: "Search",
@@ -141,6 +143,7 @@ export const platforms: Platform[] = [
   },
   {
     slug: "dv360",
+    hierarchy: ["Campaign", "Insertion order", "Line item", "Creative", "Inventory"],
     name: "DV360",
     short: "Display & Video 360",
     category: "Programmatic",
@@ -165,6 +168,7 @@ export const platforms: Platform[] = [
   },
   {
     slug: "cm360",
+    hierarchy: ["Campaign", "Placement", "Ad", "Creative", "Tracking"],
     name: "CM360",
     short: "Campaign Manager 360",
     category: "Ad Serving",

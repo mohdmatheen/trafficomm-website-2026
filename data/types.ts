@@ -68,6 +68,8 @@ export type Platform = {
   intro: string;
   seo: { title: string; description: string };
   capabilities: string[];
+  /** The platform's own object model, where it is unambiguous. Shown as a chain. */
+  hierarchy?: readonly string[];
   operations: { title: string; body: string }[];
   services: string[];
   /** Official product name when it differs from the UI shorthand (e.g. "Display & Video 360"). */

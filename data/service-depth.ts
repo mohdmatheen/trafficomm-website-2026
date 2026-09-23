@@ -59,6 +59,8 @@ export type ServiceDepth = {
   capabilities?: "absorbed";
   /** Replaces the generic module illustration in the hero with a subject-specific board. */
   heroVisual?: "signal-board" | "format-board";
+  /** Adds the creative format explorer section (Creative & AdTech only). */
+  formatExplorer?: true;
   /** "compact": ownership and outcomes render as one operating-model band instead of two sections. */
   lowerPage?: "compact";
   /** Domain-specific heading for the step-by-step workflow; omitted when the system section already shows the flow. */
@@ -311,6 +313,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
     },
     capabilities: "absorbed",
     heroVisual: "format-board",
+    formatExplorer: true,
     lowerPage: "compact",
     ownership: {
       frame: "Your creative and publishing teams, extended",

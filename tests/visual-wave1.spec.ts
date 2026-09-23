@@ -148,12 +148,14 @@ test.describe("connected creative and adtech systems", () => {
 
   test("format frames and the ad-server view are labelled as examples", async ({ page }) => {
     await page.goto("/services/creative-adtech");
+    // The format specimens moved out of the system visual into the page's own creative
+    // format explorer, so they are asserted there (tests/visual-sitewide.spec.ts) and the
+    // spec stage now carries the specification fields only. Same promise: formats are
+    // shown, and anything illustrative says so.
     await pick(page, "Spec check");
-    // The specimen set grew and the frame is now labelled "abstract specimens" rather than
-    // "illustrative examples" — same promise, new wording, so the assertion follows it.
-    await expect(panel(page)).toContainText("300 × 250");
-    await expect(panel(page)).toContainText("728 × 90");
-    await expect(panel(page)).toContainText("abstract specimens");
+    await expect(panel(page)).toContainText("Dimensions");
+    await expect(panel(page)).toContainText("File weight");
+    await expect(page.locator("section[aria-labelledby=fmt-title]")).toContainText("Illustrative creative specimens");
 
     await pick(page, "Configuration");
     await expect(panel(page)).toContainText("Illustrative interface");

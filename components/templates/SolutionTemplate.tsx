@@ -10,6 +10,7 @@ import { ArrowLink, ButtonLink } from "@/components/ui/Button";
 import { ConfidentialNote } from "@/components/ui/ConfidentialNote";
 import { LogoMark } from "@/components/ui/Logo";
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { SolutionGlyph, solutionCaption } from "@/components/visual/SolutionGlyph";
 import { caseStudies } from "@/data/case-studies";
 import { services } from "@/data/services";
 import type { Solution } from "@/data/types";
@@ -54,16 +55,26 @@ export function SolutionTemplate({ solution }: { solution: Solution }) {
       />
 
       <Section tone="white" labelledBy="model-title">
-        <SectionHeading
-          id="model-title"
-          eyebrow="The operating model"
-          title={
-            <>
-              Clear ownership. <span className="block text-steel/70">No overlap.</span>
-            </>
-          }
-          lead={`How responsibilities divide between ${solution.audience.toLowerCase()} and Trafficomm.`}
-        />
+        <div className="grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-center lg:gap-16">
+          <SectionHeading
+            id="model-title"
+            eyebrow="The operating model"
+            title={
+              <>
+                Clear ownership. <span className="block text-steel/70">No overlap.</span>
+              </>
+            }
+            lead={`How responsibilities divide between ${solution.audience.toLowerCase()} and Trafficomm.`}
+          />
+          {/* Where Trafficomm sits in the organisation — the one thing a solution page has to answer. */}
+          <div className="rounded-[var(--radius-panel)] bg-paper p-6 ring-1 ring-line sm:p-8" data-reveal>
+            <p className="eyebrow !text-[0.62rem] text-steel">Where Trafficomm sits</p>
+            <div className="mt-5">
+              <SolutionGlyph slug={solution.slug} full />
+            </div>
+            <p className="mt-5 font-mono text-[0.66rem] uppercase leading-relaxed tracking-[0.1em] text-steel">{solutionCaption(solution.slug)}</p>
+          </div>
+        </div>
         <div className="mt-14 grid gap-4 lg:grid-cols-2" data-reveal>
           <div className="rounded-[var(--radius-panel)] bg-paper p-7 ring-1 ring-line sm:p-9">
             <p className="eyebrow text-steel">Keep in-house</p>

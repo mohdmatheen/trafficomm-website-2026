@@ -7,6 +7,9 @@ import { cn } from "@/lib/cn";
 import { ButtonLink } from "@/components/ui/Button";
 import { Close, Plus } from "@/components/ui/Icons";
 import { Logo } from "@/components/ui/Logo";
+import { PlatformMark } from "@/components/ui/PlatformMark";
+import { ServiceGlyph } from "@/components/visual/ServiceGlyph";
+import { SolutionGlyph } from "@/components/visual/SolutionGlyph";
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -89,15 +92,26 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                 </button>
                 <div id={id} hidden={!isOpen} className="pb-5">
                   <ul className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-                    {group.links.map((l) => (
-                      <li key={l.href}>
-                        <Link href={l.href} onClick={onClose} className="block rounded-lg px-3 py-2.5 text-[1rem] text-graphite active:bg-white">
-                          {l.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {group.links.map((l) => {
+                      // Same miniatures as the desktop menu, so the services stay
+                      // distinguishable by shape on a phone too. Decorative: the link
+                      // text is the accessible name.
+                      const slug = l.href.split("/").filter(Boolean).pop() ?? "";
+                      return (
+                        <li key={l.href}>
+                          <Link href={l.href} onClick={onClose} className="flex min-h-11 items-center gap-3 rounded-lg px-3 py-2.5 text-[1rem] text-graphite active:bg-white">
+                            {group.label === "Platforms" ? (
+                              <PlatformMark slug={slug} size={24} className="shrink-0 rounded-md" />
+                            ) : (
+                              <span className="w-12 shrink-0">{group.label === "Services" ? <ServiceGlyph slug={slug} /> : <SolutionGlyph slug={slug} />}</span>
+                            )}
+                            {l.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                     <li>
-                      <Link href={group.href} onClick={onClose} className="block rounded-lg px-3 py-2.5 text-[1rem] text-signal-ink">
+                      <Link href={group.href} onClick={onClose} className="flex min-h-11 items-center rounded-lg px-3 py-2.5 text-[1rem] text-signal-ink">
                         All {group.label.toLowerCase()} →
                       </Link>
                     </li>

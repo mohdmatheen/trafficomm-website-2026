@@ -12,6 +12,7 @@ import { ReportingCadence } from "@/components/service-page/ReportingCadence";
 import { ScopeTable } from "@/components/service-page/ScopeTable";
 import { StageChain } from "@/components/service-page/StageChain";
 import { ConnectedSystems } from "@/components/visual/ConnectedSystems";
+import { CreativeFormatExplorer } from "@/components/visual/CreativeFormatExplorer";
 import { CreativeFormatBoard, PerformanceSignalBoard } from "@/components/visual/HeroBoards";
 import { DeliveryArchitecture } from "@/components/visual/DeliveryArchitecture";
 import { OptimizationEngine } from "@/components/visual/OptimizationEngine";
@@ -221,6 +222,22 @@ export function ServiceTemplate({ service }: { service: Service }) {
             ) : (
               <Steps steps={service.workflow} />
             )}
+          </div>
+        </Section>
+      )}
+
+      {depth?.formatExplorer && (
+        <Section tone={tone()} labelledBy="fmt-title">
+          <div className="grid gap-12 lg:grid-cols-[1fr_2fr] lg:gap-20">
+            <SectionHeading
+              id="fmt-title"
+              eyebrow="What we produce"
+              title={<Title t={["Every Format", "a Plan Asks For."]} />}
+              lead="Display, social, video, HTML5 and rich media — drawn to the proportions they actually ship in."
+            />
+            <div data-reveal>
+              <CreativeFormatExplorer />
+            </div>
           </div>
         </Section>
       )}

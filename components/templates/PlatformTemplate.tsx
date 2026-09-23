@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { LogoMark } from "@/components/ui/Logo";
 import { PlatformMark } from "@/components/ui/PlatformMark";
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { ObjectChain } from "@/components/visual/ObjectChain";
 import { platforms } from "@/data/platforms";
 import { services } from "@/data/services";
 import type { Platform } from "@/data/types";
@@ -60,7 +61,12 @@ export function PlatformTemplate({ platform }: { platform: Platform }) {
 
       <Section tone="white" labelledBy="ops-title">
         <SectionHeading id="ops-title" eyebrow={`${platform.name} operations`} title="How we run it" />
-        <ol className="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line md:grid-cols-2 lg:grid-cols-4">
+        {platform.hierarchy && (
+          <div className="mt-10" data-reveal>
+            <ObjectChain items={platform.hierarchy} label={`${platform.name} objects`} />
+          </div>
+        )}
+        <ol className="mt-10 grid gap-px overflow-hidden rounded-[var(--radius-panel)] bg-line ring-1 ring-line md:grid-cols-2 lg:grid-cols-4">
           {platform.operations.map((o, i) => (
             <li key={o.title} className="bg-white p-7" data-reveal style={{ "--reveal-delay": `${i * 60}ms` } as React.CSSProperties}>
               <span className="font-mono text-[0.7rem] text-signal">{String(i + 1).padStart(2, "0")}</span>

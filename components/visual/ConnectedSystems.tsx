@@ -3,7 +3,6 @@
 import { useId } from "react";
 import {
   adServerRows,
-  creativeFormats,
   creativeSpecSheet,
   inventoryTree,
   readyState,
@@ -11,7 +10,6 @@ import {
   type SystemNode,
 } from "@/data/visual/creative-adtech-systems";
 import { cn } from "@/lib/cn";
-import { FormatSpecimen } from "./HeroBoards";
 import { Chip, Frame, IllustrativeTag } from "./parts";
 import { useSignalSequence } from "./useSignalSequence";
 
@@ -105,16 +103,6 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
   );
 
   const detail = () => {
-    if (node.id === "spec")
-      return (
-        <Frame label="Formats built to specification — abstract specimens" className="mt-5">
-          <div className="flex flex-wrap items-end gap-x-5 gap-y-3">
-            {creativeFormats.map((f) => (
-              <FormatSpecimen key={f.size} spec={f} tone="dark" maxSide={58} />
-            ))}
-          </div>
-        </Frame>
-      );
     if (node.id === "creative-qa")
       return (
         <Frame label="Creative QA gate — illustrative specification" className="mt-5">

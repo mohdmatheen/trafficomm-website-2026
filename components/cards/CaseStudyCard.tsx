@@ -3,6 +3,7 @@ import type { CaseStudy } from "@/data/types";
 import { cn } from "@/lib/cn";
 import { ArrowRight } from "@/components/ui/Icons";
 import { CaseMotif } from "@/components/visualizations/CaseMotif";
+import { EvidenceMark } from "@/components/visual/EvidenceMark";
 
 /** `detailed` adds challenge and Trafficomm role lines for the case-study index. */
 export function CaseStudyCard({ cs, className, tone = "light", detailed = false }: { cs: CaseStudy; className?: string; tone?: "light" | "dark"; detailed?: boolean }) {
@@ -28,17 +29,29 @@ export function CaseStudyCard({ cs, className, tone = "light", detailed = false 
         <p className={cn("eyebrow !text-[0.7rem]", dark ? "text-mute" : "text-steel")}>
           {cs.category} · {cs.market}
         </p>
+        {/* Evidence first: the documented figure, its shape, and what it measures. */}
         <p className="mt-5 whitespace-nowrap text-stat text-signal">{cs.headlineStat.value}</p>
-        <p className={cn("eyebrow mt-2 !text-[0.7rem]", dark ? "text-fog" : "text-graphite")}>{cs.headlineStat.label}</p>
+        <EvidenceMark value={cs.headlineStat.value} tone={tone} className="mt-3" />
+        <p className={cn("eyebrow mt-3 !text-[0.7rem]", dark ? "text-fog" : "text-graphite")}>{cs.headlineStat.label}</p>
         <h3 className={cn("mt-6 text-[1.35rem] leading-tight tracking-[-0.025em]", dark ? "text-white" : "text-ink")}>{cs.cardTitle}</h3>
         <p className={cn("mt-2 text-[0.96rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{cs.client}</p>
+        {detailed && cs.metrics.length > 1 && (
+          <ul className={cn("mt-5 flex flex-wrap gap-x-4 gap-y-1.5 font-mono text-[0.68rem] uppercase tracking-[0.1em]", dark ? "text-fog" : "text-steel")}>
+            {cs.metrics.slice(1, 3).map((m) => (
+              <li key={m.label} className="flex items-center gap-2">
+                <span className={dark ? "text-white" : "text-ink"}>{m.value}</span>
+                {m.label}
+              </li>
+            ))}
+          </ul>
+        )}
         {detailed && (
-          <dl className={cn("mt-6 divide-y border-y text-[0.92rem] leading-snug", dark ? "divide-line-dark border-line-dark" : "divide-line border-line")}>
+          <dl className={cn("mt-5 divide-y border-y text-[0.88rem] leading-snug", dark ? "divide-line-dark border-line-dark" : "divide-line border-line")}>
             {[
               ["Challenge", cs.scan.challenge],
               ["Trafficomm role", cs.scan.role],
             ].map(([k, v]) => (
-              <div key={k} className="py-3">
+              <div key={k} className="py-2.5">
                 <dt className={cn("font-mono text-[0.66rem] uppercase tracking-[0.12em]", dark ? "text-mute" : "text-steel")}>{k}</dt>
                 <dd className={cn("mt-1.5", dark ? "text-fog" : "text-graphite")}>{v}</dd>
               </div>

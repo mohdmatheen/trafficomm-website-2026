@@ -3,23 +3,24 @@ import { expect, test } from "@playwright/test";
 const desktop = (w: number) => w >= 1024;
 
 test.describe("homepage interactions", () => {
-  test("capability explorer switches workflow (click + keyboard) or opens accordion", async ({ page, viewport }) => {
+  /**
+   * The homepage capability explorer now shows each service's operating model
+   * instead of a generic workflow with stage text, and it uses the same tab
+   * composition at every width rather than an accordion on mobile. The
+   * guarantee under test is unchanged: selecting a capability changes the
+   * panel, and the keyboard moves between capabilities.
+   */
+  test("service explorer switches operating model (click + keyboard)", async ({ page }) => {
     await page.goto("/");
-    if (desktop(viewport!.width)) {
-      const tab = page.getByRole("tab", { name: /Programmatic Operations/ });
-      await tab.click();
-      const panel = page.getByRole("tabpanel").filter({ hasText: "Specialist team" });
-      // Specialism first, then where it plugs into the operating engine.
-      await expect(panel).toContainText("What this team handles");
-      await expect(panel).toContainText("DV360");
-      await expect(panel).toContainText("Where it plugs into the operating engine");
-      await tab.press("ArrowDown");
-      await expect(page.getByRole("tab", { name: /Measurement & Analytics/ })).toHaveAttribute("aria-selected", "true");
-    } else {
-      const btn = page.getByRole("button", { name: /Performance Marketing/ }).first();
-      await btn.click();
-      await expect(btn).toHaveAttribute("aria-expanded", "true");
-    }
+    const explorer = page.locator("section[aria-labelledby=services-title]");
+    const tab = explorer.getByRole("tab", { name: /Programmatic Operations/ });
+    await tab.click();
+    const panel = explorer.getByRole("tabpanel");
+    await expect(panel).toContainText("DV360");
+    await expect(panel).toContainText("Plan");
+    await expect(panel.getByRole("link", { name: /Programmatic Operations/ })).toHaveAttribute("href", "/services/programmatic");
+    await tab.press("ArrowDown");
+    await expect(explorer.getByRole("tab", { name: /Measurement & Analytics/ })).toHaveAttribute("aria-selected", "true");
   });
 
   test("platform ecosystem responds to keyboard / tap", async ({ page, viewport }) => {
