@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { primaryNav, secondaryNav, type NavGroup } from "@/data/site";
+import { company, primaryNav, secondaryNav, type NavGroup } from "@/data/site";
 import { cn } from "@/lib/cn";
 import { ButtonLink } from "@/components/ui/Button";
 import { ArrowRight, ChevronDown, Menu } from "@/components/ui/Icons";
@@ -73,8 +73,8 @@ export function Header() {
         )}
       >
         <div ref={navRef} className="container-site flex h-16 items-center justify-between gap-6 lg:h-[4.5rem]">
-          <Link href="/" className="text-[1.15rem] lg:text-[1.25rem]" aria-label="Trafficomm — home">
-            <Logo inverted={inverted} />
+          <Link href="/" className="shrink-0 text-[1.15rem] lg:text-[1.25rem]" aria-label="Trafficomm — home">
+            <Logo inverted={inverted} tagline={company.headerDescriptor} />
           </Link>
 
           <nav aria-label="Primary" className="hidden xl:block">
@@ -196,6 +196,23 @@ function MegaTrigger({ group, open, active, onToggle, inverted }: { group: NavGr
                     );
                   })}
                 </ul>
+                {group.also && (
+                  <div className="mt-4 border-t border-line pt-4">
+                    <p className="eyebrow !text-[0.6rem] text-steel">{group.also.label}</p>
+                    <ul className="mt-2 flex flex-wrap gap-x-2 gap-y-1.5">
+                      {group.also.items.map((name, i) => (
+                        <li key={name} className="flex items-center gap-2 text-[0.85rem] text-graphite">
+                          {i > 0 && (
+                            <span className="text-signal" aria-hidden="true">
+                              ·
+                            </span>
+                          )}
+                          <span>{name}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col justify-between border-l border-line bg-paper p-6">
                 <Link href={group.href} className="group">

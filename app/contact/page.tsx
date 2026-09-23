@@ -14,7 +14,7 @@ export const metadata: Metadata = buildMetadata({
 });
 
 const next = [
-  { t: "We review your request", b: "An operations lead reviews your markets, platforms, volumes and challenges." },
+  { t: "We review your request", b: "An operations lead reads your request and where the work is under pressure today." },
   { t: "A working conversation", b: "We walk through how campaigns move from plan to report in your team today." },
   { t: "Assessment & recommendation", b: "You get our view on where operational time is lost and an operating model that fits." },
 ];
@@ -38,7 +38,7 @@ export default function ContactPage() {
               What&apos;s slowing <span className="block text-steel/70">your media team down?</span>
             </h1>
             <p className="mt-7 max-w-lg text-lead text-steel">
-              Request an operations assessment, or ask to talk to Trafficomm. Tell us a little about your markets, platforms and volumes so the first conversation is useful.
+              Request an operations assessment, or ask to talk to Trafficomm. A few details are enough — we work out the rest in the first conversation.
             </p>
 
             <div id="call" className="mt-12 scroll-mt-28">

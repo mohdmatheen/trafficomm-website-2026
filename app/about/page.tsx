@@ -70,6 +70,7 @@ export default function AboutPage() {
               <dd className="order-1 whitespace-nowrap text-[clamp(2rem,1.4rem+1.6vw,3rem)] leading-none tracking-[-0.045em] text-ink">
                 <Metric stat={s} />
               </dd>
+              {s.detail && <dd className="order-3 mt-2 text-[0.8rem] leading-snug text-steel">{s.detail}</dd>}
             </div>
           ))}
         </dl>

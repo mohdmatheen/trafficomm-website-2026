@@ -18,6 +18,9 @@ import type { Stat } from "./types";
  *  - 4 → ~30 is a HISTORICAL team scale on one engagement. It is not the
  *    current team size and must never be phrased as "today" or "currently".
  *  - 70+ is the largest historical Trafficomm team size, not current headcount.
+ *    Its label reads "Team members", so the qualifier in `detail` is not
+ *    optional: every surface that shows this figure must show the detail with
+ *    it, or the number becomes a current-headcount claim.
  *  - 7+ years (Case 01) is the span of the engagement; never "current" or "ongoing".
  */
 
@@ -29,7 +32,7 @@ export const companyMetrics = {
   creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements", detail: "Since inception" },
   campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "UAE tourism campaign" },
   peakMonthly: { id: "peakMonthly", value: 250, suffix: "+", label: "Peak monthly campaign volume", detail: "Largest single month" },
-  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Peak historical team size", detail: "Not current headcount" },
+  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Team members", detail: "Peak historical team size" },
 } satisfies Record<string, Metric>;
 
 /** Order used wherever the full company scale grid is shown. */

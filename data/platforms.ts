@@ -1,4 +1,11 @@
-import type { Platform } from "./types";
+import type { EcosystemPlatform, Platform } from "./types";
+
+/**
+ * Trafficomm's own four operations, used where a platform's scope is not
+ * separately documented. These describe Trafficomm's operating model — they are
+ * never a claim about a platform's features, partnership or certification.
+ */
+const STANDARD_MODEL = ["Execute", "Optimize", "Measure", "Report"] as const;
 
 export const platforms: Platform[] = [
   {
@@ -240,3 +247,37 @@ export const platforms: Platform[] = [
 ];
 
 export const getPlatform = (slug: string) => platforms.find((p) => p.slug === slug);
+
+/**
+ * Platforms Trafficomm operates across that do not yet have enough approved,
+ * documented Trafficomm content to support a dedicated operations page.
+ *
+ * They are real coverage and belong in the ecosystem, the menus and the lists —
+ * but a page here would have to be invented, so there is none. Each carries the
+ * standard Trafficomm operating model (execute, optimize, measure, report)
+ * rather than a platform-specific scope, and `standardModel` makes the UI say so.
+ *
+ * Naming: current product names only. "Microsoft Advertising" is the official
+ * name; "Bing" appears once, in brackets, purely for recognition.
+ */
+export const additionalPlatforms: readonly EcosystemPlatform[] = [
+  { slug: "microsoft-advertising", name: "Microsoft Advertising", officialName: "Microsoft Advertising (Bing)", category: "Search", ecosystem: STANDARD_MODEL, standardModel: true },
+  { slug: "noon", name: "Noon", category: "Commerce & Delivery", ecosystem: STANDARD_MODEL, standardModel: true },
+  { slug: "talabat", name: "Talabat", category: "Commerce & Delivery", ecosystem: STANDARD_MODEL, standardModel: true },
+  { slug: "chatgpt", name: "ChatGPT", category: "AI Platforms", ecosystem: STANDARD_MODEL, standardModel: true },
+] as const;
+
+/**
+ * The full ecosystem, in the order the visuals and menus read it: documented
+ * platforms first (they link to their page), then the rest.
+ *
+ * Nothing derived from this list states a count. Platform coverage keeps
+ * expanding, so the copy around it is written to stay true as it grows.
+ */
+export const ecosystemPlatforms: readonly EcosystemPlatform[] = [
+  ...platforms.map(({ slug, name, officialName, category, ecosystem }) => ({ slug, name, officialName, category, ecosystem, href: `/platforms/${slug}` })),
+  ...additionalPlatforms,
+];
+
+/** Platform names for prose and metadata, without implying the list is closed. */
+export const ecosystemNames = ecosystemPlatforms.map((p) => p.name);

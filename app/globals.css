@@ -317,3 +317,45 @@
 @media (prefers-reduced-motion: reduce) {
   .scroll-draw-y { display: none; }
 }
+
+/* Homepage ecosystem: platform nodes drift a few pixels on long, uneven cycles,
+   so the network reads as live. Transform-only, so it stays on the compositor.
+   A hovered or focused node holds still — you should be able to read the thing
+   you are pointing at. */
+.eh-drift {
+  animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+/* The whole network settles the moment a pointer enters it, or anything inside
+   takes focus: you should never have to chase a moving target to read or click
+   one. The drift is ambient, not interactive. */
+.eh-net:hover .eh-drift,
+.eh-net:focus-within .eh-drift,
+.eh-drift[data-hot] {
+  animation-play-state: paused;
+}
+@keyframes eh-drift-a {
+  0%, 100% { transform: translate(0, 0); }
+  30% { transform: translate(1.5px, -3.5px); }
+  60% { transform: translate(-1px, 2.5px); }
+  80% { transform: translate(-2px, -1px); }
+}
+@keyframes eh-drift-b {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 2.5px); }
+  55% { transform: translate(2.5px, 3px); }
+  75% { transform: translate(1px, -2.5px); }
+}
+@keyframes eh-drift-c {
+  0%, 100% { transform: translate(0, 0); }
+  35% { transform: translate(2.5px, 2px); }
+  65% { transform: translate(-1.5px, -3px); }
+  85% { transform: translate(-2.5px, 1.5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .eh-drift {
+    animation: none;
+    will-change: auto;
+  }
+}

@@ -69,7 +69,7 @@ export function ServiceDetailPage({ content, name }: { content: ServicePageConte
                 panelLabel={`${name} functions`}
                 items={platforms
                   .filter((p) => c.platforms!.functions[p.slug])
-                  .map(({ slug, name: pn, officialName, category }) => ({ slug, name: pn, officialName, category, ecosystem: c.platforms!.functions[slug] }))}
+                  .map(({ slug, name: pn, officialName, category }) => ({ slug, name: pn, officialName, category, ecosystem: c.platforms!.functions[slug], href: `/platforms/${slug}` }))}
               />
             </div>
             <p className="mt-12 max-w-3xl text-[0.82rem] leading-relaxed text-mute">

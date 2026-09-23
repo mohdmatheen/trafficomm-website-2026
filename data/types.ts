@@ -59,11 +59,45 @@ export type Solution = {
   cta: { title: string; body: string };
 };
 
+/**
+ * Platform coverage is deliberately open-ended: Trafficomm adds platforms over
+ * time, so nothing in the UI states a total. Categories are what a buyer scans
+ * by, not an internal taxonomy.
+ */
+export type PlatformCategory =
+  | "Social"
+  | "Search"
+  | "Programmatic"
+  | "Ad Serving"
+  | "Retail Media"
+  | "Commerce & Delivery"
+  | "AI Platforms"
+  | "Professional";
+
+/**
+ * A platform as it appears in the ecosystem visuals, menus and lists.
+ *
+ * `href` is present only for platforms that have a documented operations page.
+ * Platforms in the ecosystem without enough approved Trafficomm content to
+ * support a page carry no link — they are listed, never fabricated into one.
+ */
+export type EcosystemPlatform = {
+  slug: string;
+  name: string;
+  officialName?: string;
+  category: PlatformCategory;
+  /** What Trafficomm operates there. Documented platforms list specifics; others carry the standard operating model. */
+  ecosystem: readonly string[];
+  /** Set when `ecosystem` is the standard model rather than a documented platform-specific scope. */
+  standardModel?: boolean;
+  href?: string;
+};
+
 export type Platform = {
   slug: string;
   name: string;
   short: string;
-  category: "Social" | "Search" | "Programmatic" | "Ad Serving" | "Retail Media" | "Professional";
+  category: PlatformCategory;
   headline: string;
   intro: string;
   seo: { title: string; description: string };

@@ -1,3 +1,5 @@
+import { additionalPlatforms } from "./platforms";
+
 /**
  * Single source of truth for company facts.
  * Every number here is a verified proof point supplied by Trafficomm.
@@ -9,6 +11,13 @@ export const company = {
   founded: 2015,
   tagline: "Performance Operations. Built to Scale.",
   positioning: "The performance operations layer behind modern media teams.",
+  /**
+   * Header descriptor under the wordmark. Three words, because it has to sit
+   * subordinate to the mark at every width. It says what Trafficomm is — an
+   * operations partner — rather than repeating the campaign tagline above the
+   * homepage headline that already carries it.
+   */
+  headerDescriptor: "Performance Operations Partner",
   description:
     "Trafficomm is a digital advertising operations and performance operations company. Since 2015 we have worked behind agencies, ad-tech companies, publishers and brands to execute, optimize, measure and report digital advertising campaigns.",
   /**
@@ -63,7 +72,7 @@ export const confidentialityNote =
 export const enquiryConfidentialityNote = "Your enquiry and operational information are treated confidentially.";
 
 export type NavLink = { label: string; href: string; description?: string };
-export type NavGroup = { label: string; href: string; intro: string; links: NavLink[]; feature?: NavLink };
+export type NavGroup = { label: string; href: string; intro: string; links: NavLink[]; feature?: NavLink; also?: { label: string; items: string[] } };
 
 export const primaryNav: NavGroup[] = [
   {
@@ -96,7 +105,7 @@ export const primaryNav: NavGroup[] = [
   {
     label: "Platforms",
     href: "/platforms",
-    intro: "Ten platforms. One operations team.",
+    intro: "Multiple platforms. One operations team.",
     links: [
       { label: "Meta", href: "/platforms/meta" },
       { label: "Google Ads", href: "/platforms/google-ads" },
@@ -109,6 +118,11 @@ export const primaryNav: NavGroup[] = [
       { label: "Search Ads 360", href: "/platforms/search-ads-360" },
       { label: "Amazon Ads", href: "/platforms/amazon-ads" },
     ],
+    /**
+     * Operated, but with no documented operations page yet — so they are named
+     * here rather than linked to a page that would have to be invented.
+     */
+    also: { label: "Also operated", items: additionalPlatforms.map((p) => p.officialName ?? p.name) },
   },
 ];
 

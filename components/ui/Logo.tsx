@@ -14,15 +14,35 @@ export function LogoMark({ className, inverted = false }: { className?: string; 
   );
 }
 
-export function Logo({ className, inverted = false }: { className?: string; inverted?: boolean }) {
+/**
+ * `tagline` sets the positioning line under the wordmark. It is deliberately
+ * quiet — mono, small, wide-tracked — so it reads as a descriptor of the
+ * company rather than competing with the mark. It does not change the header's
+ * height: the wordmark loses its vertical centring, not the bar its size.
+ */
+export function Logo({ className, inverted = false, tagline }: { className?: string; inverted?: boolean; tagline?: string }) {
+  const wordmark = (
+    <span className={cn("block font-brand font-semibold leading-none tracking-[-0.02em]", inverted ? "text-white" : "text-ink")}>Trafficomm</span>
+  );
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       <LogoMark className="h-[1.15em] w-auto" inverted={inverted} />
-      <span
-        className={cn("font-brand font-semibold tracking-[-0.02em]", inverted ? "text-white" : "text-ink")}
-      >
-        Trafficomm
-      </span>
+      {tagline ? (
+        <span className="block">
+          {wordmark}
+          <span
+            className={cn(
+              // Hidden on the narrowest phones, where the bar also has to hold the menu button.
+              "mt-1 hidden whitespace-nowrap font-mono text-[0.52em] uppercase leading-none tracking-[0.14em] min-[420px]:block",
+              inverted ? "text-fog" : "text-steel",
+            )}
+          >
+            {tagline}
+          </span>
+        </span>
+      ) : (
+        wordmark
+      )}
     </span>
   );
 }

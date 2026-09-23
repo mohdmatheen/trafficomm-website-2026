@@ -116,6 +116,12 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
                       </Link>
                     </li>
                   </ul>
+                  {group.also && (
+                    <div className="mt-3 px-3">
+                      <p className="eyebrow !text-[0.6rem] text-steel">{group.also.label}</p>
+                      <p className="mt-1.5 text-[0.9rem] leading-relaxed text-graphite">{group.also.items.join(" · ")}</p>
+                    </div>
+                  )}
                 </div>
               </li>
             );

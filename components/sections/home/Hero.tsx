@@ -6,13 +6,20 @@ import { companyMetrics as m } from "@/data/metrics";
 
 const capabilities = ["Ad Operations", "Performance", "Programmatic", "Measurement", "Reporting"];
 
-const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label }));
+/**
+ * Every company figure travels with its qualifier — "Team members" without
+ * "peak historical team size" beside it would read as current headcount, and
+ * "~$10M" without "UAE tourism campaign" would read as revenue.
+ */
+const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label, d: s.detail }));
 
 export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="relative overflow-hidden bg-paper pt-28 pb-16 sm:pt-32 lg:pt-36 lg:pb-24">
       <div className="grid-bg mask-radial pointer-events-none absolute inset-0 opacity-50" aria-hidden="true" />
-      <div className="container-site relative grid items-center gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+      {/* The visual column carries a little more of the grid than the copy does:
+          the platform marks have to be recognisable, not merely present. */}
+      <div className="container-site relative grid items-center gap-12 lg:grid-cols-[1fr_1.12fr] lg:gap-10">
         <div>
           <Eyebrow className="mb-8">Digital advertising operations • Since 2015</Eyebrow>
           <h1 id="hero-title" className="text-display text-ink">
@@ -44,15 +51,16 @@ export function Hero() {
 
           <dl className="mt-14 grid max-w-lg grid-cols-3 border-t border-line pt-6">
             {heroStats.map((s) => (
-              <div key={s.l} className="flex flex-col">
+              <div key={s.l} className="flex flex-col pr-3">
                 <dt className="eyebrow order-2 mt-2 !text-[0.68rem] text-steel">{s.l}</dt>
                 <dd className="order-1 text-[1.75rem] leading-none tracking-[-0.035em] text-ink tabular">{s.v}</dd>
+                {s.d && <dd className="order-3 mt-1.5 text-[0.76rem] leading-snug text-steel">{s.d}</dd>}
               </div>
             ))}
           </dl>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[620px]">
+        <div className="relative mx-auto w-full max-w-[740px]">
           <EcosystemHero />
         </div>
       </div>

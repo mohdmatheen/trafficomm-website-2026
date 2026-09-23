@@ -6,6 +6,11 @@ import { cn } from "@/lib/cn";
  * the mark inside uses its optical box so compact symbols and wide wordmarks
  * read at a similar weight. Aspect ratio is always preserved (object-contain).
  *
+ * Platforms whose owners require permission we do not have render nothing at
+ * all — never a redrawn, approximated or monogrammed stand-in. Callers use
+ * `hasPlatformMark` to lay out a text treatment instead, so the platform's name
+ * carries it. See data/platform-logos.ts for which platforms, and why.
+ *
  * Accessibility: the mark is decorative by default, because every use sits
  * beside the platform name (visible text, or text inside the control). Pass
  * `alt` only where no other text identifies the platform — otherwise screen
@@ -14,12 +19,10 @@ import { cn } from "@/lib/cn";
 export function PlatformMark({ slug, size = 56, className, scale = 1, alt = "" }: { slug: string; size?: number; className?: string; scale?: number; alt?: string }) {
   const logo = platformLogos[slug];
   if (!logo) return null;
+
   const k = (size / 56) * scale;
   return (
-    <span
-      className={cn("inline-flex shrink-0 items-center justify-center rounded-[14px] bg-white ring-1 ring-black/5", className)}
-      style={{ width: size, height: size }}
-    >
+    <span className={cn("inline-flex shrink-0 items-center justify-center rounded-[14px] bg-white ring-1 ring-black/5", className)} style={{ width: size, height: size }}>
       {/* Plain <img>: logos are pre-sized static assets (SVG, or PNG exported at 480px for HiDPI), so the image optimizer adds markup without benefit. */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img

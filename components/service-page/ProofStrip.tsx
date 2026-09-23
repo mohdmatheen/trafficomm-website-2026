@@ -1,7 +1,10 @@
 import { Metric } from "@/components/ui/Metric";
 import { companyMetrics as m } from "@/data/metrics";
 
-/** Approved company-wide figures only; the note makes their scope explicit. */
+/**
+ * Approved company-wide figures only. Each figure shows its own qualifier, and
+ * the note below states the scope of the set.
+ */
 export function ProofStrip({ note }: { note: string }) {
   const stats = [m.campaigns, m.creatives, m.peakMonthly, m.peakTeam, { ...m.founded, label: "Operating since" }];
   return (
@@ -14,6 +17,7 @@ export function ProofStrip({ note }: { note: string }) {
               <dd className="order-1 whitespace-nowrap text-[clamp(2.1rem,1.5rem+1.6vw,3.1rem)] leading-none tracking-[-0.045em] text-ink">
                 <Metric stat={s} />
               </dd>
+              {s.detail && <dd className="order-3 mt-1.5 pr-4 text-[0.78rem] leading-snug text-steel">{s.detail}</dd>}
             </div>
           ))}
         </dl>

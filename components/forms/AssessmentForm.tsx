@@ -1,8 +1,8 @@
 "use client";
 
-import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company, enquiryConfidentialityNote } from "@/data/site";
-import { marketOptions, platformOptions, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors } from "@/lib/assessment";
+import { validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors } from "@/lib/assessment";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArrowRight, Check } from "@/components/ui/Icons";
@@ -10,7 +10,7 @@ import { ArrowRight, Check } from "@/components/ui/Icons";
 type Status = "idle" | "submitting" | "success" | "error";
 type Tone = "light" | "dark";
 
-const empty: AssessmentInput = { name: "", company: "", email: "", markets: [], platforms: [], volume: "", challenge: "", intent: "assessment", website: "" };
+const empty: AssessmentInput = { name: "", company: "", email: "", volume: "", challenge: "", intent: "assessment", website: "" };
 
 /** `privacyNote`: set false where the page already states the confidentiality line (Contact). */
 export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = true }: { tone?: Tone; idPrefix?: string; privacyNote?: boolean }) {
@@ -26,8 +26,6 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
     setValues((prev) => ({ ...prev, [k]: v }));
     if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }));
   };
-  const toggle = (k: "markets" | "platforms", v: string) =>
-    set(k, values[k].includes(v) ? values[k].filter((x) => x !== v) : [...values[k], v]);
 
   async function submit(intent: AssessmentInput["intent"], e?: FormEvent) {
     e?.preventDefault();
@@ -101,9 +99,6 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
         <TextField tone={tone} id={`${idPrefix}-company`} field="company" label="Company" autoComplete="organization" value={values.company} error={errors.company} onChange={(v) => set("company", v)} />
         <TextField tone={tone} id={`${idPrefix}-email`} field="email" type="email" label="Work email" autoComplete="email" value={values.email} error={errors.email} onChange={(v) => set("email", v)} className="sm:col-span-2" />
       </div>
-
-      <ChipGroup tone={tone} field="markets" legend="Market(s)" options={marketOptions} selected={values.markets} error={errors.markets} onToggle={(v) => toggle("markets", v)} />
-      <ChipGroup tone={tone} field="platforms" legend="Platforms" hint="Optional" options={platformOptions} selected={values.platforms} error={errors.platforms} onToggle={(v) => toggle("platforms", v)} />
 
       <div className="mt-6 grid gap-5">
         <Field tone={tone} id={`${idPrefix}-volume`} label="Campaign volume (per month)" error={errors.volume}>
@@ -243,69 +238,6 @@ function TextField({
         className={inputClasses(tone, Boolean(error))}
       />
     </Field>
-  );
-}
-
-function ChipGroup({
-  tone,
-  field,
-  legend,
-  hint,
-  options,
-  selected,
-  error,
-  onToggle,
-}: {
-  tone: Tone;
-  field: "markets" | "platforms";
-  legend: string;
-  hint?: string;
-  options: string[];
-  selected: string[];
-  error?: string;
-  onToggle: (v: string) => void;
-}) {
-  const id = useId();
-  const dark = tone === "dark";
-  return (
-    <fieldset className="mt-6" aria-describedby={error ? `${id}-err` : undefined}>
-      <legend className={cn("mb-2.5 flex w-full items-center justify-between text-[0.9rem]", dark ? "text-fog" : "text-graphite")}>
-        {legend}
-        {hint && <span className={cn("font-mono text-[0.7rem] uppercase tracking-[0.1em]", dark ? "text-mute" : "text-steel")}>{hint}</span>}
-      </legend>
-      <div className="flex flex-wrap gap-2">
-        {options.map((o, i) => {
-          const on = selected.includes(o);
-          return (
-            <label
-              key={o}
-              className={cn(
-                "relative cursor-pointer rounded-full px-3.5 py-2 text-[0.92rem] transition-colors has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-signal",
-                on
-                  ? "bg-signal text-white"
-                  : dark
-                    ? "bg-white/[0.04] text-fog ring-1 ring-inset ring-line-dark-strong hover:text-white"
-                    : "bg-paper text-graphite ring-1 ring-inset ring-line-strong hover:text-ink",
-              )}
-            >
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={on}
-                onChange={() => onToggle(o)}
-                data-field={i === 0 ? field : undefined}
-              />
-              {o}
-            </label>
-          );
-        })}
-      </div>
-      {error && (
-        <p id={`${id}-err`} className={cn("mt-1.5 text-[0.86rem]", dark ? "text-signal" : "text-signal-ink")}>
-          {error}
-        </p>
-      )}
-    </fieldset>
   );
 }
 

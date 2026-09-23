@@ -9,7 +9,8 @@ import { duration } from "@/lib/motion/tokens";
 
 /**
  * Hero visual, read top to bottom:
- *   10 advertising platforms  →  Trafficomm  →  Execute · Optimize · Measure · Report
+ *   advertising, commerce and delivery platforms  →  Trafficomm
+ *   →  Execute · Optimize · Measure · Report
  *
  * Inbound particles arrive irregularly (operational complexity); outbound
  * particles leave at a fixed cadence on four clean lanes (organized output).
@@ -25,11 +26,15 @@ import { duration } from "@/lib/motion/tokens";
  * tappable list (see EcosystemList) rather than being scaled down.
  */
 
-const W = 640;
-const H = 640;
-const CX = 320;
-const CY = 318;
-const CORE_R = 64;
+// The canvas is wider than it is tall: the platform arc needs horizontal room,
+// and the four output lanes below the core sit better spread out than stacked.
+// It is sized for the marks first — big enough to recognise a platform at a
+// glance — and the arc is then solved to fit them, not the other way round.
+const W = 860;
+const H = 720;
+const CX = 430;
+const CY = 372;
+const CORE_R = 74;
 
 const r1 = (n: number) => Math.round(n * 10) / 10;
 
@@ -42,40 +47,68 @@ const rand = (i: number) => {
   return (x >>> 0) / 4294967296;
 };
 
-// Left → right across the upper arc. Longer names sit on the outer ring.
-const PLATFORMS: { slug: string; label: string; outer: boolean }[] = [
-  { slug: "amazon-ads", label: "Amazon Ads", outer: true },
-  { slug: "tiktok", label: "TikTok", outer: false },
-  { slug: "google-ads", label: "Google Ads", outer: true },
-  { slug: "x", label: "X", outer: false },
-  { slug: "search-ads-360", label: "Search Ads 360", outer: true },
-  { slug: "meta", label: "Meta", outer: false },
-  { slug: "dv360", label: "DV360", outer: true },
-  { slug: "linkedin", label: "LinkedIn", outer: false },
-  { slug: "cm360", label: "CM360", outer: true },
-  { slug: "snapchat", label: "Snapchat", outer: false },
+/**
+ * Left → right across the upper arc, distributed over three radii so the arc
+ * holds the whole ecosystem without the nodes closing up. `ring` is 0 (inner),
+ * 1 or 2 (outer); long names sit further out, where the arc is longer.
+ *
+ * Platforms whose owners do not permit third-party logo use render as a plain
+ * text node — the name alone, in the same pill. See data/platform-logos.ts for
+ * which, and why. Ring assignment is solved for clearance, not authored by
+ * hand: no two nodes come within 12px of each other in both axes, so the arc
+ * reads as one composition rather than a list with extras appended.
+ */
+const PLATFORMS: { slug: string; label: string; ring: 0 | 1 | 2 }[] = [
+  { slug: "amazon-ads", label: "Amazon Ads", ring: 2 },
+  { slug: "tiktok", label: "TikTok", ring: 0 },
+  { slug: "noon", label: "Noon", ring: 1 },
+  { slug: "google-ads", label: "Google Ads", ring: 2 },
+  { slug: "x", label: "X", ring: 0 },
+  { slug: "search-ads-360", label: "Search Ads 360", ring: 1 },
+  { slug: "meta", label: "Meta", ring: 2 },
+  { slug: "chatgpt", label: "ChatGPT", ring: 0 },
+  { slug: "microsoft-advertising", label: "Microsoft Advertising", ring: 2 },
+  { slug: "dv360", label: "DV360", ring: 1 },
+  { slug: "linkedin", label: "LinkedIn", ring: 0 },
+  { slug: "talabat", label: "Talabat", ring: 2 },
+  { slug: "cm360", label: "CM360", ring: 0 },
+  { slug: "snapchat", label: "Snapchat", ring: 2 },
 ];
 
-// Node anatomy: 10 pad · 16 logo area · 7 gap · name · 12 pad. Heights are fixed; widths follow the name.
-const NODE_H = 30;
-const PAD_L = 10;
-const LOGO_AREA = 16;
-const GAP = 7;
-const PAD_R = 12;
+const RING_R = [196, 272, 348] as const;
+/** Arc start (deg) and sweep: a full half-turn over the core, lower-left to lower-right. */
+const ARC_FROM = 180;
+const ARC_SPAN = 180;
+/** The arc is flattened vertically so the composition fills a landscape canvas. */
+const ARC_FLATTEN = 0.92;
+
+// Node anatomy: 11 pad · 30 logo area · 9 gap · name · 13 pad. Heights are fixed; widths follow the name.
+const NODE_H = 42;
+const PAD_L = 11;
+const LOGO_AREA = 30;
+const GAP = 9;
+const PAD_R = 13;
+const FONT_SIZE = 12;
 // Approximate advance widths for 12.5px Geist, so node padding stays even without measuring the DOM.
 const textWidth = (t: string) =>
-  [...t].reduce((n, ch) => n + (/[A-Z]/.test(ch) ? 8.3 : /[0-9]/.test(ch) ? 7.3 : ch === " " ? 3.6 : /[il]/.test(ch) ? 3.4 : /[mw]/.test(ch) ? 9.5 : 6.6), 0);
+  ([...t].reduce((n, ch) => n + (/[A-Z]/.test(ch) ? 8.3 : /[0-9]/.test(ch) ? 7.3 : ch === " " ? 3.6 : /[il]/.test(ch) ? 3.4 : /[mw]/.test(ch) ? 9.5 : 6.6), 0) * FONT_SIZE) / 12.5;
 
 const OUTPUTS = ["Execute", "Optimize", "Measure", "Report"];
 
 const nodes = PLATFORMS.map((p, i) => {
-  const deg = 188 + (i + 0.5) * (164 / PLATFORMS.length);
+  const deg = ARC_FROM + (i + 0.5) * (ARC_SPAN / PLATFORMS.length);
   const a = (deg * Math.PI) / 180;
-  const r = p.outer ? 272 : 200;
-  const logo = platformLogos[p.slug];
-  const wordmark = Boolean(logo.inline.wordmark);
-  const w = r1(wordmark ? PAD_L + logo.inline.w + PAD_R - 2 : PAD_L + LOGO_AREA + GAP + textWidth(p.label) + PAD_R);
-  return { ...p, logo, wordmark, x: r1(CX + Math.cos(a) * r), y: r1(CY + Math.sin(a) * r * 0.92), a, w };
+  const r = RING_R[p.ring];
+  const logo = platformLogos[p.slug] ?? null;
+  const wordmark = Boolean(logo?.hero.wordmark);
+  const w = r1(
+    logo === null
+      ? PAD_L + textWidth(p.label) + PAD_R
+      : wordmark
+        ? PAD_L + logo.hero.w + PAD_R
+        : PAD_L + LOGO_AREA + GAP + textWidth(p.label) + PAD_R,
+  );
+  return { ...p, logo, wordmark, x: r1(CX + Math.cos(a) * r), y: r1(CY + Math.sin(a) * r * ARC_FLATTEN), a, w };
 });
 
 type Curve = { sx: number; sy: number; c1x: number; c1y: number; c2x: number; c2y: number; ex: number; ey: number; d: string };
@@ -105,9 +138,10 @@ const inbound = nodes.map((n, i) => {
 });
 
 // Outbound: four ordered lanes from the bottom of the core to the output row.
-const OUT_Y = 560;
-const outX = [92, 244, 396, 548];
-const outbound = outX.map((x) => cubic(CX, CY + CORE_R + 6, CX, CY + 150, x, OUT_Y - 110, x, OUT_Y - 18));
+const OUT_Y = 650;
+const OUT_W = 150;
+const outX = [95, 318, 541, 764];
+const outbound = outX.map((x) => cubic(CX, CY + CORE_R + 6, CX, CY + 160, x, OUT_Y - 120, x, OUT_Y - 20));
 
 const point = (c: Curve, t: number) => {
   const u = 1 - t;
@@ -124,6 +158,20 @@ const IN_P = inbound.flatMap((_, i) =>
 // Ordered outbound traffic: identical speed, evenly spaced.
 const OUT_PER_LANE = 3;
 const OUT_P = outbound.flatMap((_, lane) => Array.from({ length: OUT_PER_LANE }, (_, k) => ({ lane, offset: k / OUT_PER_LANE })));
+
+/**
+ * Per-node drift: three keyframe paths (see globals.css) at a slow, uneven
+ * cadence, so the arc reads as a live network rather than a static diagram.
+ * Amplitude is 3–4 canvas px — about 3px on screen — which is movement you
+ * notice at the edge of vision and never consciously track. Paused while a
+ * node is hovered or focused, so the thing you are reading holds still, and
+ * absent entirely under reduced motion.
+ */
+const drift = (i: number) => ({
+  animationName: `eh-drift-${"abc"[i % 3]}`,
+  animationDuration: `${13 + (i % 5) * 2.6}s`,
+  animationDelay: `-${(i * 1.7) % 9}s`,
+});
 
 const BURST = 4;
 const BURST_KEYS = Array.from({ length: BURST }, (_, k) => k);
@@ -245,9 +293,9 @@ export function EcosystemHero() {
     <svg
       ref={svgRef}
       viewBox={`0 0 ${W} ${H}`}
-      className="hidden h-auto w-full select-none sm:block"
+      className="eh-net hidden h-auto w-full select-none sm:block"
       role="group"
-      aria-label="Diagram: campaign activity from Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, DV360, CM360, Search Ads 360 and Amazon Ads flows into Trafficomm, which organizes it into four outputs: execute, optimize, measure and report."
+      aria-label={`Diagram: campaign activity from ${PLATFORMS.map((p) => p.label).join(", ")} and other platforms flows into Trafficomm, which organizes it into four outputs: execute, optimize, measure and report.`}
     >
       <defs>
         <pattern id="eh-dots" width="16" height="16" patternUnits="userSpaceOnUse">
@@ -269,13 +317,13 @@ export function EcosystemHero() {
       <rect width={W} height={H} fill="url(#eh-dots)" mask="url(#eh-mask)" />
 
       {/* stage labels */}
-      <text x="18" y="24" className="fill-steel font-mono uppercase" fontSize="10.5" letterSpacing="1.6">
-        Input · 10 platforms
+      <text x="18" y="22" className="fill-steel font-mono uppercase" fontSize="11.5" letterSpacing="1.7">
+        Input · Advertising, commerce &amp; delivery platforms
       </text>
-      <text x="18" y={OUT_Y - 44} className="fill-steel font-mono uppercase" fontSize="10.5" letterSpacing="1.6">
+      <text x="18" y={OUT_Y - 50} className="fill-steel font-mono uppercase" fontSize="11.5" letterSpacing="1.7">
         Output
       </text>
-      <line x1="18" x2={W - 18} y1={OUT_Y - 36} y2={OUT_Y - 36} stroke="#0c0c0d" strokeOpacity="0.08" strokeDasharray="2 5" />
+      <line x1="18" x2={W - 18} y1={OUT_Y - 42} y2={OUT_Y - 42} stroke="#0c0c0d" strokeOpacity="0.08" strokeDasharray="2 5" />
 
       {/* inbound lines */}
       {inbound.map((c, i) => (
@@ -284,8 +332,8 @@ export function EcosystemHero() {
           d={c.d}
           fill="none"
           stroke={hot === i ? "#ea3e3a" : "#0c0c0d"}
-          strokeOpacity={hot === i ? 0.9 : hot !== null ? 0.08 : 0.13}
-          strokeWidth={hot === i ? 1.5 : 1}
+          strokeOpacity={hot === i ? 0.95 : hot !== null ? 0.07 : 0.17}
+          strokeWidth={hot === i ? 1.8 : 1.1}
           style={{ transition: "stroke var(--dur-fast), stroke-opacity var(--dur-base)" }}
         />
       ))}
@@ -361,15 +409,15 @@ export function EcosystemHero() {
         {animate && <animateTransform attributeName="transform" type="rotate" from={`0 ${CX} ${CY}`} to={`360 ${CX} ${CY}`} dur="60s" repeatCount="indefinite" />}
       </circle>
       <circle cx={CX} cy={CY} r={CORE_R} fill="#0c0c0d" />
-      <g transform={`translate(${CX - 25} ${CY - 30}) scale(0.0439)`}>
+      <g transform={`translate(${CX - 29} ${CY - 35}) scale(0.0508)`}>
         <path d="M302 190h239L301 573h236l-60 92H0z" fill="#fff" />
         <path d="M537 573 782 190h239L777 573z" fill="#ea3e3a" />
         <path d="M601 95 660 0h480l-61 95z" fill="#ea3e3a" />
       </g>
-      <text x={CX} y={CY + 18} textAnchor="middle" fontSize="12" fill="#fff" fontWeight="600" className="font-brand">
+      <text x={CX} y={CY + 22} textAnchor="middle" fontSize="14" fill="#fff" fontWeight="600" className="font-brand">
         Trafficomm
       </text>
-      <text x={CX} y={CY + 34} textAnchor="middle" fontSize="7.5" fill="#b9b9bf" className="font-mono uppercase" letterSpacing="1.4">
+      <text x={CX} y={CY + 40} textAnchor="middle" fontSize="8.5" fill="#b9b9bf" className="font-mono uppercase" letterSpacing="1.5">
         Operations layer
       </text>
 
@@ -381,7 +429,7 @@ export function EcosystemHero() {
           tabIndex={0}
           role="button"
           aria-label={`${n.label}: trace its signal through Trafficomm`}
-          className="cursor-pointer outline-none [&:focus-visible>rect:first-child]:stroke-[#ea3e3a] [&:focus-visible>rect:first-child]:[stroke-opacity:1]"
+          className="cursor-pointer outline-none [&:focus-visible_rect:first-of-type]:stroke-[#ea3e3a] [&:focus-visible_rect:first-of-type]:[stroke-opacity:1]"
           onMouseEnter={(e) => trigger(i, e.timeStamp)}
           onFocus={(e) => trigger(i, e.timeStamp)}
           onClick={(e) => trigger(i, e.timeStamp)}
@@ -392,6 +440,7 @@ export function EcosystemHero() {
             }
           }}
         >
+          <g className={animate ? "eh-drift" : undefined} style={animate ? drift(i) : undefined} data-hot={hot === i ? "" : undefined}>
           <rect
             x={-n.w / 2}
             y={-NODE_H / 2}
@@ -404,17 +453,17 @@ export function EcosystemHero() {
             strokeWidth={hot === i ? 1.4 : 1}
             style={{ transition: "stroke var(--dur-fast), stroke-opacity var(--dur-fast)" }}
           />
-          {n.wordmark ? (
-            <image href={n.logo.src} x={-n.logo.inline.w / 2} y={-n.logo.inline.h / 2 + 1} width={n.logo.inline.w} height={n.logo.inline.h} preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
+          {n.logo === null ? null : n.wordmark ? (
+            <image href={n.logo.src} x={-n.logo.hero.w / 2} y={-n.logo.hero.h / 2} width={n.logo.hero.w} height={n.logo.hero.h} preserveAspectRatio="xMidYMid meet" aria-hidden="true" />
           ) : (
             <g transform={`translate(${-n.w / 2 + PAD_L + LOGO_AREA / 2} 0)`} aria-hidden="true">
               {n.logo.mono && (
                 <image
                   href={n.logo.src}
-                  x={-n.logo.inline.w / 2}
-                  y={-n.logo.inline.h / 2}
-                  width={n.logo.inline.w}
-                  height={n.logo.inline.h}
+                  x={-n.logo.hero.w / 2}
+                  y={-n.logo.hero.h / 2}
+                  width={n.logo.hero.w}
+                  height={n.logo.hero.h}
                   preserveAspectRatio="xMidYMid meet"
                   filter="url(#eh-mono)"
                   opacity={hot === i ? 0 : 1}
@@ -423,10 +472,10 @@ export function EcosystemHero() {
               )}
               <image
                 href={n.logo.src}
-                x={-n.logo.inline.w / 2}
-                y={-n.logo.inline.h / 2}
-                width={n.logo.inline.w}
-                height={n.logo.inline.h}
+                x={-n.logo.hero.w / 2}
+                y={-n.logo.hero.h / 2}
+                width={n.logo.hero.w}
+                height={n.logo.hero.h}
                 preserveAspectRatio="xMidYMid meet"
                 opacity={n.logo.mono && hot !== i ? 0 : 1}
                 style={{ transition: "opacity var(--dur-fast)" }}
@@ -434,10 +483,11 @@ export function EcosystemHero() {
             </g>
           )}
           {!n.wordmark && (
-            <text x={-n.w / 2 + PAD_L + LOGO_AREA + GAP} y={0.5} dominantBaseline="middle" fontSize="12.5" fill="#0c0c0d" letterSpacing="-0.1">
+            <text x={-n.w / 2 + PAD_L + (n.logo === null ? 0 : LOGO_AREA + GAP)} y={0.5} dominantBaseline="middle" fontSize={FONT_SIZE} fill="#0c0c0d" letterSpacing="-0.1">
               {n.label}
             </text>
           )}
+          </g>
         </g>
       ))}
 
@@ -447,15 +497,15 @@ export function EcosystemHero() {
         const solid = on && animate;
         return (
           <g key={label} transform={`translate(${outX[i]} ${OUT_Y})`}>
-            <rect x={-62} y={-18} width={124} height={36} rx={6} fill={solid ? "#0c0c0d" : "#fff"} stroke="#0c0c0d" strokeOpacity={solid ? 1 : 0.16} style={{ transition: "fill 0.5s" }} />
-            <rect x={-62} y={-18} width={3} height={36} fill={on ? "#ea3e3a" : "#0c0c0d"} fillOpacity={on ? 1 : 0.2} style={{ transition: "fill 0.5s" }} />
+            <rect x={-OUT_W / 2} y={-20} width={OUT_W} height={40} rx={7} fill={solid ? "#0c0c0d" : "#fff"} stroke="#0c0c0d" strokeOpacity={solid ? 1 : 0.16} style={{ transition: "fill 0.5s" }} />
+            <rect x={-OUT_W / 2} y={-20} width={3.5} height={40} fill={on ? "#ea3e3a" : "#0c0c0d"} fillOpacity={on ? 1 : 0.2} style={{ transition: "fill 0.5s" }} />
             <text
               x={4}
               y={1}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize="11.5"
-              letterSpacing="1.6"
+              fontSize="12.5"
+              letterSpacing="1.7"
               className="font-mono uppercase"
               fill={solid ? "#fff" : "#0c0c0d"}
               style={{ transition: "fill 0.5s" }}
@@ -476,7 +526,22 @@ export function EcosystemHero() {
  * radial diagram — platform → Trafficomm operations layer → four outputs.
  */
 // Mobile lists platforms in navigation order rather than the radial layout order.
-const LIST_ORDER = ["meta", "google-ads", "tiktok", "snapchat", "x", "linkedin", "dv360", "cm360", "search-ads-360", "amazon-ads"];
+const LIST_ORDER = [
+  "meta",
+  "google-ads",
+  "tiktok",
+  "snapchat",
+  "x",
+  "linkedin",
+  "dv360",
+  "cm360",
+  "search-ads-360",
+  "amazon-ads",
+  "microsoft-advertising",
+  "noon",
+  "talabat",
+  "chatgpt",
+];
 const LIST = LIST_ORDER.map((slug) => PLATFORMS.find((p) => p.slug === slug)!);
 
 function EcosystemList() {
@@ -484,10 +549,10 @@ function EcosystemList() {
   const current = sel === null ? null : LIST[sel];
   return (
     <div className="sm:hidden">
-      <p className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">Input · 10 platforms</p>
+      <p className="font-mono text-[0.72rem] uppercase leading-relaxed tracking-[0.12em] text-steel">Input · Advertising, commerce &amp; delivery platforms</p>
       <ul className="mt-3 grid grid-cols-2 gap-2">
         {LIST.map((p, i) => {
-          const logo = platformLogos[p.slug];
+          const logo = platformLogos[p.slug] ?? null;
           const on = sel === i;
           return (
             <li key={p.slug}>
@@ -497,16 +562,18 @@ function EcosystemList() {
                 aria-label={p.label}
                 onClick={() => setSel(on ? null : i)}
                 className={cn(
-                  "flex h-11 w-full items-center gap-2.5 rounded-full bg-white px-3.5 text-left text-[0.92rem] text-ink ring-1 transition-[box-shadow] duration-200",
+                  "flex h-12 w-full items-center gap-2.5 rounded-full bg-white px-3.5 text-left text-[0.92rem] text-ink ring-1 transition-[box-shadow] duration-200",
                   on ? "ring-2 ring-signal" : "ring-line",
                 )}
               >
-                {logo.inline.wordmark ? (
+                {logo === null ? (
+                  <span className="truncate">{p.label}</span>
+                ) : logo.inline.wordmark ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={logo.src} alt="" width={logo.inline.w} height={logo.inline.h} loading="lazy" decoding="async" className="object-contain" />
                 ) : (
                   <>
-                    <span className="relative flex size-4 shrink-0 items-center justify-center" aria-hidden="true">
+                    <span className="relative flex size-[22px] shrink-0 items-center justify-center" aria-hidden="true">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={logo.src}

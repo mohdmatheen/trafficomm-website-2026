@@ -28,8 +28,6 @@ export async function POST(request: Request) {
     name: body.name?.trim(),
     company: body.company?.trim(),
     email: body.email?.trim(),
-    markets: body.markets,
-    platforms: body.platforms ?? [],
     campaignsPerMonth: body.volume,
     challenge: body.challenge?.trim() ?? "",
     submittedAt: new Date().toISOString(),

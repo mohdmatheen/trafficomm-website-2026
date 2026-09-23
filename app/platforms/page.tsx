@@ -6,13 +6,15 @@ import { PageHero } from "@/components/sections/shared/PageHero";
 import { PlatformEcosystem } from "@/components/sections/home/PlatformEcosystem";
 import { ArrowUpRight } from "@/components/ui/Icons";
 import { Eyebrow, Section } from "@/components/ui/Section";
-import { platforms } from "@/data/platforms";
+import { additionalPlatforms, platforms } from "@/data/platforms";
+import { hasPlatformMark } from "@/data/platform-logos";
+import { cn } from "@/lib/cn";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
   title: "Platforms — Meta, Google Ads, DV360, CM360 & More",
   description:
-    "Campaign operations across Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, DV360, CM360, Search Ads 360 and Amazon Ads — one team, shared standards.",
+    "Campaign operations across social, search, programmatic, ad serving, retail media, commerce and delivery platforms — one team, one set of standards for naming, QA, pacing and reporting.",
   path: "/platforms",
 });
 
@@ -26,10 +28,10 @@ export default function PlatformsPage() {
         eyebrow="Platform experience"
         title={
           <>
-            Ten platforms. <span className="block text-steel/70">One operations team.</span>
+            Multiple platforms. <span className="block text-steel/70">One operations team.</span>
           </>
         }
-        lead="Most media plans span several platforms. Trafficomm operates across all of them with one set of standards — so naming, QA, pacing and reporting stay consistent however the budget is split."
+        lead="Most media plans span several platforms. Trafficomm operates across them with one set of standards — so naming, QA, pacing and reporting stay consistent however the budget is split."
       />
       <Section tone="paper" className="!pt-0">
         <div className="space-y-14">
@@ -59,6 +61,31 @@ export default function PlatformsPage() {
               </div>
             );
           })}
+        </div>
+
+        {/*
+          Operated, but without enough documented Trafficomm content to justify a
+          page each. Naming them here is honest; inventing five pages would not be.
+        */}
+        <div className="mt-14 grid gap-6 border-t border-line pt-10 lg:grid-cols-[14rem_1fr]">
+          <Eyebrow className="lg:pt-2">Also operated</Eyebrow>
+          <div>
+            <ul className="flex flex-wrap gap-2.5">
+              {additionalPlatforms.map((p) => {
+                // Two of these may not carry a mark, so the pill closes up around the name alone.
+                const mark = hasPlatformMark(p.slug);
+                return (
+                  <li key={p.slug} className={cn("flex items-center gap-3 rounded-full bg-white py-2 pr-4 text-[0.95rem] text-ink ring-1 ring-line", mark ? "pl-2" : "pl-4")}>
+                    {mark && <PlatformMark slug={p.slug} size={28} className="!rounded-full" />}
+                    {p.officialName ?? p.name}
+                  </li>
+                );
+              })}
+            </ul>
+            <p className="mt-5 max-w-2xl text-[0.9rem] leading-relaxed text-steel">
+              Operated under the same naming, QA and reporting standards as the platforms above. Detailed operations pages are published only where there is documented Trafficomm scope to describe, and platform coverage continues to expand.
+            </p>
+          </div>
         </div>
       </Section>
       <PlatformEcosystem index={null} />

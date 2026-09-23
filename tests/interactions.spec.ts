@@ -43,8 +43,13 @@ test.describe("homepage interactions", () => {
     if (viewport!.width >= 640) {
       const meta = hero.getByRole("button", { name: /^Meta: trace its signal/ });
       await expect(meta).toBeVisible();
-      // Every platform node carries its official mark and a text name.
-      await expect(hero.locator("svg[role=group] g[role=button] image")).toHaveCount(11); // 10 marks + Meta's neutral layer
+      // Every platform we may legitimately show a mark for carries it. Microsoft
+      // Advertising and ChatGPT carry none — their owners require permission we
+      // do not have — so they are named in type instead (see platform-logos.ts).
+      await expect(hero.locator("svg[role=group] g[role=button] image")).toHaveCount(13); // 12 marks + Meta's neutral layer
+      for (const named of ["Microsoft Advertising", "ChatGPT"]) {
+        await expect(hero.getByRole("button", { name: new RegExp(`^${named}: trace its signal`) })).toBeVisible();
+      }
       await meta.focus();
       await expect(meta.locator("rect").first()).toHaveAttribute("stroke", "#ea3e3a");
       await expect(hero.locator(".sm\\:hidden")).toBeHidden();
