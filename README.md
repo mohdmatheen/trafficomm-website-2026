@@ -91,7 +91,9 @@ LCP ≤ 2.5s and CLS ≤ 0.05 on throttled mobile · script transfer ≤ 280KB �
 
 ## Environment
 
-See `.env.example`. `ASSESSMENT_WEBHOOK_URL` is server-only. Never commit `.env*` files.
+See `.env.example`. Every delivery variable is server-only — none carries a
+`NEXT_PUBLIC_` prefix, so none reaches the browser bundle. Never commit `.env*`
+files; `.gitignore` already excludes them apart from the example.
 
 ## Deployment
 
@@ -100,15 +102,37 @@ Prepared for **Vercel preview deployments** only (branch `website-review`). No p
 | Variable | Scope | Purpose |
 |---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | Production at launch only | Canonical origin. Unset on Vercel → the deployment's own URL is used automatically. |
-| `ASSESSMENT_WEBHOOK_URL` | Server-only secret | Form delivery. Unset on previews → submissions are disabled with a clear message; nothing is sent. |
+| `ASSESSMENT_EMAIL_PROVIDER` | Server-only | `postmark` or `resend`. Enables email delivery of form submissions. |
+| `ASSESSMENT_EMAIL_API_KEY` | Server-only **secret** | Postmark Server API token, or Resend API key. |
+| `ASSESSMENT_EMAIL_FROM` | Server-only | From address. Must be a sender the provider has verified. |
+| `ASSESSMENT_EMAIL_TO` | Server-only | Where enquiries are delivered. Kept out of the repository — this repository is public. |
+| `ASSESSMENT_WEBHOOK_URL` | Server-only **secret** | Form delivery to a CRM, Slack, or an email relay. |
 | `SITE_INDEXABLE` | Production at launch only | `true` allows indexing. Unset (default) → `noindex, nofollow` via header, robots.txt and meta on every deployment, including the `*.vercel.app` project URL. |
 
 QA artefacts are excluded via `.vercelignore`.
 
+### Assessment form delivery
+
+Every valid submission is delivered to **every channel configured** — email and
+webhook are destinations, not alternatives, so both run when both are set. If any
+configured channel fails the visitor sees an error and is asked to retry; the
+route never reports success for a lead that did not arrive.
+
+With **neither** configured, a preview says so plainly and production returns 503
+rather than silently discarding the enquiry.
+
+The webhook payload carries ready-made `subject`, `replyTo` and `text` fields
+alongside the flat data, so an email relay (Zapier, Make, n8n, Pipedream) can send
+the notification without composing it, and an existing CRM mapping keeps working.
+
+Email bodies are plain text, and `Reply-To` is the visitor's work email so a reply
+in the inbox reaches the prospect directly. Submissions from a preview or
+development environment are labelled in the subject and body so a test is never
+mistaken for a real lead.
+
 ## Pre-production checklist
 
-- [ ] **Official TikTok asset required** — replace `public/platforms/tiktok.svg` (placeholder) with the official mark from TikTok's brand portal.
-- [ ] Set `ASSESSMENT_WEBHOOK_URL` to the agreed CRM/webhook endpoint.
+- [ ] **Configure assessment form delivery** — set either the `ASSESSMENT_EMAIL_*` group or `ASSESSMENT_WEBHOOK_URL` in Vercel. Until one is set, production returns 503 and no enquiry is delivered. Sending as `@trafficomm.com` needs the provider added to SPF and a DKIM record: trafficomm.com publishes `v=DMARC1; p=quarantine`, so an unaligned message is junked.
 - [ ] At trafficomm.com launch only: set `NEXT_PUBLIC_SITE_URL=https://www.trafficomm.com` and `SITE_INDEXABLE=true` in Vercel **Production**.
 - [ ] Add confirmed contact details (email, phone, booking link) in `data/site.ts`.
 - [ ] Legal review of platform-mark usage (Google product marks in particular; monochrome Meta mark treatment in the hero).
