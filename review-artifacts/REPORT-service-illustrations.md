@@ -317,7 +317,7 @@ And one assertion was **added**: "all six services are distinguishable by artwor
 
 ## 20. Visual QA captures and before/after
 
-Branch **`wave-1-visual-review-artifacts`** @ `d8b79d2`, at `review-artifacts/service-illustrations/` — 23 items:
+Branch **`wave-1-visual-review-artifacts`**, at `review-artifacts/service-illustrations/` — 23 items:
 
 | # | Frame |
 |---|---|

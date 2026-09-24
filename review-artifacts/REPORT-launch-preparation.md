@@ -489,7 +489,7 @@ Disallow: /
 
 ## AF. Review-artifact location
 
-Branch **`wave-1-visual-review-artifacts`** @ **`d8b79d2`** — "chore: launch candidate review package". Pushed to origin. Nothing was added to the website branch.
+Branch **`wave-1-visual-review-artifacts`**, pushed to origin (commits `d8b79d2` "chore: launch candidate review package" and `c966c9d` "docs: launch candidate reports"). Nothing was added to the website branch.
 
 | Path | Contents |
 |---|---|
