@@ -1,3 +1,5 @@
+import { utmKeys, type SubmissionContext } from "./assessment";
+
 /**
  * Email delivery for assessment submissions.
  *
@@ -6,13 +8,15 @@
  * prefixed NEXT_PUBLIC_, so none of it can reach the browser bundle: this module
  * is imported only by the API route, which runs server-side.
  *
+ * The recipient and sender come from the environment and are never read from the
+ * request, so a visitor cannot redirect a notification or use the endpoint as a
+ * relay. The only visitor-controlled address in the message is Reply-To, which is
+ * the work email they submitted and which validation has already constrained to a
+ * single address with no whitespace.
+ *
  * The recipient address is an environment variable rather than a constant on
  * purpose — this repository is public, and a business address committed to it
  * would be harvested.
- *
- * Bodies are plain text, not HTML. A lead notification has no need for markup,
- * and plain text removes the injection surface that interpolating a stranger's
- * free-text answer into HTML would create.
  */
 
 /** The delivered record. Market and platform were removed pre-launch and must never return. */
@@ -26,11 +30,15 @@ export type AssessmentRecord = {
   submittedAt: string;
   /** "preview" marks a test submission so it is never mistaken for a real lead. */
   environment: "production" | "preview" | "development";
+  context?: SubmissionContext;
 };
 
 export type AssessmentEmail = {
   subject: string;
+  /** Plain-text body. Always sent, and the only body some clients will render. */
   text: string;
+  /** HTML body. A progressive enhancement over `text`, never a replacement. */
+  html: string;
   /** The visitor's work email, so a reply in the inbox goes straight to them. */
   replyTo: string;
 };
@@ -46,17 +54,43 @@ const headerSafe = (value: string, max = 180) => value.replace(/[\r\n]+/g, " ").
 export function assessmentSubject(record: AssessmentRecord): string {
   const kind = record.type === "call_request" ? "Call Request" : "Assessment Request";
   const prefix = record.environment === "production" ? "" : `[${record.environment}] `;
-  return headerSafe(`${prefix}New Trafficomm ${kind} — ${record.company}`);
+  const company = record.company.trim();
+  // Validation requires a company, so the suffix is a fallback rather than a branch we expect.
+  return headerSafe(`${prefix}New Trafficomm ${kind}${company ? ` — ${company}` : ""}`);
 }
 
-export function assessmentTextBody(record: AssessmentRecord): string {
-  const rows: [string, string][] = [
+/** Label/value pairs in the order they appear in both bodies. */
+function fields(record: AssessmentRecord): [string, string][] {
+  return [
     ["Name", record.name],
     ["Company", record.company],
     ["Work email", record.email],
     ["Campaign volume (per month)", record.campaignsPerMonth],
   ];
-  const width = Math.max(...rows.map(([label]) => label.length));
+}
+
+/** Attribution, omitted entirely when the visitor arrived with none. */
+function attribution(record: AssessmentRecord): [string, string][] {
+  const c = record.context;
+  const rows: [string, string][] = [];
+  if (c?.path) rows.push(["Submitted from", c.path]);
+  if (c?.referrer) rows.push(["Referred by", c.referrer]);
+  for (const key of utmKeys) {
+    const value = c?.utm?.[key];
+    if (value) rows.push([`utm_${key}`, value]);
+  }
+  return rows;
+}
+
+const formatted = (iso: string) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : `${d.toUTCString().replace(" GMT", "")} UTC`;
+};
+
+export function assessmentTextBody(record: AssessmentRecord): string {
+  const rows = fields(record);
+  const extra = attribution(record);
+  const width = Math.max(...[...rows, ...extra].map(([label]) => label.length));
   const lines = [
     record.type === "call_request" ? "New call request from the Trafficomm website." : "New assessment request from the Trafficomm website.",
     "",
@@ -65,9 +99,10 @@ export function assessmentTextBody(record: AssessmentRecord): string {
     "Biggest operational challenge",
     record.challenge ? indent(record.challenge) : "  (not provided — this field is optional)",
     "",
-    `Submitted  ${record.submittedAt}`,
-    `Reply to this email to answer ${record.email} directly.`,
+    `Submitted  ${formatted(record.submittedAt)}`,
   ];
+  if (extra.length) lines.push("", ...extra.map(([label, value]) => `${label.padEnd(width)}  ${value}`));
+  lines.push("", `Reply to this email to answer ${record.email} directly.`);
   if (record.environment !== "production") {
     lines.unshift(`NOTE: sent from the ${record.environment} environment. This is a test submission, not a real lead.`, "");
   }
@@ -80,8 +115,94 @@ const indent = (text: string) =>
     .map((line) => `  ${line}`)
     .join("\n");
 
+/** HTML escape. Every interpolated value below is visitor input and passes through this. */
+const esc = (value: string) =>
+  value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+
+/**
+ * Trafficomm's palette, inline. Email clients strip <style> blocks and external
+ * stylesheets, and many block remote images, so this uses tables, inline styles
+ * and no images at all — the message has to be legible in Outlook, not elegant
+ * in a browser.
+ */
+const ink = "#0c0c0d";
+const paper = "#f6f6f3";
+const steel = "#5d5d64";
+const signal = "#c42b27";
+const line = "#e2e2dd";
+const mono = "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+const sans = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
+
+/**
+ * Two columns, and the label wraps. An earlier version held the label on one line,
+ * which overflowed a 375px phone by 150px — these are read on a phone as often as
+ * on a desk, and an inbox has no horizontal scroll to rescue it. `word-break` is
+ * there for long referrer URLs for the same reason.
+ */
+function row(label: string, value: string, isLink = false): string {
+  const shown = isLink ? `<a href="mailto:${esc(value)}" style="color:${signal};text-decoration:none">${esc(value)}</a>` : esc(value);
+  return `<tr>
+      <td width="38%" style="width:38%;padding:10px 0;border-bottom:1px solid ${line};font:400 11px/1.5 ${mono};letter-spacing:0.06em;text-transform:uppercase;color:${steel};vertical-align:top">${esc(label)}</td>
+      <td style="padding:10px 0 10px 14px;border-bottom:1px solid ${line};font:400 15px/1.5 ${sans};color:${ink};vertical-align:top;word-break:break-word">${shown}</td>
+    </tr>`;
+}
+
+export function assessmentHtmlBody(record: AssessmentRecord): string {
+  const heading = record.type === "call_request" ? "Call request" : "Assessment request";
+  const extra = attribution(record);
+  const notice =
+    record.environment !== "production"
+      ? `<tr><td style="padding:14px 20px;background:#fff4f4;border:1px solid ${signal};font:400 13px/1.5 ${sans};color:${signal}">
+          Sent from the <strong>${esc(record.environment)}</strong> environment — a test submission, not a real lead.
+        </td></tr>`
+      : "";
+
+  return `<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(assessmentSubject(record))}</title></head>
+<body style="margin:0;padding:16px 10px;background:${paper};font-family:${sans};-webkit-font-smoothing:antialiased">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;margin:0 auto">
+    ${notice}
+    <tr><td style="height:${notice ? "16px" : "0"}"></td></tr>
+    <tr><td style="background:#ffffff;border:1px solid ${line};padding:26px 20px">
+      <p style="margin:0;font:400 11px/1.4 ${mono};letter-spacing:0.14em;text-transform:uppercase;color:${signal}">Trafficomm &middot; ${esc(heading)}</p>
+      <h1 style="margin:14px 0 0;font:600 24px/1.25 ${sans};word-break:break-word;letter-spacing:-0.02em;color:${ink}">${esc(record.company)}</h1>
+      <p style="margin:8px 0 0;font:400 14px/1.5 ${sans};color:${steel}">${esc(formatted(record.submittedAt))}</p>
+
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:26px;border-collapse:collapse;border-top:1px solid ${line}">
+        ${fields(record)
+          .map(([label, value]) => row(label, value, label === "Work email"))
+          .join("\n        ")}
+      </table>
+
+      <p style="margin:26px 0 0;font:400 11px/1.4 ${mono};letter-spacing:0.08em;text-transform:uppercase;color:${steel}">Biggest operational challenge</p>
+      <div style="margin-top:10px;padding:16px 18px;background:${paper};border-left:2px solid ${signal};font:400 15px/1.6 ${sans};color:${ink};white-space:pre-wrap">${
+        record.challenge ? esc(record.challenge) : `<span style="color:${steel}">Not provided — this field is optional.</span>`
+      }</div>
+${
+  extra.length
+    ? `
+      <p style="margin:26px 0 0;font:400 11px/1.4 ${mono};letter-spacing:0.08em;text-transform:uppercase;color:${steel}">Attribution</p>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:6px;border-collapse:collapse;border-top:1px solid ${line}">
+        ${extra.map(([label, value]) => row(label, value)).join("\n        ")}
+      </table>`
+    : ""
+}
+      <p style="margin:24px 0 0;padding-top:18px;border-top:1px solid ${line};font:400 14px/1.6 ${sans};color:${steel};word-break:break-word">
+        Reply to this email to answer <a href="mailto:${esc(record.email)}" style="color:${signal};text-decoration:none">${esc(record.email)}</a> directly.
+      </p>
+    </td></tr>
+    <tr><td style="padding:16px 4px 0;font:400 12px/1.5 ${sans};color:${steel}">Sent by the Trafficomm website.</td></tr>
+  </table>
+</body></html>`;
+}
+
 export function buildAssessmentEmail(record: AssessmentRecord): AssessmentEmail {
-  return { subject: assessmentSubject(record), text: assessmentTextBody(record), replyTo: record.email };
+  return {
+    subject: assessmentSubject(record),
+    text: assessmentTextBody(record),
+    html: assessmentHtmlBody(record),
+    replyTo: record.email,
+  };
 }
 
 /** Both providers are a single authenticated JSON POST, so neither needs an SDK. */
@@ -121,12 +242,12 @@ const endpoints: Record<EmailProvider, { url: string; headers: (key: string) => 
   postmark: {
     url: "https://api.postmarkapp.com/email",
     headers: (key) => ({ "Content-Type": "application/json", Accept: "application/json", "X-Postmark-Server-Token": key }),
-    body: (c, e) => ({ From: c.from, To: c.to, ReplyTo: e.replyTo, Subject: e.subject, TextBody: e.text, MessageStream: "outbound" }),
+    body: (c, e) => ({ From: c.from, To: c.to, ReplyTo: e.replyTo, Subject: e.subject, HtmlBody: e.html, TextBody: e.text, MessageStream: "outbound" }),
   },
   resend: {
     url: "https://api.resend.com/emails",
     headers: (key) => ({ "Content-Type": "application/json", Authorization: `Bearer ${key}` }),
-    body: (c, e) => ({ from: c.from, to: [c.to], reply_to: e.replyTo, subject: e.subject, text: e.text }),
+    body: (c, e) => ({ from: c.from, to: [c.to], reply_to: e.replyTo, subject: e.subject, html: e.html, text: e.text }),
   },
 };
 

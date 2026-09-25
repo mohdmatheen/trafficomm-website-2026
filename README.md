@@ -125,10 +125,23 @@ The webhook payload carries ready-made `subject`, `replyTo` and `text` fields
 alongside the flat data, so an email relay (Zapier, Make, n8n, Pipedream) can send
 the notification without composing it, and an existing CRM mapping keeps working.
 
-Email bodies are plain text, and `Reply-To` is the visitor's work email so a reply
-in the inbox reaches the prospect directly. Submissions from a preview or
-development environment are labelled in the subject and body so a test is never
-mistaken for a real lead.
+Each notification is sent as HTML with a plain-text alternative — no remote images
+and no external stylesheet, so it renders in any client. `Reply-To` is the visitor's
+work email so a reply in the inbox reaches the prospect directly. The recipient and
+sender are read only from the environment and never from the request, so the
+endpoint cannot be pointed at another address or used as a relay. Submissions from
+a preview or development environment are labelled in the subject and body so a test
+is never mistaken for a real lead.
+
+Attribution (`path`, external `referrer`, `utm_*`) travels with the submission and is
+re-validated server-side; nothing that identifies the device is collected. Identical
+enquiries inside a 90-second window are answered as success without sending twice —
+see `lib/recent-submissions.ts` for what that in-memory guard does and does not catch.
+
+`lib/form-analytics.ts` is the seam GA4/GTM will attach to. It installs nothing:
+each event is pushed to `window.dataLayer` when a container exists and dispatched as
+a DOM event either way. `assessment_submit_success` fires only after the server
+confirms delivery, and not for a deduplicated resubmission.
 
 ## Pre-production checklist
 

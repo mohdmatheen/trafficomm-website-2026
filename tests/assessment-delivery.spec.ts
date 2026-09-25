@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import { assessmentEmailConfig, assessmentSubject, buildAssessmentEmail, buildProviderRequest } from "../lib/assessment-email";
 import type { AssessmentRecord } from "../lib/assessment-email";
+import { limits, sanitizeContext, validateAssessment } from "../lib/assessment";
+import { isDuplicateSubmission, resetRecentSubmissions } from "../lib/recent-submissions";
 
 /**
  * The assessment email is the one place a lead exists before anyone reads it.
@@ -63,6 +65,150 @@ test.describe("assessment email", () => {
   });
 });
 
+test.describe("html body", () => {
+  test("carries the same five fields as the plain-text body", async () => {
+    const { html } = buildAssessmentEmail(record());
+    for (const value of ["Jane Okonkwo", "Meridian Media", "jane@meridianmedia.ae", "50–100", "Trafficking volume spikes at quarter end and QA slips."]) {
+      expect(html).toContain(value);
+    }
+  });
+
+  test("both bodies are always sent, so text is a fallback and not a replacement", async () => {
+    const email = buildAssessmentEmail(record());
+    expect(email.text.length).toBeGreaterThan(0);
+    expect(email.html).toContain("<!DOCTYPE html>");
+  });
+
+  test("escapes visitor input instead of rendering it as markup", async () => {
+    const { html } = buildAssessmentEmail(record({ company: "Acme <script>alert(1)</script>", challenge: "5 > 3 && \"quoted\"" }));
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+    expect(html).toContain("&gt; 3 &amp;&amp;");
+  });
+
+  test("uses no remote images or external stylesheets", async () => {
+    const { html } = buildAssessmentEmail(record());
+    expect(html).not.toMatch(/<img|<link|https?:\/\/[^"']*\.(css|png|jpe?g|gif|svg)/i);
+  });
+
+  test("attribution appears when present and is absent otherwise", async () => {
+    const plain = buildAssessmentEmail(record());
+    expect(plain.text).not.toContain("Submitted from");
+    expect(plain.html).not.toContain("Attribution");
+
+    const attributed = buildAssessmentEmail(
+      record({ context: { path: "/contact", referrer: "https://www.linkedin.com/feed/", utm: { source: "linkedin", campaign: "q4-ops" } } }),
+    );
+    for (const value of ["/contact", "https://www.linkedin.com/feed/", "linkedin", "q4-ops"]) {
+      expect(attributed.text).toContain(value);
+      expect(attributed.html).toContain(value);
+    }
+    expect(attributed.text).toContain("utm_source");
+  });
+
+  test("carries no device or browser identification", async () => {
+    const { text, html } = buildAssessmentEmail(record({ context: { path: "/contact" } }));
+    expect(`${text}${html}`).not.toMatch(/user-?agent|Mozilla|ip address|\bcookie\b/i);
+  });
+});
+
+test.describe("submission context is not trusted", () => {
+  test("keeps a site-relative path and rejects an absolute URL", async () => {
+    expect(sanitizeContext({ path: "/services/ad-operations" }).path).toBe("/services/ad-operations");
+    expect(sanitizeContext({ path: "https://evil.example/phish" }).path).toBeUndefined();
+    expect(sanitizeContext({ path: "javascript:alert(1)" }).path).toBeUndefined();
+  });
+
+  test("keeps an http referrer and rejects anything else", async () => {
+    expect(sanitizeContext({ referrer: "https://www.google.com/" }).referrer).toBe("https://www.google.com/");
+    expect(sanitizeContext({ referrer: "data:text/html,<script>" }).referrer).toBeUndefined();
+  });
+
+  test("clamps length and strips newlines", async () => {
+    const context = sanitizeContext({ utm: { source: `${"x".repeat(500)}\r\nBcc: attacker@example.com` } });
+    expect(context.utm!.source!.length).toBeLessThanOrEqual(300);
+    expect(context.utm!.source).not.toMatch(/[\r\n]/);
+  });
+
+  test("drops unknown properties rather than passing them through", async () => {
+    const context = sanitizeContext({ path: "/", utm: { source: "ok", evil: "x" }, cookies: "session=1", userAgent: "Mozilla" }) as Record<string, unknown>;
+    expect(Object.keys(context).sort()).toEqual(["path", "utm"]);
+    expect(Object.keys(context.utm as object)).toEqual(["source"]);
+  });
+
+  test("a non-object context is ignored, not an error", async () => {
+    expect(sanitizeContext(null)).toEqual({});
+    expect(sanitizeContext("string")).toEqual({});
+    expect(sanitizeContext(42)).toEqual({});
+  });
+});
+
+test.describe("server-side validation", () => {
+  const valid = { name: "Jane", company: "Meridian", email: "jane@meridian.ae", volume: "50–100", challenge: "", intent: "assessment" as const };
+
+  test("accepts a valid submission", async () => {
+    expect(validateAssessment(valid)).toEqual({});
+  });
+
+  test("requires name, company, email and volume", async () => {
+    expect(Object.keys(validateAssessment({})).sort()).toEqual(["company", "email", "name", "volume"]);
+  });
+
+  test("rejects a malformed email and a free-mail address", async () => {
+    expect(validateAssessment({ ...valid, email: "not-an-email" }).email).toMatch(/valid email/);
+    expect(validateAssessment({ ...valid, email: "jane@gmail.com" }).email).toMatch(/work email/);
+  });
+
+  test("rejects an address list, so Reply-To can never become two recipients", async () => {
+    for (const email of ["jane@meridian.ae,attacker@evil.example", "jane@meridian.ae;attacker@evil.example", "Jane <jane@meridian.ae>", 'jane"@meridian.ae']) {
+      expect(validateAssessment({ ...valid, email }).email, email).toBeDefined();
+    }
+  });
+
+  test("bounds every field length", async () => {
+    expect(validateAssessment({ ...valid, name: "x".repeat(limits.name + 1) }).name).toBeDefined();
+    expect(validateAssessment({ ...valid, company: "x".repeat(limits.company + 1) }).company).toBeDefined();
+    expect(validateAssessment({ ...valid, challenge: "x".repeat(limits.challenge + 1) }).challenge).toBeDefined();
+  });
+
+  test("rejects an unexpected volume rather than coercing it", async () => {
+    expect(validateAssessment({ ...valid, volume: "one million" }).volume).toBeDefined();
+  });
+
+  test("rejects an unexpected intent, which decides the subject line", async () => {
+    expect(validateAssessment({ ...valid, intent: "invoice" as never }).intent).toBeDefined();
+  });
+
+  test("non-string values do not pass as content", async () => {
+    expect(validateAssessment({ name: 42 as never, company: {} as never, email: [] as never, volume: null as never })).toMatchObject({
+      name: expect.any(String),
+      company: expect.any(String),
+      email: expect.any(String),
+      volume: expect.any(String),
+    });
+  });
+});
+
+test.describe("duplicate submissions", () => {
+  test.beforeEach(() => resetRecentSubmissions());
+
+  test("the same enquiry twice in a row is caught the second time", async () => {
+    expect(isDuplicateSubmission("a")).toBe(false);
+    expect(isDuplicateSubmission("a")).toBe(true);
+  });
+
+  test("different enquiries are never confused", async () => {
+    expect(isDuplicateSubmission("a")).toBe(false);
+    expect(isDuplicateSubmission("b")).toBe(false);
+  });
+
+  test("the same enquiry is allowed again after the window", async () => {
+    const now = Date.now();
+    expect(isDuplicateSubmission("a", now)).toBe(false);
+    expect(isDuplicateSubmission("a", now + 91_000)).toBe(false);
+  });
+});
+
 test.describe("email configuration", () => {
   test("is absent, not broken, when nothing is set", async () => {
     expect(assessmentEmailConfig({})).toBeNull();
@@ -101,6 +247,7 @@ test.describe("provider request shape", () => {
       To: "inbox@trafficomm.example",
       ReplyTo: "jane@meridianmedia.ae",
       Subject: "New Trafficomm Assessment Request — Meridian Media",
+      HtmlBody: expect.stringContaining("Meridian Media"),
       TextBody: expect.stringContaining("Meridian Media"),
       MessageStream: "outbound",
     });
@@ -115,6 +262,7 @@ test.describe("provider request shape", () => {
       to: ["inbox@trafficomm.example"],
       reply_to: "jane@meridianmedia.ae",
       subject: "New Trafficomm Assessment Request — Meridian Media",
+      html: expect.stringContaining("Meridian Media"),
       text: expect.stringContaining("Meridian Media"),
     });
   });

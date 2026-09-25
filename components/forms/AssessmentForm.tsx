@@ -2,7 +2,8 @@
 
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company, enquiryConfidentialityNote } from "@/data/site";
-import { validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors } from "@/lib/assessment";
+import { utmKeys, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors, type SubmissionContext } from "@/lib/assessment";
+import { trackFormEvent } from "@/lib/form-analytics";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArrowRight, Check } from "@/components/ui/Icons";
@@ -12,6 +13,26 @@ type Tone = "light" | "dark";
 
 const empty: AssessmentInput = { name: "", company: "", email: "", volume: "", challenge: "", intent: "assessment", website: "" };
 
+/**
+ * Attribution read from the browser at submit time. Everything here is re-validated
+ * server-side — it travels in the request body, so it is a hint, not evidence.
+ * Deliberately excludes anything that identifies the device rather than the campaign.
+ */
+function readContext(): SubmissionContext {
+  if (typeof window === "undefined") return {};
+  const context: SubmissionContext = { path: window.location.pathname };
+  // Same-origin navigation is not a referral; only an external source is worth recording.
+  if (document.referrer && !document.referrer.startsWith(window.location.origin)) context.referrer = document.referrer;
+  const params = new URLSearchParams(window.location.search);
+  const utm: NonNullable<SubmissionContext["utm"]> = {};
+  for (const key of utmKeys) {
+    const value = params.get(`utm_${key}`);
+    if (value) utm[key] = value;
+  }
+  if (Object.keys(utm).length) context.utm = utm;
+  return context;
+}
+
 /** `privacyNote`: set false where the page already states the confidentiality line (Contact). */
 export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = true }: { tone?: Tone; idPrefix?: string; privacyNote?: boolean }) {
   const [values, setValues] = useState<AssessmentInput>(empty);
@@ -20,47 +41,78 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
   const [message, setMessage] = useState("");
   const [submittedIntent, setSubmittedIntent] = useState<AssessmentInput["intent"]>("assessment");
   const formRef = useRef<HTMLFormElement>(null);
+  /**
+   * Guards the request itself. `disabled` on the button covers the pointer, but a
+   * second Enter press can land before React has re-rendered, so the in-flight
+   * check has to be a ref read synchronously rather than derived from state.
+   */
+  const inFlight = useRef(false);
+  const started = useRef(false);
   const dark = tone === "dark";
 
   const set = <K extends keyof AssessmentInput>(k: K, v: AssessmentInput[K]) => {
+    if (!started.current) {
+      started.current = true;
+      trackFormEvent("assessment_form_start", { form: idPrefix });
+    }
     setValues((prev) => ({ ...prev, [k]: v }));
     if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }));
   };
 
   async function submit(intent: AssessmentInput["intent"], e?: FormEvent) {
     e?.preventDefault();
+    if (inFlight.current) return;
     const payload = { ...values, intent };
     const errs = validateAssessment(payload);
     setErrors(errs);
     if (Object.keys(errs).length) {
+      trackFormEvent("assessment_submit_error", { form: idPrefix, intent, reason: "validation" });
       const first = Object.keys(errs)[0];
       formRef.current?.querySelector<HTMLElement>(`[data-field="${first}"]`)?.focus();
       return;
     }
+    inFlight.current = true;
     setStatus("submitting");
     setMessage("");
+    trackFormEvent("assessment_submit_attempt", { form: idPrefix, intent });
     try {
       const res = await fetch("/api/assessment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, context: readContext() }),
       });
-      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; message?: string; errors?: FieldErrors };
+      const data = (await res.json().catch(() => ({}))) as { ok?: boolean; duplicate?: boolean; message?: string; errors?: FieldErrors };
       if (!res.ok || !data.ok) {
         if (data.errors) setErrors(data.errors);
-        throw new Error(data.message ?? "Something went wrong. Please try again.");
+        throw new Error(data.message ?? "Something went wrong. Please try again.", { cause: res.status >= 500 ? "server" : "network" });
       }
       setSubmittedIntent(intent);
       setStatus("success");
+      // Only here — the server has confirmed every configured channel accepted it.
+      // A deduplicated resubmission is still a success for the visitor, but it is the
+      // same enquiry, so it must not be counted a second time.
+      if (!data.duplicate) trackFormEvent("assessment_submit_success", { form: idPrefix, intent });
     } catch (err) {
       setStatus("error");
       setMessage(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+      const cause = err instanceof Error ? err.cause : undefined;
+      trackFormEvent("assessment_submit_error", { form: idPrefix, intent, reason: cause === "server" ? "server" : "network" });
+    } finally {
+      inFlight.current = false;
     }
   }
 
   if (status === "success") {
     return (
-      <div role="status" className={cn("rounded-[var(--radius-panel)] p-8 sm:p-10", dark ? "bg-ink-2 ring-1 ring-line-dark" : "bg-white ring-1 ring-line")}>
+      // The submit button is gone, so focus would otherwise fall back to the body
+      // and a keyboard or screen-reader user would lose their place. The panel takes
+      // it instead, and announces itself as a live region either way.
+      <div
+        role="status"
+        tabIndex={-1}
+        ref={(el) => el?.focus()}
+        className={cn("rounded-[var(--radius-panel)] p-8 outline-none sm:p-10", dark ? "bg-ink-2 ring-1 ring-line-dark" : "bg-white ring-1 ring-line")}
+      >
         <span className="flex size-12 items-center justify-center rounded-full bg-signal text-white">
           <Check className="size-5" />
         </span>
@@ -76,6 +128,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
           onClick={() => {
             setValues(empty);
             setStatus("idle");
+            started.current = false;
           }}
         >
           Submit another request
