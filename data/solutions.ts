@@ -54,6 +54,7 @@ export const solutions: Solution[] = [
       ],
     },
     links: [
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "How it works" },
       { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Your brand in front" },
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Setup · QA · Reporting" },
       { href: "/services/programmatic", label: "Programmatic Operations", meta: "DV360 · CM360" },

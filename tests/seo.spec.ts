@@ -171,6 +171,18 @@ test.describe("page metadata", () => {
     expect(res.status()).toBe(200);
     expect(res.headers()["content-type"]).toContain("image/png");
   });
+
+  test("every page carries the Open Graph image, not just the homepage", async ({ page }) => {
+    // Declaring openGraph in buildMetadata replaces the resolved parent object, so
+    // the file-based image silently vanished everywhere except "/" until it was set
+    // explicitly. Checking only the homepage is what let that through.
+    for (const path of ["/", "/about", "/services", "/contact", "/ad-operations-outsourcing", "/services/ad-operations"]) {
+      await page.goto(path);
+      const og = await page.locator('meta[property="og:image"]').getAttribute("content");
+      expect(og, `${path} has no og:image`).toBeTruthy();
+      expect(og).toContain("/opengraph-image");
+    }
+  });
 });
 
 test.describe("structured data", () => {

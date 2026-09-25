@@ -8,7 +8,9 @@ import { getArticles } from "@/lib/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact"];
+  // "/ad-operations-outsourcing" is a cornerstone commercial page, ranked alongside
+  // the section indexes rather than below them.
+  const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact", "/ad-operations-outsourcing"];
   const entry = (path: string, priority: number, lastModified: Date = now): MetadataRoute.Sitemap[number] => ({
     url: `${siteUrl}${path}`,
     lastModified,

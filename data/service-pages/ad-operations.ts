@@ -114,6 +114,7 @@ export const adOperationsPage: ServicePageContent = {
     },
   ],
   related: [
+    { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "For agencies" },
     { href: "/services/programmatic", label: "Programmatic Operations", meta: "DV360 · CM360" },
     { href: "/services/performance-marketing", label: "Performance Marketing", meta: "CPL · CPA · ROAS" },
     { href: "/services/reporting", label: "Reporting & Insights", meta: "Daily to executive" },

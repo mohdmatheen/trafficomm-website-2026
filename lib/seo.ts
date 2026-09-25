@@ -25,6 +25,10 @@ export function buildMetadata({ title, description, path, type = "website", publ
       siteName: company.name,
       type,
       locale: "en_US",
+      // Declaring `openGraph` here replaces the resolved parent object, which drops
+      // the file-based app/opengraph-image. Without this line every page except the
+      // homepage shares as a bare link.
+      images: [{ url: `${siteUrl}/opengraph-image`, width: 1200, height: 630, alt: `${company.name} — ${company.tagline}` }],
       ...(publishedTime ? { publishedTime } : {}),
     },
     // summary_large_image: there is an Open Graph image now, and the small card
