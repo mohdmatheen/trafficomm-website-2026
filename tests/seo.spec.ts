@@ -1,5 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { PRODUCTION_ORIGIN, resolveSiteUrl } from "../data/site";
+import { aliasRedirectIsSafe, hostRedirects, CANONICAL_HOST, PRODUCTION_ALIAS } from "../lib/host-redirects";
 
 /**
  * Production shipped every canonical, og:url, robots.txt Host and all 37 sitemap
@@ -30,6 +31,46 @@ test.describe("canonical origin resolution", () => {
 
   test("local development stays on localhost", async () => {
     expect(resolveSiteUrl({})).toBe("http://localhost:3000");
+  });
+});
+
+test.describe("the alias redirect cannot loop", () => {
+  /**
+   * Production returned 308 to itself on every path — ERR_TOO_MANY_REDIRECTS — because
+   * the rule matched on VERCEL_PROJECT_PRODUCTION_URL, which Vercel sets to the custom
+   * production domain, not the vercel.app alias. The rule became
+   * "www.trafficomm.com -> www.trafficomm.com".
+   */
+  test("the alias and the canonical host are different hosts", async () => {
+    expect(aliasRedirectIsSafe, "a host redirect to the same host is an infinite loop").toBe(true);
+  });
+
+  test("no redirect rule sends a host to itself", async () => {
+    for (const rule of hostRedirects(true)) {
+      const sourceHost = rule.has.find((h) => h.type === "host")?.value;
+      const destinationHost = new URL(rule.destination.replace("/:path*", "")).host;
+      expect(destinationHost, `rule for ${sourceHost} redirects to itself`).not.toBe(sourceHost);
+    }
+  });
+
+  test("the canonical production host is never a redirect source", async () => {
+    const canonicalHost = new URL(PRODUCTION_ORIGIN).host;
+    expect(CANONICAL_HOST).toBe(canonicalHost);
+    for (const rule of hostRedirects(true)) {
+      const sourceHost = rule.has.find((h) => h.type === "host")?.value;
+      expect(sourceHost, `${canonicalHost} must serve the site, never redirect`).not.toBe(canonicalHost);
+    }
+  });
+
+  test("the alias redirect preserves the path and targets the canonical host", async () => {
+    const [rule] = hostRedirects(true);
+    expect(rule.has[0].value).toBe(PRODUCTION_ALIAS);
+    expect(rule.destination).toBe(`https://${CANONICAL_HOST}/:path*`);
+    expect(rule.source).toBe("/:path*");
+  });
+
+  test("a non-indexable deployment emits no host redirect, so previews are untouched", async () => {
+    expect(hostRedirects(false)).toEqual([]);
   });
 });
 

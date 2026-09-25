@@ -36,6 +36,13 @@ async function fill(page: Page) {
 const submitButton = (page: Page) => page.getByRole("button", { name: /Request an Operations Assessment|Sending/ });
 
 /**
+ * A submission is a click, a round trip and a re-render. Under a full parallel run
+ * that occasionally exceeds the 5s default, which showed up as a flake at w390 —
+ * the assertion was right, the budget was not.
+ */
+const expectSuccessPanel = (page: Page) => expect(page.getByText("Assessment request received.")).toBeVisible({ timeout: 15_000 });
+
+/**
  * These assertions are about the markup the site emits, not about Google's CDN
  * being reachable. Waiting for `load` waits for the container script to download
  * from googletagmanager.com, which makes the suite depend on a third-party fetch.
@@ -107,7 +114,7 @@ test.describe("no personal data reaches dataLayer", () => {
     await page.locator("#contact-name").waitFor();
     await fill(page);
     await submitButton(page).click();
-    await expect(page.getByText("Assessment request received.")).toBeVisible();
+    await expectSuccessPanel(page);
 
     const seen = await pushes(page);
     const serialized = JSON.stringify(seen);
@@ -138,7 +145,7 @@ test.describe("no personal data reaches dataLayer", () => {
     await page.locator("#contact-name").waitFor();
     await fill(page);
     await submitButton(page).click();
-    await expect(page.getByText("Assessment request received.")).toBeVisible();
+    await expectSuccessPanel(page);
 
     const serialized = JSON.stringify(await pushes(page));
     expect(serialized).not.toContain("someone@example.com");
@@ -183,7 +190,7 @@ test.describe("assessment_submit_success fires only on confirmed success", () =>
     expect(await successes(page), "in flight, not yet confirmed").toHaveLength(0);
 
     release();
-    await expect(page.getByText("Assessment request received.")).toBeVisible();
+    await expectSuccessPanel(page);
     expect(await successes(page)).toHaveLength(1);
   });
 
@@ -213,7 +220,7 @@ test.describe("assessment_submit_success fires only on confirmed success", () =>
     await page.locator("#contact-name").waitFor();
     await fill(page);
     await submitButton(page).click();
-    await expect(page.getByText("Assessment request received.")).toBeVisible();
+    await expectSuccessPanel(page);
     expect(await successes(page), "the enquiry was already counted").toHaveLength(0);
   });
 
@@ -223,7 +230,7 @@ test.describe("assessment_submit_success fires only on confirmed success", () =>
     await page.locator("#contact-name").waitFor();
     await fill(page);
     await submitButton(page).click();
-    await expect(page.getByText("Assessment request received.")).toBeVisible();
+    await expectSuccessPanel(page);
     expect(await successes(page)).toHaveLength(1);
 
     // Reset to the form and back to success: still one conversion per submission.
