@@ -27,7 +27,9 @@ export function buildMetadata({ title, description, path, type = "website", publ
       locale: "en_US",
       ...(publishedTime ? { publishedTime } : {}),
     },
-    twitter: { card: "summary", title: `${title} | ${company.name}`, description },
+    // summary_large_image: there is an Open Graph image now, and the small card
+    // crops a 1200x630 banner into an unreadable square.
+    twitter: { card: "summary_large_image", title: `${title} | ${company.name}`, description },
     ...(noIndex ? { robots: { index: false, follow: true } } : {}),
   };
 }

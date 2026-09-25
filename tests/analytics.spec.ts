@@ -35,9 +35,20 @@ async function fill(page: Page) {
 }
 const submitButton = (page: Page) => page.getByRole("button", { name: /Request an Operations Assessment|Sending/ });
 
+/**
+ * These assertions are about the markup the site emits, not about Google's CDN
+ * being reachable. Waiting for `load` waits for the container script to download
+ * from googletagmanager.com, which makes the suite depend on a third-party fetch.
+ * Wait for the document and for next/script to inject the tag instead.
+ */
+async function gotoAndAwaitGtm(page: Page, path = "/") {
+  await page.goto(path, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector('script[src*="googletagmanager.com/gtm.js"]', { state: "attached", timeout: 15_000 });
+}
+
 test.describe("Google Tag Manager", () => {
   test("the container is present, and present once", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndAwaitGtm(page);
     const html = await page.content();
     expect(html).toContain(GTM_ID);
 
@@ -49,7 +60,7 @@ test.describe("Google Tag Manager", () => {
   });
 
   test("no GA4 script is hard-coded alongside it", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndAwaitGtm(page);
     // gtag.js loaded directly would double every GA4 pageview.
     expect(await page.locator('script[src*="gtag/js"], script[src*="google-analytics.com"]').count()).toBe(0);
     const inline = await page.locator("script:not([src])").allTextContents();
@@ -57,7 +68,7 @@ test.describe("Google Tag Manager", () => {
   });
 
   test("the noscript fallback opens the body, ahead of all page content", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
     expect(await page.content()).toContain(`googletagmanager.com/ns.html?id=${GTM_ID}`);
     // React injects its own hidden streaming placeholder as the first child, so the
     // guarantee that matters is that the noscript precedes the skip link and header.
@@ -71,7 +82,7 @@ test.describe("Google Tag Manager", () => {
   });
 
   test("the container loader does not block rendering", async ({ page }) => {
-    await page.goto("/");
+    await gotoAndAwaitGtm(page);
     const blocking = await page.evaluate(() => {
       const s = document.querySelector<HTMLScriptElement>('script[src*="googletagmanager.com/gtm.js"]');
       return s ? { async: s.async, defer: s.defer } : null;
@@ -80,7 +91,10 @@ test.describe("Google Tag Manager", () => {
   });
 
   test("dataLayer carries the deployment environment so GTM can exclude non-production", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/", { waitUntil: "domcontentloaded" });
+    // next/script runs the dataLayer initialiser after hydration, so wait for the
+    // value rather than reading the array the moment the document parses.
+    await page.waitForFunction(() => (window.dataLayer ?? []).some((p) => typeof (p as Record<string, unknown>).site_environment === "string"), null, { timeout: 15_000 });
     const seen = await pushes(page);
     expect(seen.some((p) => typeof p.site_environment === "string")).toBe(true);
   });

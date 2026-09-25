@@ -67,10 +67,17 @@
         "resource-summary:script:size": [
           "error",
           {
-            "maxNumericValue": 286720
+            "maxNumericValue": 358400
+          }
+        ],
+        "resource-summary:third-party:size": [
+          "warn",
+          {
+            "maxNumericValue": 163840
           }
         ]
-      }
+      },
+      "_comment": "script:size covers first-party bundles AND the Google Tag Manager container, and the 280KB budget predates GTM. Measured: homepage 299KB, heaviest page (/services/ad-operations, which carries the lifecycle and QA visualisations) 326KB; 124KB of each is the container googletagmanager.com serves, which next/script loads async after hydration. 350KB leaves roughly 23KB of headroom over the heaviest page, so real first-party growth still fails. third-party:size is asserted separately so container growth stays visible instead of hiding inside the total."
     },
     "upload": {
       "target": "filesystem",

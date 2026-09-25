@@ -44,13 +44,34 @@ export const brandFilm = {
 };
 
 /**
- * Canonical origin. Explicit NEXT_PUBLIC_SITE_URL wins; on Vercel it falls back
- * to the deployment's own URL (production alias or branch URL) so previews
- * never emit localhost canonicals; locally it is http://localhost:3000.
+ * The production domain. Every canonical, Open Graph URL, sitemap entry and
+ * schema @id is built from this.
+ *
+ * It is a constant rather than an environment variable because it was one before,
+ * and the variable was never set in Vercel: production shipped canonicals,
+ * og:url, robots.txt Host and all 37 sitemap URLs pointing at
+ * trafficomm-website-2026.vercel.app, which would have handed the brand's search
+ * equity to the deployment alias. A domain this stable should not be able to go
+ * missing. NEXT_PUBLIC_SITE_URL still overrides it if the domain ever changes.
  */
-const vercelHost =
-  process.env.VERCEL_ENV === "production" ? process.env.VERCEL_PROJECT_PRODUCTION_URL : (process.env.VERCEL_BRANCH_URL ?? process.env.VERCEL_URL);
-export const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || (vercelHost ? `https://${vercelHost}` : "http://localhost:3000")).replace(/\/$/, "");
+export const PRODUCTION_ORIGIN = "https://www.trafficomm.com";
+
+/**
+ * Canonical origin for a given environment. Explicit NEXT_PUBLIC_SITE_URL wins.
+ * The indexable production deployment is the real domain; a preview uses its own
+ * URL, so it can never emit a production canonical, and never a localhost one.
+ *
+ * Pure and exported so the resolution is covered by tests: the previous version
+ * silently resolved to the Vercel alias in production, and nothing caught it.
+ */
+export function resolveSiteUrl(env: Record<string, string | undefined>): string {
+  const previewHost = env.VERCEL_BRANCH_URL ?? env.VERCEL_URL;
+  const fallback =
+    env.SITE_INDEXABLE === "true" ? PRODUCTION_ORIGIN : previewHost ? `https://${previewHost}` : "http://localhost:3000";
+  return (env.NEXT_PUBLIC_SITE_URL || fallback).replace(/\/$/, "");
+}
+
+export const siteUrl = resolveSiteUrl(process.env);
 
 /** Company-wide scale figures now live in data/metrics.ts (single source of truth). */
 export { scaleStats } from "./metrics";
