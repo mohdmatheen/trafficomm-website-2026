@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewEvent } from "@/components/analytics/ViewEvent";
 import { CTABand } from "@/components/sections/shared/CTABand";
 import { LinkList } from "@/components/sections/shared/LinkList";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
@@ -20,6 +21,7 @@ export function CaseStudyTemplate({ cs }: { cs: CaseStudy }) {
 
   return (
     <>
+      <ViewEvent event="case_study_view" params={{ case_study_name: cs.slug }} />
       <section data-hero="dark" className="relative overflow-hidden bg-ink pt-28 pb-16 text-white sm:pt-36 sm:pb-24">
         <div className="grid-bg-dark mask-radial pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
         <div className="pointer-events-none absolute -right-20 top-24 h-[380px] w-[600px] opacity-30 [mask-image:linear-gradient(to_left,#000_30%,transparent)] max-md:hidden" aria-hidden="true">

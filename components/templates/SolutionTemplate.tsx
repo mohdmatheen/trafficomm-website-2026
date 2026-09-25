@@ -1,3 +1,4 @@
+import { ViewEvent } from "@/components/analytics/ViewEvent";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { ServiceModuleCard } from "@/components/cards/ServiceModuleCard";
 import { JsonLd, serviceSchema } from "@/components/seo/JsonLd";
@@ -21,6 +22,7 @@ export function SolutionTemplate({ solution }: { solution: Solution }) {
 
   return (
     <>
+      <ViewEvent event="solution_view" params={{ solution_name: solution.slug }} />
       <PageHero
         crumbs={[
           { name: "Solutions", path: "/solutions" },

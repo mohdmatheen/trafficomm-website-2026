@@ -3,7 +3,7 @@
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company, enquiryConfidentialityNote } from "@/data/site";
 import { utmKeys, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors, type SubmissionContext } from "@/lib/assessment";
-import { trackFormEvent } from "@/lib/form-analytics";
+import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
 import { ArrowRight, Check } from "@/components/ui/Icons";
@@ -53,11 +53,23 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
   const set = <K extends keyof AssessmentInput>(k: K, v: AssessmentInput[K]) => {
     if (!started.current) {
       started.current = true;
-      trackFormEvent("assessment_form_start", { form: idPrefix });
+      // No volume yet, and nothing about the visitor — just that the form was engaged.
+      trackEvent("assessment_form_start", { form_location: idPrefix });
     }
     setValues((prev) => ({ ...prev, [k]: v }));
     if (errors[k]) setErrors((prev) => ({ ...prev, [k]: undefined }));
   };
+
+  /**
+   * The only values this form reports. `campaign_volume` is a bucket such as
+   * "50–100", not a customer figure; the name, company, email and challenge answer
+   * are never passed, and `lib/analytics.ts` has no key they could travel under.
+   */
+  const analytics = (intent: AssessmentInput["intent"]) => ({
+    form_name: intent === "call" ? "call_request" : "operations_assessment",
+    form_location: idPrefix,
+    campaign_volume: values.volume,
+  });
 
   async function submit(intent: AssessmentInput["intent"], e?: FormEvent) {
     e?.preventDefault();
@@ -66,7 +78,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
     const errs = validateAssessment(payload);
     setErrors(errs);
     if (Object.keys(errs).length) {
-      trackFormEvent("assessment_submit_error", { form: idPrefix, intent, reason: "validation" });
+      trackEvent("assessment_submit_error", { ...analytics(intent), error_reason: "validation" });
       const first = Object.keys(errs)[0];
       formRef.current?.querySelector<HTMLElement>(`[data-field="${first}"]`)?.focus();
       return;
@@ -74,7 +86,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
     inFlight.current = true;
     setStatus("submitting");
     setMessage("");
-    trackFormEvent("assessment_submit_attempt", { form: idPrefix, intent });
+    trackEvent("assessment_submit_attempt", analytics(intent));
     try {
       const res = await fetch("/api/assessment", {
         method: "POST",
@@ -91,12 +103,12 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
       // Only here — the server has confirmed every configured channel accepted it.
       // A deduplicated resubmission is still a success for the visitor, but it is the
       // same enquiry, so it must not be counted a second time.
-      if (!data.duplicate) trackFormEvent("assessment_submit_success", { form: idPrefix, intent });
+      if (!data.duplicate) trackEvent("assessment_submit_success", analytics(intent));
     } catch (err) {
       setStatus("error");
       setMessage(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       const cause = err instanceof Error ? err.cause : undefined;
-      trackFormEvent("assessment_submit_error", { form: idPrefix, intent, reason: cause === "server" ? "server" : "network" });
+      trackEvent("assessment_submit_error", { ...analytics(intent), error_reason: cause === "server" ? "server" : "network" });
     } finally {
       inFlight.current = false;
     }

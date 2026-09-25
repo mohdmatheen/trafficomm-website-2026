@@ -12,3 +12,14 @@ export const isIndexable = process.env.SITE_INDEXABLE === "true";
 
 /** True on any Vercel deployment that is not the live production site. */
 export const isPreviewDeployment = Boolean(process.env.VERCEL_ENV) && !isIndexable;
+
+/**
+ * Which deployment this is, for analytics. Not a secret — it is seeded into the
+ * dataLayer so GTM can exclude preview and local traffic from GA4 without the site
+ * having to decide whether to load the container at all.
+ */
+export const siteEnvironment: "production" | "preview" | "development" = process.env.VERCEL_ENV
+  ? isIndexable
+    ? "production"
+    : "preview"
+  : "development";

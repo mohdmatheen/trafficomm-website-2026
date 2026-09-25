@@ -1,5 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Analytics, AnalyticsNoScript } from "@/components/analytics/Analytics";
+import { LinkEvents } from "@/components/analytics/LinkEvents";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { RevealObserver } from "@/components/motion/RevealObserver";
@@ -49,6 +51,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>
       <body className="flex min-h-dvh flex-col">
+        {/* Google places this immediately after <body>. It is inert when JS runs. */}
+        <AnalyticsNoScript />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-white"
@@ -62,6 +66,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Footer />
         <RevealObserver />
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
+        <LinkEvents />
+        <Analytics />
       </body>
     </html>
   );
