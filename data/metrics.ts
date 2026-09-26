@@ -18,25 +18,34 @@ import type { Stat } from "./types";
  *  - 4 → ~30 is a HISTORICAL team scale on one engagement. It is not the
  *    current team size and must never be phrased as "today" or "currently".
  *  - 70+ is the largest historical Trafficomm team size, not current headcount.
- *    Its label reads "Team members", so the figure needs its qualifier stated
- *    somewhere. The homepage grid and hero now show figure + label only (a
- *    client presentation decision), so the qualifiers live in `detail` for
- *    /about and the service proof strips, and in `companyScaleSentence`, which
- *    is what the FAQ copy and Organization schema are built from. Do not remove
- *    them from those surfaces as well, or the claims lose their scope entirely.
+ *    On client instruction the figure now ships bare everywhere: label "Team
+ *    members", no `detail`, and no mention in `companyScaleSentence`. That is a
+ *    deliberate reduction — nothing on the public site now says the number is a
+ *    historical peak rather than today's headcount. What must still hold, and is
+ *    asserted in tests/launch-prep.spec.ts: the figure is never *phrased* as a
+ *    current headcount, and never enters structured data as numberOfEmployees.
+ *    Do not add "current", "today" or an employee count anywhere near it.
  *  - 7+ years (Case 01) is the span of the engagement; never "current" or "ongoing".
  */
 
 type Metric = Stat & { id: string };
 
-export const companyMetrics = {
+/**
+ * Annotated rather than `satisfies`-checked: `detail` is optional and one
+ * metric now omits it, and an inferred literal type would drop the property
+ * entirely, breaking every consumer that renders `detail` for the others.
+ */
+export const companyMetrics: Record<
+  "founded" | "campaigns" | "creatives" | "campaignScale" | "peakMonthly" | "peakTeam",
+  Metric
+> = {
   founded: { id: "founded", value: 2015, display: "2015", label: "Founded", detail: "Operating since 2015" },
   campaigns: { id: "campaigns", value: 10, suffix: "K+", label: "Campaigns handled", detail: "Since 2015" },
   creatives: { id: "creatives", value: 1, suffix: "M+", label: "Creatives & placements", detail: "Since inception" },
   campaignScale: { id: "campaignScale", value: 10, prefix: "~$", suffix: "M", label: "Campaign scale", detail: "UAE tourism campaign" },
   peakMonthly: { id: "peakMonthly", value: 250, suffix: "+", label: "Peak monthly campaign volume", detail: "Largest single month" },
-  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Team members", detail: "Peak historical team size" },
-} satisfies Record<string, Metric>;
+  peakTeam: { id: "peakTeam", value: 70, suffix: "+", label: "Team members" },
+};
 
 /** Order used wherever the full company scale grid is shown. */
 export const scaleStats: Stat[] = [
@@ -50,7 +59,7 @@ export const scaleStats: Stat[] = [
 
 /** One-line sentence form, for FAQs and body copy. */
 export const companyScaleSentence =
-  "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+ and a largest historical team size of 70+.";
+  "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+.";
 
 /**
  * Clarification for the ~$10M figure, for any surface that presents it in

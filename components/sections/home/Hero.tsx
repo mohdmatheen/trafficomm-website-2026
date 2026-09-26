@@ -4,9 +4,9 @@ import { formatStat } from "@/components/ui/Metric";
 import { companyMetrics as m } from "@/data/metrics";
 
 /**
- * The figures carry their label only. Their historical qualifiers ("peak
- * historical team size", "UAE tourism campaign") are stated on /about, in the
- * FAQ copy and in `companyScaleSentence` — see data/metrics.ts.
+ * The figures carry their label only. The ~$10M qualifier is still stated on
+ * /about and in the service proof strips; the team figure now carries none
+ * anywhere on the site — see data/metrics.ts.
  */
 const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label }));
 

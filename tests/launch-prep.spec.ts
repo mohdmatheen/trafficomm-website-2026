@@ -121,37 +121,40 @@ test.describe("solutions are visually distinguishable", () => {
   });
 });
 
-test.describe("the team figure stays historical", () => {
+test.describe("the team figure", () => {
   /**
-   * The homepage was changed on client instruction to show every operating
-   * figure as figure + label only, which removed "Peak historical team size"
-   * from under 70+ there. That is a deliberate reduction in what the homepage
-   * states: the bare figure beside the label "Team members" no longer says on
-   * its own that it is a historical peak.
+   * On client instruction the 70+ figure now ships bare on every surface:
+   * label "Team members", no qualifier underneath, and no mention in
+   * `companyScaleSentence`, which is what the ad-operations FAQ is built from.
    *
-   * What is still guaranteed everywhere, and asserted below: the figure is
-   * never phrased as current headcount, and never enters structured data as
-   * one. The explicit qualifier is still required on the surfaces that explain
-   * the company rather than summarise it.
+   * This records a deliberate reduction, not an oversight. Nothing on the
+   * public site now states that the number is a historical peak rather than
+   * today's headcount; a reader may take it either way. README and
+   * data/metrics.ts keep the provenance.
+   *
+   * What must still hold, and is asserted below: the figure is never *phrased*
+   * as a current headcount, and never enters structured data as one. Those are
+   * the assertions that would catch someone "clarifying" it in the wrong
+   * direction later.
    */
-  const QUALIFIED = ["/about", "/services/ad-operations"];
+  const SURFACES = ["/", "/about", "/services/ad-operations"];
 
   test("70+ is never phrased as current headcount", async ({ page }) => {
-    for (const path of ["/", ...QUALIFIED]) {
+    for (const path of SURFACES) {
       await page.goto(path);
       const text = await page.locator("main").innerText();
       if (!text.includes("70+")) continue;
       expect(text, path).not.toMatch(/70\+\s*(current|today|employees on)/i);
       expect(text, path).not.toMatch(/currently 70\+|70\+ current employees/i);
+      expect(text, path).not.toMatch(/\b(team of|staff of|headcount of)\s*70\+/i);
     }
   });
 
-  test("70+ keeps its qualifier on the pages that explain the company", async ({ page }) => {
-    for (const path of QUALIFIED) {
+  test("the historical qualifier is gone from every public surface", async ({ page }) => {
+    for (const path of SURFACES) {
       await page.goto(path);
       const text = await page.locator("main").innerText();
-      if (!text.includes("70+")) continue;
-      expect(text, path).toContain("Peak historical team size");
+      expect(text, path).not.toMatch(/peak historical|historical team size|peak team size/i);
     }
   });
 
