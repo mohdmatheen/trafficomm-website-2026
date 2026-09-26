@@ -43,6 +43,16 @@ const knowsAbout = [
   "Google Tag Manager",
   "Meta Conversions API",
   ...ecosystemPlatforms.map((p) => p.name),
+  /**
+   * Markets with documented campaign experience. These sit in `knowsAbout`
+   * rather than `areaServed` on purpose: areaServed states the geography a
+   * service is provided in, so a closed list of six countries would assert
+   * that Trafficomm serves those and nowhere else. Its delivery is not
+   * geographically restricted, and it has no office or address in any of
+   * them, so the honest claim is experience, not territory. Do not reinstate
+   * areaServed, and do not replace it with a worldwide claim either.
+   */
+  ...markets.map((m) => m.name),
 ];
 
 export const organizationSchema = (): Json => ({
@@ -58,8 +68,6 @@ export const organizationSchema = (): Json => ({
   foundingDate: String(company.founded),
   description: company.description,
   slogan: company.tagline,
-  // The markets the site documents experience in — no office or address is claimed.
-  areaServed: markets.map((m) => ({ "@type": "Country", name: m.name })),
   knowsAbout,
   ...(company.email ? { email: company.email } : {}),
   ...(company.linkedin ? { sameAs: [company.linkedin] } : {}),
@@ -95,7 +103,6 @@ export const serviceSchema = (s: { name: string; description: string; path: stri
   description: s.description,
   url: `${siteUrl}${s.path}`,
   provider: { "@id": `${siteUrl}/#organization` },
-  areaServed: markets.map((m) => ({ "@type": "Country", name: m.name })),
 });
 
 export const faqSchema = (faqs: FAQ[]): Json => ({

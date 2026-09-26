@@ -7,7 +7,7 @@ export function GlobalExperience({ index = "08" }: { index?: string | null }) {
       <SectionHeading
         id="global-title"
         index={index ?? undefined}
-        eyebrow="Markets supported"
+        eyebrow="Multi-market experience"
         title={
           <>
             Global Campaigns. <span className="block text-steel/70">Centralized Operations.</span>

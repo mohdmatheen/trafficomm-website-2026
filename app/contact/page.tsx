@@ -68,7 +68,7 @@ export default function ContactPage() {
             )}
 
             <div className="mt-12">
-              <p className="eyebrow mb-4 text-steel">Markets supported</p>
+              <p className="eyebrow mb-4 text-steel">Market experience</p>
               <p className="text-[0.95rem] text-graphite">{markets.map((m) => m.name).join(" · ")}</p>
             </div>
             <p className="mt-8 flex max-w-md items-start gap-2.5 text-[0.88rem] leading-relaxed text-steel">

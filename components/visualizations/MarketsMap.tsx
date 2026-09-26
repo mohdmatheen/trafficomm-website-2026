@@ -71,7 +71,7 @@ export function MarketsMap({
           viewBox={viewBox}
           className="h-auto w-full"
           role="img"
-          aria-label="World map. Trafficomm's centralized operations hub in India is connected by two-way routes to the markets it supports: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia."
+          aria-label="World map. Trafficomm's centralized operations hub in India is connected by two-way routes to markets with documented campaign experience: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia."
         >
           {children}
 
@@ -193,7 +193,7 @@ export function MarketsMap({
         </span>
         <span className="flex items-center gap-2">
           <span className="size-2 rounded-full bg-signal" aria-hidden="true" />
-          Markets supported
+          Documented market experience
         </span>
         <span className="text-graphite normal-case tracking-normal">Campaign work in · execution and reporting out</span>
       </p>

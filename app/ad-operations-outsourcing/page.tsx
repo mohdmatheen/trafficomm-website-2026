@@ -216,7 +216,7 @@ export default function AdOperationsOutsourcingPage() {
       <Section tone="paper" labelledBy="markets-title" className="overflow-hidden">
         <SectionHeading
           id="markets-title"
-          eyebrow="Markets supported"
+          eyebrow="Multi-market experience"
           title={
             <>
               GCC and global <span className="block text-steel/70">campaign experience.</span>

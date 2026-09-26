@@ -201,7 +201,12 @@ test.describe("structured data", () => {
     for (const forbidden of ["aggregateRating", "review", "award", "hasCredential"]) {
       expect(org[forbidden], `Organization must not claim ${forbidden}`).toBeUndefined();
     }
-    expect(org.areaServed.map((a: { name: string }) => a.name)).toContain("Saudi Arabia");
+    // Documented market experience is still stated, but as knowsAbout rather
+    // than areaServed: a closed six-country areaServed would claim Trafficomm
+    // serves those markets and no others, which is not the case.
+    expect(org.areaServed, "areaServed would assert a closed service territory").toBeUndefined();
+    expect(org.knowsAbout).toContain("Saudi Arabia");
+    expect(org.knowsAbout).toContain("Australia");
   });
 
   test("every JSON-LD block on key pages parses", async ({ page }) => {
