@@ -123,8 +123,18 @@ export const primaryNav: NavGroup[] = [
   },
 ];
 
+/** Company links, in footer order. */
 export const secondaryNav: NavLink[] = [
   { label: "Case Studies", href: "/case-studies" },
   { label: "How We Work", href: "/how-we-work" },
   { label: "About", href: "/about" },
 ];
+
+/**
+ * The header bar carries a shorter list than the footer: How We Work is a
+ * page you read once while evaluating, not a destination worth a permanent
+ * slot beside Services and Solutions. It keeps its footer link, its link from
+ * the Services menu and its contextual links from the service and solution
+ * pages, so nothing about how it is reached from search changes.
+ */
+export const headerNav: NavLink[] = secondaryNav.filter((l) => l.href !== "/how-we-work");

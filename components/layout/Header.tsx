@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { company, primaryNav, secondaryNav, type NavGroup } from "@/data/site";
+import { company, headerNav, primaryNav, type NavGroup } from "@/data/site";
 import { cn } from "@/lib/cn";
 import { ButtonLink } from "@/components/ui/Button";
 import { ArrowRight, ChevronDown, Menu } from "@/components/ui/Icons";
@@ -103,7 +103,7 @@ export function Header() {
                   />
                 </li>
               ))}
-              {secondaryNav.map((l) => (
+              {headerNav.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}

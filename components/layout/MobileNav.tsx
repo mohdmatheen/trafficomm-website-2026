@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { primaryNav, secondaryNav } from "@/data/site";
+import { headerNav, primaryNav } from "@/data/site";
 import { cn } from "@/lib/cn";
 import { ButtonLink } from "@/components/ui/Button";
 import { Close, Plus } from "@/components/ui/Icons";
@@ -151,7 +151,7 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
               </li>
             );
           })}
-          {secondaryNav.map((l) => (
+          {headerNav.map((l) => (
             <li key={l.href}>
               <Link href={l.href} onClick={onClose} className="block py-5 text-[1.6rem] tracking-[-0.03em]">
                 {l.label}
