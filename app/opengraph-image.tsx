@@ -41,7 +41,7 @@ export default function OpengraphImage() {
 
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 76, fontWeight: 700, color: "#0c0c0d", lineHeight: 1.05, letterSpacing: "-0.035em" }}>Performance Operations.</div>
-          <div style={{ fontSize: 76, fontWeight: 700, color: "#ea3e3a", lineHeight: 1.05, letterSpacing: "-0.035em" }}>Built to Scale.</div>
+          <div style={{ fontSize: 76, fontWeight: 700, color: "#ea3e3a", lineHeight: 1.05, letterSpacing: "-0.035em" }}>Built for Execution.</div>
         </div>
 
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: "2px solid rgba(12,12,13,0.12)", paddingTop: 28 }}>

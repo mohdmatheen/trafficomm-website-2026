@@ -44,8 +44,10 @@ test.describe("platform ecosystem is open-ended", () => {
     }
   });
 
-  test("the homepage ring holds the whole ecosystem, marked or lettered", async ({ page, viewport }) => {
-    await page.goto("/");
+  test("the ecosystem ring holds the whole ecosystem, marked or lettered", async ({ page, viewport }) => {
+    // Moved off the homepage with the rest of the Platforms surface; it still
+    // ships on /platforms, unchanged, so the guarantee is tested there.
+    await page.goto("/platforms");
     const section = page.locator("section[aria-labelledby=platforms-title]");
     for (const name of ["Meta", "Amazon Ads", "Microsoft Advertising", "Noon", "Talabat", "ChatGPT"]) {
       await expect(section.getByText(name, { exact: true }).first(), name).toBeVisible();
@@ -78,9 +80,11 @@ test.describe("platform ecosystem is open-ended", () => {
   });
 
   test("no platform is claimed as a partnership or certification", async ({ page }) => {
+    // Both surfaces still display platform marks: /platforms in the ecosystem
+    // ring, the homepage in the hero. Either one showing a mark owes the notice.
     for (const path of ["/", "/platforms"]) {
       await page.goto(path);
-      const text = await page.locator("main").innerText();
+      const text = await page.locator("body").innerText();
       expect(text, path).not.toMatch(/\b(official|certified|preferred|authoriz(ed|ing))\s+(partner|reseller|agency)\b/i);
       expect(text, path).toContain("do not imply partnership, certification or endorsement");
     }
@@ -118,14 +122,36 @@ test.describe("solutions are visually distinguishable", () => {
 });
 
 test.describe("the team figure stays historical", () => {
-  test("70+ never appears without its qualifier", async ({ page }) => {
-    for (const path of ["/", "/about", "/services/ad-operations"]) {
+  /**
+   * The homepage was changed on client instruction to show every operating
+   * figure as figure + label only, which removed "Peak historical team size"
+   * from under 70+ there. That is a deliberate reduction in what the homepage
+   * states: the bare figure beside the label "Team members" no longer says on
+   * its own that it is a historical peak.
+   *
+   * What is still guaranteed everywhere, and asserted below: the figure is
+   * never phrased as current headcount, and never enters structured data as
+   * one. The explicit qualifier is still required on the surfaces that explain
+   * the company rather than summarise it.
+   */
+  const QUALIFIED = ["/about", "/services/ad-operations"];
+
+  test("70+ is never phrased as current headcount", async ({ page }) => {
+    for (const path of ["/", ...QUALIFIED]) {
+      await page.goto(path);
+      const text = await page.locator("main").innerText();
+      if (!text.includes("70+")) continue;
+      expect(text, path).not.toMatch(/70\+\s*(current|today|employees on)/i);
+      expect(text, path).not.toMatch(/currently 70\+|70\+ current employees/i);
+    }
+  });
+
+  test("70+ keeps its qualifier on the pages that explain the company", async ({ page }) => {
+    for (const path of QUALIFIED) {
       await page.goto(path);
       const text = await page.locator("main").innerText();
       if (!text.includes("70+")) continue;
       expect(text, path).toContain("Peak historical team size");
-      expect(text, path).not.toMatch(/70\+\s*(current|today|employees on)/i);
-      expect(text, path).not.toMatch(/currently 70\+|70\+ current employees/i);
     }
   });
 

@@ -1,137 +1,202 @@
 "use client";
 
-import { useRef, useState, type ReactNode } from "react";
-import { useInView, usePauseSvgWhenHidden } from "@/components/motion/useInView";
-import { cn } from "@/lib/cn";
+import { useRef, type ReactNode } from "react";
+import { usePauseSvgWhenHidden } from "@/components/motion/useInView";
 
 export type MapMarket = {
   code: string;
   name: string;
   center: { x: number; y: number };
-  path: string;
   label: { x: number; y: number; anchor: "start" | "middle" | "end" };
 };
 
 /**
- * Markets-supported overlay. Deliberately no office pins: markets are shown as
- * highlighted territory with campaign routes from the centralized operation.
+ * Markets-supported overlay.
+ *
+ * Territory is left in the neutral base dot field — shading whole countries red
+ * read as "we are everywhere in this country", which is not the claim. The claim
+ * is: campaign work comes into one operations hub in India, and execution,
+ * reporting and output go back out to the markets. So markets are single dots,
+ * India is the only hub marker, and the arcs carry traffic in both directions.
+ *
+ * Motion is SMIL on paths that already exist, so there is no animation library
+ * and nothing to run on the main thread. `usePauseSvgWhenHidden` stops it
+ * offscreen; `.map-flow` is hidden under prefers-reduced-motion, which leaves
+ * the routes and dots drawn but still.
  */
 export function MarketsMap({
-  width,
-  height,
+  viewBox,
   markets,
   hub,
+  hubLabel,
+  indiaPath,
   children,
 }: {
-  width: number;
-  height: number;
+  /** Cropped to the operating region — see VIEW in WorldMap. */
+  viewBox: string;
   markets: MapMarket[];
   hub: { x: number; y: number };
+  hubLabel: { x: number; y: number; anchor: "start" | "middle" | "end" };
+  /** India's own dots, drawn darker than the base field so the hub sits on identifiable land. */
+  indiaPath: string;
   /** Server-rendered base map layer. */
   children: ReactNode;
 }) {
-  const [active, setActive] = useState<string | null>(null);
-  const { ref, inView } = useInView<HTMLDivElement>({ threshold: 0.2 });
   const svgRef = useRef<SVGSVGElement>(null);
   usePauseSvgWhenHidden(svgRef);
-  const viewBox = `0 0 ${width} ${height}`;
 
+  /**
+   * Bows each route perpendicular to its own chord, always to the side with the
+   * smaller y, so a route to Australia sweeps out over the ocean instead of
+   * looping north over Asia the way a fixed upward control point did.
+   */
   const arc = (to: { x: number; y: number }) => {
-    const mx = (hub.x + to.x) / 2;
-    const my = Math.min(hub.y, to.y) - Math.hypot(to.x - hub.x, to.y - hub.y) * 0.35;
-    return `M${hub.x} ${hub.y} Q${mx} ${my} ${to.x} ${to.y}`;
+    const dx = to.x - hub.x;
+    const dy = to.y - hub.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const sign = -dx > 0 ? -1 : 1; // pick the normal that lifts the curve
+    const nx = (-dy / len) * sign;
+    const ny = (dx / len) * sign;
+    const bow = len * 0.18;
+    const cx = (hub.x + to.x) / 2 + nx * bow;
+    const cy = (hub.y + to.y) / 2 + (ny > 0 ? -ny : ny) * bow;
+    return `M${hub.x} ${hub.y} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${to.x} ${to.y}`;
   };
 
   return (
-    <div ref={ref} className="grid gap-10 lg:grid-cols-[1fr_17rem] lg:items-center">
-      {/* On small screens the map is enlarged and shifted to the Europe–Asia–Oceania region where all markets sit. */}
-      <div className="relative overflow-hidden">
-        <div className="max-md:ml-[-88%] max-md:w-[188%]">
-        <svg ref={svgRef} viewBox={viewBox} className="h-auto w-full" role="img" aria-label="World map highlighting markets supported: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia, connected to Trafficomm's centralized operations.">
+    <div className="relative">
+      <div className="mx-auto max-w-[920px]">
+        <svg
+          ref={svgRef}
+          viewBox={viewBox}
+          className="h-auto w-full"
+          role="img"
+          aria-label="World map. Trafficomm's centralized operations hub in India is connected by two-way routes to the markets it supports: Saudi Arabia, UAE, Qatar, Kuwait, Lebanon and Australia."
+        >
           {children}
 
-          {markets.map((m, i) => (
-            <path
-              key={`route-${m.code}`}
-              d={arc(m.center)}
-              fill="none"
-              stroke="#ea3e3a"
-              strokeWidth={active === m.code ? 1.6 : 1}
-              strokeOpacity={active && active !== m.code ? 0.2 : 0.75}
-              strokeDasharray="600"
-              strokeDashoffset={inView ? 0 : 600}
-              style={{ transition: `stroke-dashoffset 1.6s var(--ease-out-expo) ${i * 0.15}s, stroke-opacity 0.3s` }}
-            />
+          {/* India reads as land, not as a highlight: ink, not red. */}
+          <path d={indiaPath} fill="none" stroke="#0c0c0d" strokeOpacity="0.62" strokeWidth="3.8" strokeLinecap="round" />
+
+          <g fill="none" stroke="#ea3e3a">
+            {markets.map((m, i) => {
+              const id = `route-${m.code}`;
+              const d = arc(m.center);
+              // Staggered so six routes never pulse in unison.
+              const begin = `${(i * 0.65).toFixed(2)}s`;
+              return (
+                <g key={id}>
+                  <path id={id} d={d} strokeWidth="0.7" strokeOpacity="0.45" />
+                  {/* Out: execution, reporting and output leaving the hub. */}
+                  <circle r="1.9" fill="#ea3e3a" stroke="none" className="map-flow">
+                    <animateMotion dur="4.2s" begin={begin} repeatCount="indefinite" calcMode="linear">
+                      <mpath href={`#${id}`} />
+                    </animateMotion>
+                    <animate attributeName="opacity" values="0;1;1;0" dur="4.2s" begin={begin} repeatCount="indefinite" />
+                  </circle>
+                  {/* Back in: campaign requirements and data arriving at the hub.
+                      Hidden on small screens, which halves the simultaneous motion. */}
+                  <circle r="1.7" fill="#0c0c0d" stroke="none" className="map-flow max-md:hidden">
+                    <animateMotion
+                      dur="4.2s"
+                      begin={`${(i * 0.65 + 2.1).toFixed(2)}s`}
+                      repeatCount="indefinite"
+                      calcMode="linear"
+                      keyPoints="1;0"
+                      keyTimes="0;1"
+                    >
+                      <mpath href={`#${id}`} />
+                    </animateMotion>
+                    <animate
+                      attributeName="opacity"
+                      values="0;1;1;0"
+                      dur="4.2s"
+                      begin={`${(i * 0.65 + 2.1).toFixed(2)}s`}
+                      repeatCount="indefinite"
+                    />
+                  </circle>
+                </g>
+              );
+            })}
+          </g>
+
+          {markets.map((m) => (
+            <g key={m.code}>
+              <circle cx={m.center.x} cy={m.center.y} r="2.5" fill="#ea3e3a" />
+              <line
+                x1={m.center.x}
+                y1={m.center.y}
+                x2={m.label.x}
+                y2={m.label.y - 4}
+                stroke="#0c0c0d"
+                strokeOpacity="0.3"
+                strokeWidth="0.5"
+              />
+              <text
+                x={m.label.x + (m.label.anchor === "start" ? 3 : m.label.anchor === "end" ? -3 : 0)}
+                y={m.label.y}
+                textAnchor={m.label.anchor}
+                letterSpacing="1"
+                paintOrder="stroke"
+                stroke="var(--color-paper)"
+                strokeWidth="3.5"
+                strokeLinejoin="round"
+                className="fill-ink font-mono uppercase [font-size:16px] md:[font-size:8.5px]"
+              >
+                {m.name}
+              </text>
+            </g>
           ))}
 
-          {markets.map((m) => {
-            const on = !active || active === m.code;
-            return (
-              <g key={m.code} opacity={on ? 1 : 0.4} style={{ transition: "opacity 0.3s" }}>
-                {m.path && <path d={m.path} fill="none" stroke="#ea3e3a" strokeWidth={active === m.code ? 4 : 3.2} strokeLinecap="round" style={{ transition: "stroke-width 0.3s" }} />}
-                <circle cx={m.center.x} cy={m.center.y} r={active === m.code ? 5 : 3.6} fill="#ea3e3a" style={{ transition: "r 0.3s" }} />
-                <circle cx={m.center.x} cy={m.center.y} r="3.2" fill="none" stroke="#ea3e3a">
-                  <animate attributeName="r" values="3.2;11;3.2" dur="3s" repeatCount="indefinite" />
-                  <animate attributeName="stroke-opacity" values="0.8;0;0.8" dur="3s" repeatCount="indefinite" />
-                </circle>
-                <line x1={m.center.x} y1={m.center.y} x2={m.label.x} y2={m.label.y - 4} stroke="#0c0c0d" strokeOpacity="0.35" strokeWidth="0.7" className="max-md:hidden" />
-                <text
-                  x={m.label.x + (m.label.anchor === "start" ? 3 : m.label.anchor === "end" ? -3 : 0)}
-                  y={m.label.y}
-                  textAnchor={m.label.anchor}
-                  fontSize="14"
-                  fontWeight={active === m.code ? 600 : 400}
-                  className="fill-ink font-mono uppercase max-md:hidden"
-                  letterSpacing="1"
-                >
-                  {m.name}
-                </text>
-              </g>
-            );
-          })}
-
+          {/* The hub: the only marker on the map that is more than a dot. */}
           <g>
-            <circle cx={hub.x} cy={hub.y} r="6" fill="#0c0c0d" />
-            <circle cx={hub.x} cy={hub.y} r="2.4" fill="#fff" />
-            <text x={hub.x} y={hub.y + 22} textAnchor="middle" fontSize="13" className="fill-steel font-mono uppercase max-md:hidden" letterSpacing="1">
-              Centralized operations
+            <circle cx={hub.x} cy={hub.y} r="5" fill="none" stroke="#ea3e3a" strokeWidth="0.9" className="map-flow">
+              <animate attributeName="r" values="5;13;5" dur="4s" repeatCount="indefinite" />
+              <animate attributeName="stroke-opacity" values="0.7;0;0.7" dur="4s" repeatCount="indefinite" />
+            </circle>
+            <circle cx={hub.x} cy={hub.y} r="5.4" fill="#0c0c0d" />
+            <circle cx={hub.x} cy={hub.y} r="2.2" fill="#ea3e3a" />
+            <text
+              x={hubLabel.x}
+              y={hubLabel.y}
+              textAnchor={hubLabel.anchor}
+              letterSpacing="1"
+              paintOrder="stroke"
+              stroke="var(--color-paper)"
+              strokeWidth="4"
+              strokeLinejoin="round"
+              className="fill-ink font-mono uppercase [font-size:18px] md:[font-size:10px]"
+            >
+              India
+            </text>
+            <text
+              x={hubLabel.x}
+              y={hubLabel.y + 13}
+              textAnchor={hubLabel.anchor}
+              letterSpacing="1"
+              paintOrder="stroke"
+              stroke="var(--color-paper)"
+              strokeWidth="3.5"
+              strokeLinejoin="round"
+              className="fill-steel font-mono uppercase [font-size:14px] md:[font-size:7px]"
+            >
+              Operations hub
             </text>
           </g>
         </svg>
-        </div>
       </div>
 
-      <div>
-        <p className="eyebrow mb-4 text-steel">Markets supported</p>
-        <ul className="divide-y divide-line border-y border-line">
-          {markets.map((m, i) => (
-            <li key={m.code}>
-              <button
-                type="button"
-                aria-pressed={active === m.code}
-                onClick={() => setActive((a) => (a === m.code ? null : m.code))}
-                onMouseEnter={() => setActive(m.code)}
-                onMouseLeave={() => setActive(null)}
-                onFocus={() => setActive(m.code)}
-                onBlur={() => setActive(null)}
-                className={cn(
-                  "flex w-full items-center justify-between py-3.5 text-left text-[1.05rem] tracking-[-0.01em] transition-colors",
-                  active === m.code ? "text-signal-ink" : "text-ink",
-                )}
-              >
-                <span className="flex items-center gap-3">
-                  <span className="font-mono text-[0.75rem] text-steel" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
-                  {m.name}
-                </span>
-                <span className="size-2 rounded-full bg-signal" aria-hidden="true" />
-              </button>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-5 text-[0.93rem] leading-relaxed text-steel">
-          Campaign experience across these markets, delivered from one centralized operations team.
-        </p>
-      </div>
+      <p className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[0.72rem] uppercase tracking-[0.12em] text-steel">
+        <span className="flex items-center gap-2">
+          <span className="size-2 rounded-full bg-ink" aria-hidden="true" />
+          Operations hub
+        </span>
+        <span className="flex items-center gap-2">
+          <span className="size-2 rounded-full bg-signal" aria-hidden="true" />
+          Markets supported
+        </span>
+        <span className="text-graphite normal-case tracking-normal">Campaign work in · execution and reporting out</span>
+      </p>
     </div>
   );
 }

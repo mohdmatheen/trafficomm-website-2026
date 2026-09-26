@@ -1,5 +1,3 @@
-import { additionalPlatforms } from "./platforms";
-
 /**
  * Single source of truth for company facts.
  * Every number here is a verified proof point supplied by Trafficomm.
@@ -9,7 +7,7 @@ export const company = {
   name: "Trafficomm",
   legalName: "Trafficomm Digital Media Services Pvt Ltd",
   founded: 2015,
-  tagline: "Performance Operations. Built to Scale.",
+  tagline: "Performance Operations. Built for Execution.",
   positioning: "The performance operations layer behind modern media teams.",
   /**
    * Header descriptor under the wordmark. Three words, because it has to sit
@@ -123,33 +121,10 @@ export const primaryNav: NavGroup[] = [
     ],
     feature: { label: "Request an operations assessment", href: "/contact", description: "Map where your team loses time today." },
   },
-  {
-    label: "Platforms",
-    href: "/platforms",
-    intro: "Multiple platforms. One operations team.",
-    links: [
-      { label: "Meta", href: "/platforms/meta" },
-      { label: "Google Ads", href: "/platforms/google-ads" },
-      { label: "TikTok", href: "/platforms/tiktok" },
-      { label: "Snapchat", href: "/platforms/snapchat" },
-      { label: "X", href: "/platforms/x" },
-      { label: "LinkedIn", href: "/platforms/linkedin" },
-      { label: "DV360", href: "/platforms/dv360" },
-      { label: "CM360", href: "/platforms/cm360" },
-      { label: "Search Ads 360", href: "/platforms/search-ads-360" },
-      { label: "Amazon Ads", href: "/platforms/amazon-ads" },
-    ],
-    /**
-     * Operated, but with no documented operations page yet — so they are named
-     * here rather than linked to a page that would have to be invented.
-     */
-    also: { label: "Also operated", items: additionalPlatforms.map((p) => p.officialName ?? p.name) },
-  },
 ];
 
 export const secondaryNav: NavLink[] = [
   { label: "Case Studies", href: "/case-studies" },
   { label: "How We Work", href: "/how-we-work" },
-  { label: "Performance Lab", href: "/insights" },
   { label: "About", href: "/about" },
 ];

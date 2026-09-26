@@ -13,9 +13,9 @@ export function GlobalExperience({ index = "08" }: { index?: string | null }) {
             Global Campaigns. <span className="block text-steel/70">Centralized Operations.</span>
           </>
         }
-        lead="Campaign experience across the Gulf, the Levant and Australia — delivered by one centralized operations team working inside your tools and processes."
+        lead="Campaign experience across the Gulf, the Levant and Australia — executed from one centralized operations hub in India, working inside your tools and processes."
       />
-      <div className="mt-14">
+      <div className="mt-12 lg:mt-14">
         <WorldMap />
       </div>
     </Section>

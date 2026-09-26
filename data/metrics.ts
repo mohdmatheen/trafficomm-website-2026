@@ -18,9 +18,12 @@ import type { Stat } from "./types";
  *  - 4 → ~30 is a HISTORICAL team scale on one engagement. It is not the
  *    current team size and must never be phrased as "today" or "currently".
  *  - 70+ is the largest historical Trafficomm team size, not current headcount.
- *    Its label reads "Team members", so the qualifier in `detail` is not
- *    optional: every surface that shows this figure must show the detail with
- *    it, or the number becomes a current-headcount claim.
+ *    Its label reads "Team members", so the figure needs its qualifier stated
+ *    somewhere. The homepage grid and hero now show figure + label only (a
+ *    client presentation decision), so the qualifiers live in `detail` for
+ *    /about and the service proof strips, and in `companyScaleSentence`, which
+ *    is what the FAQ copy and Organization schema are built from. Do not remove
+ *    them from those surfaces as well, or the claims lose their scope entirely.
  *  - 7+ years (Case 01) is the span of the engagement; never "current" or "ongoing".
  */
 
@@ -50,8 +53,10 @@ export const companyScaleSentence =
   "Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements, with a peak monthly campaign volume of 250+ and a largest historical team size of 70+.";
 
 /**
- * One supporting line for the scale grid. Keeps the necessary clarification
- * out of the metric labels themselves (hierarchy: figure → what it is → context).
+ * Clarification for the ~$10M figure, for any surface that presents it in
+ * prose. No longer shown under the homepage scale grid, which is figure +
+ * label only; kept because the distinction from revenue still has to be
+ * statable wherever the figure is discussed.
  */
 export const campaignScaleNote = "~$10M is the campaign value handled on a single UAE tourism campaign; it is not Trafficomm revenue.";
 

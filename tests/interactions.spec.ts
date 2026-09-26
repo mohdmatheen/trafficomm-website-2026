@@ -25,8 +25,10 @@ test.describe("homepage interactions", () => {
     await expect(explorer.getByRole("tab", { name: /Measurement & Analytics/ })).toHaveAttribute("aria-selected", "true");
   });
 
+  // The platform network moved off the homepage with the rest of the Platforms
+  // surface; it still ships on /platforms, which is where it is now exercised.
   test("platform ecosystem responds to keyboard / tap", async ({ page, viewport }) => {
-    await page.goto("/");
+    await page.goto("/platforms");
     if (desktop(viewport!.width)) {
       const meta = page.getByRole("tab", { name: "Meta" });
       await meta.focus();

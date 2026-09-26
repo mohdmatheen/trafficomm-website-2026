@@ -9,8 +9,8 @@ export default function NotFound() {
   const links = [
     { href: "/services", label: "Services" },
     { href: "/case-studies", label: "Case studies" },
-    { href: "/platforms", label: "Platforms" },
-    { href: "/insights", label: "Performance Lab" },
+    { href: "/how-we-work", label: "How we work" },
+    { href: "/about", label: "About" },
   ];
   return (
     <section className="relative flex min-h-[80dvh] items-center overflow-hidden bg-paper pt-28 pb-20">

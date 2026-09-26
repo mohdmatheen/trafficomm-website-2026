@@ -1,14 +1,13 @@
 import Link from "next/link";
-import { company, markets, primaryNav, secondaryNav } from "@/data/site";
+import { company, primaryNav, secondaryNav } from "@/data/site";
 import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 
 export function Footer() {
-  const [services, solutions, platforms] = primaryNav;
+  const [services, solutions] = primaryNav;
   const columns = [
     { title: "Services", links: services.links },
     { title: "Solutions", links: solutions.links },
-    { title: "Platforms", links: platforms.links },
     { title: "Company", links: [...secondaryNav, { label: "Contact", href: "/contact" }] },
   ];
 
@@ -29,7 +28,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
             {columns.map((col) => (
               <nav key={col.title} aria-label={`Footer ${col.title}`}>
                 <p className="eyebrow mb-5 text-mute">{col.title}</p>
@@ -47,19 +46,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-6 border-b border-line-dark py-8 lg:flex-row lg:items-center lg:justify-between">
-          <p className="eyebrow text-mute">Markets supported</p>
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-[0.96rem] text-fog">
-            {markets.map((m) => (
-              <li key={m.code} className="flex items-center gap-2">
-                <span className="size-1 rounded-full bg-signal" aria-hidden="true" />
-                {m.name}
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="flex flex-col gap-3 py-8 text-[0.86rem] text-mute sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-8 pb-8 text-[0.86rem] text-mute sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {company.legalName}. All rights reserved.
           </p>

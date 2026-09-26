@@ -20,7 +20,7 @@ const poppins = Poppins({ variable: "--font-poppins", subsets: ["latin"], weight
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: `${company.name} — Performance Operations. Built to Scale.`,
+    default: `${company.name} — Performance Operations. Built for Execution.`,
     template: `%s | ${company.name}`,
   },
   description:

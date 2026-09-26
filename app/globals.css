@@ -359,3 +359,9 @@
     will-change: auto;
   }
 }
+
+/* Markets map: the travelling route dots are ambient. Hiding them leaves the
+   routes, the market dots and the hub drawn, which is the whole message. */
+@media (prefers-reduced-motion: reduce) {
+  .map-flow { display: none; }
+}

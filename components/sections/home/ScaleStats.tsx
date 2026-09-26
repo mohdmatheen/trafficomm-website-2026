@@ -1,6 +1,6 @@
 import { Metric } from "@/components/ui/Metric";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { campaignScaleNote, scaleStats } from "@/data/metrics";
+import { scaleStats } from "@/data/metrics";
 
 export function ScaleStats() {
   return (
@@ -33,12 +33,9 @@ export function ScaleStats() {
               <dd className="order-1 whitespace-nowrap text-[clamp(2.4rem,1.4rem+2.6vw,4.25rem)] leading-none tracking-[-0.045em] text-ink">
                 <Metric stat={s} />
               </dd>
-              {s.detail && <dd className="order-3 mt-3 text-[0.9rem] leading-snug text-steel">{s.detail}</dd>}
             </div>
           ))}
         </dl>
-          <p className="mt-5 max-w-xl text-[0.9rem] leading-relaxed text-graphite">Behind every number: work that was set up, checked, monitored and reported.</p>
-          <p className="mt-3 max-w-xl text-[0.84rem] leading-relaxed text-steel">{campaignScaleNote}</p>
         </div>
       </div>
     </Section>

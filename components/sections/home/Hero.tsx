@@ -1,17 +1,14 @@
 import { ButtonLink } from "@/components/ui/Button";
-import { Eyebrow } from "@/components/ui/Section";
 import { EcosystemHero } from "@/components/visualizations/EcosystemHero";
 import { formatStat } from "@/components/ui/Metric";
 import { companyMetrics as m } from "@/data/metrics";
 
-const capabilities = ["Ad Operations", "Performance", "Programmatic", "Measurement", "Reporting"];
-
 /**
- * Every company figure travels with its qualifier — "Team members" without
- * "peak historical team size" beside it would read as current headcount, and
- * "~$10M" without "UAE tourism campaign" would read as revenue.
+ * The figures carry their label only. Their historical qualifiers ("peak
+ * historical team size", "UAE tourism campaign") are stated on /about, in the
+ * FAQ copy and in `companyScaleSentence` — see data/metrics.ts.
  */
-const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label, d: s.detail }));
+const heroStats = [m.campaigns, m.campaignScale, m.peakTeam].map((s) => ({ v: formatStat(s), l: s.label }));
 
 export function Hero() {
   return (
@@ -21,25 +18,16 @@ export function Hero() {
           the platform marks have to be recognisable, not merely present. */}
       <div className="container-site relative grid items-center gap-12 lg:grid-cols-[1fr_1.12fr] lg:gap-10">
         <div>
-          <Eyebrow className="mb-8">Digital advertising operations • Since 2015</Eyebrow>
           <h1 id="hero-title" className="text-display text-ink">
             Performance Operations.
             <span className="block text-steel/70">
-              Built to Scale<span className="text-signal">.</span>
+              Built for Execution<span className="text-signal">.</span>
             </span>
           </h1>
           <p className="mt-8 max-w-xl text-lead text-steel">
-            Trafficomm helps agencies and brands execute, optimize and scale digital advertising across platforms and markets
-            — without scaling operational complexity.
+            Trafficomm helps agencies and brands execute, optimize and manage digital advertising across platforms and markets
+            — backed by specialized campaign operations, performance and reporting teams.
           </p>
-          <ul className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.79rem] uppercase tracking-[0.1em] text-graphite" aria-label="Capabilities">
-            {capabilities.map((c, i) => (
-              <li key={c} className="flex items-center gap-3">
-                {i > 0 && <span className="text-signal" aria-hidden="true">·</span>}
-                {c}
-              </li>
-            ))}
-          </ul>
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/services" size="lg">
               Explore Our Capabilities
@@ -54,7 +42,6 @@ export function Hero() {
               <div key={s.l} className="flex flex-col pr-3">
                 <dt className="eyebrow order-2 mt-2 !text-[0.68rem] text-steel">{s.l}</dt>
                 <dd className="order-1 text-[1.75rem] leading-none tracking-[-0.035em] text-ink tabular">{s.v}</dd>
-                {s.d && <dd className="order-3 mt-1.5 text-[0.76rem] leading-snug text-steel">{s.d}</dd>}
               </div>
             ))}
           </dl>
@@ -62,6 +49,13 @@ export function Hero() {
 
         <div className="relative mx-auto w-full max-w-[740px]">
           <EcosystemHero />
+          {/* The hero is now the only place on the homepage that shows platform
+              marks — the ecosystem section that used to carry this notice moved
+              to /platforms. The marks must not travel without it. */}
+          <p className="mt-6 text-[0.76rem] leading-relaxed text-steel">
+            Platform names and marks are trademarks of their respective owners. They indicate the platforms Trafficomm has
+            operational experience with and do not imply partnership, certification or endorsement.
+          </p>
         </div>
       </div>
     </section>
