@@ -46,12 +46,20 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3 pt-8 pb-8 text-[0.86rem] text-mute sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 pt-8 pb-6 text-[0.86rem] text-mute sm:flex-row sm:items-center sm:justify-between">
           <p>
             © {new Date().getFullYear()} {company.legalName}. All rights reserved.
           </p>
           <p className="font-mono uppercase tracking-[0.12em]">Execute · Optimize · Measure · Report</p>
         </div>
+
+        {/* Platform marks appear in the homepage hero and across /platforms, so
+            the notice has to be reachable site-wide. It belongs here rather than
+            beside the marks: legally available, commercially out of the way. */}
+        <p className="border-t border-line-dark pt-6 pb-10 text-[0.76rem] leading-relaxed text-mute">
+          Platform names and marks are trademarks of their respective owners. They indicate the platforms Trafficomm has
+          operational experience with and do not imply partnership, certification or endorsement.
+        </p>
       </div>
     </footer>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { primaryNav, secondaryNav } from "@/data/site";
 import { cn } from "@/lib/cn";
@@ -12,6 +13,7 @@ import { ServiceIllustration } from "@/components/visual/ServiceIllustration";
 import { SolutionGlyph } from "@/components/visual/SolutionGlyph";
 
 export function MobileNav({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const pathname = usePathname();
   const [expanded, setExpanded] = useState<string | null>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -59,7 +61,19 @@ export function MobileNav({ open, onClose }: { open: boolean; onClose: () => voi
       className="fixed inset-0 z-[60] flex flex-col bg-paper xl:hidden"
     >
       <div className="container-site flex h-16 shrink-0 items-center justify-between">
-        <Link href="/" className="text-[1.15rem]" onClick={onClose}>
+        <Link
+          href="/"
+          className="text-[1.15rem]"
+          onClick={(e) => {
+            // Closing the overlay on "/" would otherwise leave the reader
+            // exactly where they were. Same fix as the header logo.
+            if (pathname === "/") {
+              e.preventDefault();
+              window.scrollTo({ top: 0 });
+            }
+            onClose();
+          }}
+        >
           <Logo />
         </Link>
         <button

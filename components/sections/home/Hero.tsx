@@ -49,13 +49,6 @@ export function Hero() {
 
         <div className="relative mx-auto w-full max-w-[740px]">
           <EcosystemHero />
-          {/* The hero is now the only place on the homepage that shows platform
-              marks — the ecosystem section that used to carry this notice moved
-              to /platforms. The marks must not travel without it. */}
-          <p className="mt-6 text-[0.76rem] leading-relaxed text-steel">
-            Platform names and marks are trademarks of their respective owners. They indicate the platforms Trafficomm has
-            operational experience with and do not imply partnership, certification or endorsement.
-          </p>
         </div>
       </div>
     </section>

@@ -64,6 +64,19 @@ export function Header() {
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
 
+  /**
+   * On "/" the logo link has nowhere to navigate, so the browser left the reader
+   * wherever they had scrolled to. Send them back to the top instead. No
+   * `behavior` is passed: that resolves to the html `scroll-behavior`, which is
+   * already smooth and already switches to auto under prefers-reduced-motion.
+   * Anywhere else the link navigates normally and lands at the top by default.
+   */
+  const homeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/") return;
+    e.preventDefault();
+    window.scrollTo({ top: 0 });
+  };
+
   return (
     <>
       <header
@@ -73,7 +86,7 @@ export function Header() {
         )}
       >
         <div ref={navRef} className="container-site flex h-16 items-center justify-between gap-6 lg:h-[4.5rem]">
-          <Link href="/" className="shrink-0 text-[1.15rem] lg:text-[1.25rem]" aria-label="Trafficomm — home">
+          <Link href="/" onClick={homeClick} className="shrink-0 text-[1.15rem] lg:text-[1.25rem]" aria-label="Trafficomm — home">
             <Logo inverted={inverted} tagline={company.headerDescriptor} />
           </Link>
 
