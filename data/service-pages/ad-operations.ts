@@ -122,6 +122,7 @@ export const adOperationsPage: ServicePageContent = {
     { href: "/case-studies", label: "Case studies", meta: "Documented results" },
     { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
     { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
+    { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
   ],
   cta: {
     eyebrow: "Let's talk Ad Operations",

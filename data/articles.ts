@@ -86,6 +86,249 @@ export const articles: Article[] = [
     ],
   },
   {
+    slug: "campaign-launch-qa-checklist",
+    title: "The Agency Campaign Launch QA Checklist",
+    dek: "A practical pre-launch and post-launch QA checklist for digital advertising campaigns — covering brief, structure, budget, targeting, placements, creative, tracking, final review and launch verification.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-01",
+    hero: { kicker: "Operator's Checklist", motif: "grid" },
+    tags: ["Campaign QA", "Campaign Trafficking", "Ad Operations", "Campaign Setup"],
+    body: [
+      {
+        type: "p",
+        text: "Campaign errors are rarely dramatic. They are usually small mismatches between the approved plan and what actually reaches the advertising platform — a budget entered at ad-set level instead of campaign level, a start date in the wrong timezone, a landing URL missing its tracking parameters, a creative mapped to a placement it does not fit. Each is trivial to fix before launch and expensive to discover afterwards, because by then it has produced delivery.",
+      },
+      {
+        type: "p",
+        text: "This checklist covers the checks worth running before a campaign goes live and immediately after it does. It is platform-neutral: the disciplines are the same everywhere, but the field names differ, so adapt it to the campaign, the platform and your own workflow rather than applying it literally.",
+      },
+      {
+        type: "callout",
+        title: "In brief",
+        text: "Campaign QA has two jobs. Before launch, it validates the campaign as configured against the campaign as briefed and planned — structure, budget, dates, targeting, placements, creative, tracking and naming. After launch, it confirms that the platform is actually delivering and that tracking and reporting behave as expected, because some faults only become visible once serving begins. Not every check below applies to every platform or every campaign; items marked \"where applicable\" depend on the platform, the buying type or the measurement setup in use.",
+      },
+
+      { type: "h2", text: "01 — Brief and media plan", id: "brief-media-plan" },
+      {
+        type: "p",
+        text: "Before anything is built, confirm that the instruction is complete and approved. Most downstream QA failures trace back to a gap at this stage rather than a mistake in the platform.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Correct advertiser or client, and the correct brand or product within it.",
+          "Correct advertising platform and the correct account or entity within that platform.",
+          "Approved media plan available, and the version being built from is the current one.",
+          "Campaign objective and the KPI it will be measured against, both stated rather than inferred.",
+          "Approved budget, and whether it is gross or net of fees.",
+          "Flight dates, including any phase or burst structure.",
+          "Geography and audience instructions as briefed.",
+          "Creative requirements, formats and the source of the approved assets.",
+          "Reporting requirements, format and cadence.",
+          "Named approval owner — who signs off before this goes live.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Where a field is missing, ask rather than assume. Why structured briefs matter, and what an execution team needs from one, is covered in [the ad operations outsourcing guide](/insights/agency-guide-to-outsourcing-ad-operations).",
+      },
+
+      { type: "h2", text: "02 — Account and campaign structure", id: "campaign-structure" },
+      {
+        type: "p",
+        text: "Structure determines what can be reported on later, so it is worth checking against the plan rather than against convenience.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Campaign built in the correct account, and under the correct advertiser or brand where the platform separates them.",
+          "Campaign objective matches the brief — not the objective the platform defaulted to.",
+          "Campaign, ad set or ad group structure matches how the plan needs to be reported and optimised.",
+          "Naming convention applied consistently at every level of the hierarchy.",
+          "Buying type correct — where applicable.",
+          "Optimisation event set to the action the KPI actually depends on — where applicable.",
+          "Conversion location correct — where applicable.",
+          "Bid strategy matches the plan — where applicable.",
+          "Campaign status is paused or in draft until final approval is given.",
+          "Duplicated, test or draft campaigns removed, or clearly named so they cannot be mistaken for live ones.",
+        ],
+      },
+
+      { type: "h2", text: "03 — Budget, dates and pacing setup", id: "budget-dates" },
+      {
+        type: "p",
+        text: "Budget and date errors are among the easiest to make and the most immediately costly, because they affect delivery from the first hour.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Total approved budget matches the media plan.",
+          "Budget entered in the platform matches the plan after any fee or currency conversion.",
+          "Daily versus lifetime budget set as intended.",
+          "Budget applied at the correct level — campaign versus ad set or ad group — and not duplicated across both.",
+          "Start date and end date correct, including the end date's inclusivity.",
+          "Start time correct where the platform allows one.",
+          "Account timezone confirmed, and the dates interpreted in that timezone rather than the operator's.",
+          "Pacing set as intended — even, accelerated or front-loaded.",
+          "Bid caps, budget caps or spend limits set as briefed — where applicable.",
+          "Scheduled changes, dayparting or flight-phase changes configured — where applicable.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Timezone is the most common silent error here: an account set to a different timezone from the plan can start a campaign a day early or end it a day late, and neither is visible in the setup sheet.",
+      },
+
+      { type: "h2", text: "04 — Targeting and geography", id: "targeting" },
+      {
+        type: "p",
+        text: "Every targeting setting should trace back to the approved brief. Restrictions that were not asked for narrow delivery as effectively as mistakes do.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Countries, regions or cities match the plan, at the granularity the plan specifies.",
+          "Location targeting method correct — presence, interest or residence — where the platform distinguishes them.",
+          "Audience segments correct, and sourced from the intended audience set.",
+          "First-party or customer-list audiences applied and matched — where applicable.",
+          "Remarketing audiences applied at the correct level — where applicable.",
+          "Audience exclusions applied as briefed.",
+          "Remarketing or converter exclusions applied — where required by the plan.",
+          "Age and gender set only where the brief specifies them, and left open where it does not.",
+          "Language targeting set only where specified.",
+          "Device targeting matches the plan and the creative formats in use — where applicable.",
+          "Frequency controls configured — where applicable.",
+        ],
+      },
+
+      { type: "h2", text: "05 — Placements and inventory", id: "placements" },
+      {
+        type: "p",
+        text: "Placement settings decide where a campaign can serve and, often unintentionally, how much of the planned audience it can reach at all.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Automatic versus manual placements set as the plan intends.",
+          "Selected placements match the plan, and the plan's placements are all actually available on this objective.",
+          "Device and inventory settings correct.",
+          "Placement exclusions applied — where applicable.",
+          "Publisher, site or app exclusion lists applied — where applicable.",
+          "Brand-safety or inventory-quality controls set to the agreed level — where applicable.",
+          "Inventory type correct — where applicable.",
+          "Deal or PMP identifiers attached and transacting — where applicable.",
+          "Every selected placement is compatible with the creative formats being trafficked to it.",
+          "No delivery setting unintentionally restricts scale below what the plan assumes.",
+        ],
+      },
+
+      { type: "h2", text: "06 — Creative", id: "creative" },
+      {
+        type: "p",
+        text: "Creative should be checked against two things: the asset that was approved, and the placement it will actually serve in.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Correct approved asset, from the agreed source rather than an earlier email.",
+          "Correct creative version where more than one exists.",
+          "Dimensions, aspect ratio, file size and duration within platform specification.",
+          "Headline, body copy and any text overlay match the approved version.",
+          "Call to action correct and consistent with the landing experience.",
+          "Landing URL attached to the correct creative.",
+          "Creative-to-placement compatibility confirmed — the asset renders as intended where it will serve, not only in the preview.",
+          "Creative naming follows the convention.",
+          "Tracking attached to the creative — where applicable.",
+          "All required approvals complete, including client approval where the engagement requires it.",
+          "Platform creative status checked for rejection, limited status or policy flags — where the platform exposes it.",
+        ],
+      },
+
+      { type: "h2", text: "07 — URLs, tracking and measurement", id: "tracking-measurement" },
+      {
+        type: "p",
+        text: "This is the stage most worth slowing down for. A tracking fault does not stop delivery, so nothing signals it — the campaign runs normally and the data is wrong until someone checks.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Final landing URL correct for each creative, and pointing at the intended page rather than a homepage.",
+          "URL valid, served over HTTPS, loading without error, and the live version of the page — with any redirect resolving to the intended destination rather than chaining or dropping parameters.",
+          "UTM parameters present and correctly formed.",
+          "Campaign, source and medium values follow the account's taxonomy rather than being improvised per campaign.",
+          "Click trackers or redirect URLs applied and resolving — where applicable.",
+          "Pixels or tags present and firing on the destination.",
+          "Conversion events configured, and the event being optimised toward is the one the KPI depends on.",
+          "Floodlight activities assigned — where applicable.",
+          "Attribution settings match what reporting will assume.",
+          "Conversion window set as agreed — where applicable.",
+          "Analytics receipt confirmed where it can be tested before launch, and noted for post-launch checking where it cannot.",
+          "Landing-page tracking present and not blocked by consent or tag-manager configuration, including third-party measurement or verification tags — where applicable.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Validation methods differ by platform and no single test covers all of them, so check tracking in the place it will actually be read. Where reporting is produced from this data, [reporting and insights](/services/reporting) covers how figures should be reconciled before they reach a client.",
+      },
+
+      { type: "h2", text: "08 — Final pre-launch review", id: "final-review" },
+      {
+        type: "p",
+        text: "A last pass across everything already checked, performed against the live platform configuration rather than the trafficking sheet or setup document. The sheet records what was intended; only the platform shows what exists.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Media plan reconciled line by line against the platform setup.",
+          "Campaign structure and naming correct at every level, and budget, dates and timezone correct.",
+          "Targeting and geography correct.",
+          "Placements and inventory settings correct.",
+          "Creatives correct, approved and mapped to the right placements.",
+          "Landing URLs resolving and carrying their tracking.",
+          "Conversion event and attribution settings correct.",
+          "All required approvals recorded.",
+          "Campaign status ready for activation, with nothing left paused that should run and nothing live that should not.",
+        ],
+      },
+
+      { type: "h2", text: "09 — Post-launch verification", id: "post-launch" },
+      {
+        type: "p",
+        text: "QA does not end when the campaign is switched on. Some faults are only observable once the platform begins serving, and the window in which they are cheap to fix is short.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Campaign has entered delivery rather than sitting in review or pending status.",
+          "Impressions registering, and clicks registering where the format produces them.",
+          "Spend beginning, and at a rate consistent with the pacing setting.",
+          "Creatives approved and serving, with no asset silently withheld.",
+          "No rejected, disapproved or limited ads.",
+          "Conversion tracking firing — where it can be tested.",
+          "Data reaching analytics and the reporting pipeline.",
+          "No unexpected delivery — geography, placement or audience behaving differently from the setup.",
+          "Pacing on track against the plan and the remaining flight, with budget consuming neither stalled nor running ahead.",
+          "No obvious delivery anomalies in the first reportable period.",
+          "Reporting populated with the campaign and mapped to the right client and plan line.",
+          "Anything materially different from expectation escalated rather than absorbed.",
+        ],
+      },
+
+      {
+        type: "p",
+        text: "These are the disciplines Trafficomm applies to campaign execution work, where QA runs as a function separate from the build rather than as the builder's final pass. Operating since 2015, the same sequence is used across platforms and markets. For how that works as an engagement, see [ad operations outsourcing](/ad-operations-outsourcing).",
+      },
+    ],
+    related: ["agency-guide-to-outsourcing-ad-operations", "building-vs-outsourcing-ad-operations-team"],
+    links: [
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
+      { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
     slug: "agency-guide-to-outsourcing-ad-operations",
     title: "Ad Operations Outsourcing: The Complete Guide for Agencies",
     dek: "What agencies can outsource and what they should keep, when the model fits and when it does not, how campaign handoff and QA should work, and how to evaluate an ad operations partner.",
@@ -266,66 +509,46 @@ export const articles: Article[] = [
       },
       {
         type: "p",
-        text: "A complete handoff generally includes:",
-      },
-      {
-        type: "ul",
-        items: [
-          "Platform and account, including the entity the campaign is built under.",
-          "Campaign objective and the KPI it is measured against.",
-          "Media plan, budget and budget distribution.",
-          "Start and end dates, including flight or phase structure.",
-          "Geography and audience definition.",
-          "Placements, formats and platform-specific requirements.",
-          "Creative files, specifications and versions, with a named source of truth.",
-          "Landing URLs, confirmed rather than assumed.",
-          "Tracking requirements, conversion events and the UTM convention to apply.",
-          "Naming convention for campaigns, ad sets and ads.",
-          "Reporting requirements, format and cadence.",
-          "Approval owner — who signs off before launch.",
-          "Special instructions, exclusions and anything differing from standing practice.",
-        ],
+        text: "An execution team needs the same categories of information every time: which account the campaign is built under, what it is meant to achieve and how it is measured, the budget and flight it runs to, who it targets and where, the creative and where it points, how it is tracked, how it is named, how it is reported, and who approves it before launch.",
       },
       {
         type: "p",
-        text: "A brief template that enforces these fields is a more reliable investment than any amount of post-launch checking. A missing field at brief stage costs a question; the same field missing after launch costs a rebuild.",
+        text: "A brief template that enforces those fields is a more reliable investment than any amount of post-launch checking. A missing field at brief stage costs a question; the same field missing after launch costs a rebuild. The field-by-field version is set out in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist).",
       },
-
       { type: "h2", text: "How QA should work", id: "qa" },
       {
         type: "p",
-        text: "QA is most useful as a distinct function rather than a final habit of the person who did the build — someone checking their own work checks it against the assumptions they built it on. Staging QA across the lifecycle catches different classes of error at the point they are cheapest to fix.",
+        text: "QA is most useful as a distinct function rather than a final habit of the person who did the build — someone checking their own work checks it against the assumptions they built it on. Staging it across the campaign lifecycle catches different classes of error at the point they are cheapest to fix.",
       },
       { type: "h3", text: "Pre-launch QA" },
       {
         type: "p",
-        text: "Before anything is live: campaign structure against the brief, targeting and geography, budget and flight dates, creative against platform specification, landing URLs resolving correctly, tracking parameters and conversion events in place, naming applied consistently. At this stage almost everything is still free to correct.",
+        text: "Everything checked while it is still free to correct: the campaign as configured against the campaign as briefed. This is the largest of the stages and the one that determines how much of the rest is needed.",
       },
       { type: "h3", text: "Launch verification" },
       {
         type: "p",
-        text: "Immediately after activation: confirming the campaign is delivering, impressions and clicks are registering, tracking is firing against the right events, and nothing was rejected or limited in review. A campaign that is live is not necessarily a campaign that is working.",
+        text: "Confirmation that activation actually produced delivery. A campaign that is live is not necessarily a campaign that is working, and some faults are only observable once a platform begins serving.",
       },
       { type: "h3", text: "Delivery and pacing checks" },
       {
         type: "p",
-        text: "Through the flight: delivery against plan, spend pacing against budget and remaining days, and whether distribution across line items, audiences or placements matches intent. Pacing problems compound quietly — the earlier they surface, the more of the flight remains to correct them in.",
+        text: "Delivery and spend measured against the plan through the flight. Pacing problems compound quietly — the earlier they surface, the more of the flight remains to correct them in.",
       },
       { type: "h3", text: "Optimisation controls" },
       {
         type: "p",
-        text: "Changes to a live campaign need their own discipline: what may be changed without approval, what must be raised first, and a record of what changed and when. Without that record, end-of-flight analysis cannot separate the effect of the market from the effect of the changes.",
+        text: "Discipline around changes to a live campaign: what may be changed without approval, what must be raised first, and a record of what changed and when. Without that record, end-of-flight analysis cannot separate the effect of the market from the effect of the changes.",
       },
       { type: "h3", text: "Reporting QA" },
       {
         type: "p",
-        text: "Before a report reaches a client: figures reconciled against the platforms rather than carried forward, date ranges and currency correct, metric definitions consistent with previous reports, discrepancies explained rather than smoothed over. A wrong report costs more trust than an underdelivering campaign, because it calls everything else into question.",
+        text: "Figures reconciled against the platforms before a report reaches a client. A wrong report costs more trust than an underdelivering campaign, because it calls everything else into question.",
       },
       {
         type: "p",
-        text: "How a partner structures these stages, and who performs each, is worth asking about in detail — [how we work](/how-we-work) sets out one way of sequencing transition, ownership and QA.",
+        text: "Those are the stages and what each is for. The checks that belong inside them — stage by stage, from brief through to post-launch verification — are set out in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist). How a partner structures and staffs these stages is worth asking about in detail; [how we work](/how-we-work) sets out one way of sequencing transition, ownership and QA.",
       },
-
       { type: "h2", text: "How to evaluate an ad operations outsourcing partner", id: "evaluate" },
       {
         type: "p",
@@ -464,7 +687,7 @@ export const articles: Article[] = [
         text: "A small internal core keeps strategy, client relationships and escalation ownership, while an external team handles build, QA, monitoring and reporting at volume. Optimisation is usually shared: the partner surfaces what the data shows, the agency decides what to act on.",
       },
     ],
-    related: ["building-vs-outsourcing-ad-operations-team", "saudi-digital-advertising-outlook-2027"],
+    related: ["campaign-launch-qa-checklist", "building-vs-outsourcing-ad-operations-team"],
     links: [
       { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
@@ -535,7 +758,7 @@ export const articles: Article[] = [
         ],
       },
     ],
-    related: ["agency-guide-to-outsourcing-ad-operations", "saudi-digital-advertising-outlook-2027"],
+    related: ["agency-guide-to-outsourcing-ad-operations", "campaign-launch-qa-checklist"],
     links: [
       { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
       { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
