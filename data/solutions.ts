@@ -59,6 +59,7 @@ export const solutions: Solution[] = [
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Setup · QA · Reporting" },
       { href: "/services/programmatic", label: "Programmatic Operations", meta: "DV360 · CM360" },
       { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
+      { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
     ],
     cta: { title: "Where is delivery capacity running out?", body: "Tell us about your offices, platforms and monthly volumes. We'll look at which parts of execution, QA and reporting a dedicated operations team could take on." },
     faqs: [
@@ -328,6 +329,7 @@ export const solutions: Solution[] = [
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Setup · QA · Reporting" },
       { href: "/services/reporting", label: "Reporting & Insights", meta: "Your templates" },
       { href: "/how-we-work", label: "How we work", meta: "Confidential by default" },
+      { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
     ],
     cta: { title: "Which capabilities are your clients asking for?", body: "Tell us what you want to offer under your brand. We'll look at how a white-label operations team would deliver it without your clients ever seeing us." },
     faqs: [

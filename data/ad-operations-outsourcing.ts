@@ -169,5 +169,5 @@ export const relatedLinks = [
   { href: "/solutions/media-agencies", label: "For Media Agencies", meta: "Operating model" },
   { href: "/how-we-work", label: "How We Work", meta: "Process" },
   { href: "/case-studies", label: "Case Studies", meta: "Documented engagements" },
-  { href: "/insights", label: "Performance Lab", meta: "Analysis" },
+  { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing: the complete guide", meta: "Guide" },
 ] as const;

@@ -121,6 +121,7 @@ export const adOperationsPage: ServicePageContent = {
     { href: "/services/measurement", label: "Measurement & Analytics", meta: "GA4 · GTM · CAPI" },
     { href: "/case-studies", label: "Case studies", meta: "Documented results" },
     { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
+    { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
   ],
   cta: {
     eyebrow: "Let's talk Ad Operations",
