@@ -61,6 +61,7 @@ export const solutions: Solution[] = [
       { href: "/how-we-work", label: "How we work", meta: "Transition & QA" },
       { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
       { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },
+      { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
     ],
     cta: { title: "Where is delivery capacity running out?", body: "Tell us about your offices, platforms and monthly volumes. We'll look at which parts of execution, QA and reporting a dedicated operations team could take on." },
     faqs: [
@@ -131,6 +132,7 @@ export const solutions: Solution[] = [
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "GA4 · GTM · CAPI" },
       { href: "/solutions/white-label-ad-operations", label: "White-label delivery", meta: "Your brand in front" },
       { href: "/how-we-work", label: "How we work", meta: "Team & QA" },
+      { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
     ],
     cta: { title: "Where is optimization slipping as accounts grow?", body: "Tell us about your key accounts, channels and KPIs. We'll look at where a performance team inside your accounts would tighten the loop." },
     faqs: [

@@ -86,6 +86,228 @@ export const articles: Article[] = [
     ],
   },
   {
+    slug: "ad-operations-capacity-planning",
+    title: "How Much Ad Operations Capacity Does Your Agency Actually Need?",
+    dek: "Campaign count is an input, not a capacity model. A method for measuring the workload your campaigns actually generate, comparing it with the operating time your team actually has, and diagnosing the kind of gap you have.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-01",
+    hero: { kicker: "Capacity Framework", motif: "bars" },
+    tags: ["Agency Operations", "Ad Operations", "Capacity Planning", "Resource Planning"],
+    body: [
+      {
+        type: "p",
+        text: "The question agencies ask is “how many campaigns can one ad operations person manage?” It has no answer, because a campaign is not a unit of work. It is a container for an unknown amount of it.",
+      },
+      {
+        type: "p",
+        text: "One campaign might be built once, run for a quarter on a single platform with three creatives, and report monthly. Another might span five platforms, be rebuilt twice, carry forty creative variants, and report daily. Both are one campaign. They are not the same job.",
+      },
+      {
+        type: "p",
+        text: "So the useful question is a different one: how much operational work do your campaigns generate, when does that work arrive, and how much of your team's time is genuinely available to absorb it? This guide is a method for answering that with your own numbers.",
+      },
+      {
+        type: "callout",
+        title: "In brief",
+        text: "Campaign count is an input, not a capacity model. To size an ad operations team, measure the work the campaigns actually generate — launches, active campaigns, platforms, creative, QA cycles, reporting and measurement — and compare it with the operating time the team actually has once briefing, meetings, documentation and escalations are accounted for. The inputs below are ones you observe in your own operation; there is no universal ratio to import, and a published one would hide exactly the variation that determines the answer.",
+      },
+
+      { type: "h2", text: "What ad operations capacity actually means", id: "what-capacity-means" },
+      {
+        type: "p",
+        text: "Ad operations capacity is the amount of campaign execution, verification, in-flight management and reporting work a team can complete in its available working time, at the operating standard the agency has committed to.",
+      },
+      {
+        type: "p",
+        text: "The last clause is doing real work. A team can always appear to gain capacity by checking less, reporting more thinly or skipping validation on a change that “looks fine”. That is not additional capacity — it is the same capacity with the standard quietly lowered, and it surfaces later as a problem costing more than the time it saved.",
+      },
+      { type: "h3", text: "Nominal and practical capacity" },
+      {
+        type: "p",
+        text: "Nominal capacity is the total working time the team is paid for. Practical capacity is what remains once the work that is necessary but is not campaign execution has been taken out: briefing and clarification, internal and client meetings, documentation, escalations, training and onboarding, administration, and the unplanned issues that arrive in any week.",
+      },
+      {
+        type: "p",
+        text: "The gap between the two is not waste, and not a number to look up. It is specific to how an agency runs, and measuring it is the first honest step. A plan built on nominal capacity will always look adequate and always fall short.",
+      },
+
+      { type: "h2", text: "Why campaign count is a poor capacity measure", id: "why-count-fails" },
+      {
+        type: "p",
+        text: "Consider two agencies, each managing one hundred campaigns.",
+      },
+      {
+        type: "p",
+        text: "The first runs them on one or two platforms. Campaigns are long-running and change rarely. Creative is swapped occasionally. Reporting is monthly, in a template that has not changed in a year. Conversion tracking is standard platform tagging, set once.",
+      },
+      {
+        type: "p",
+        text: "The second runs across five platforms with different build models and naming requirements. Campaigns are rebuilt as flights change, each carrying multiple creative variants per format and market. Every launch passes several validation checkpoints. Reporting is weekly for some clients and daily for others, in bespoke templates, and measurement involves server-side events and periodic validation.",
+      },
+      {
+        type: "p",
+        text: "Both have one hundred campaigns. The second generates several times the operational work. Any ratio derived from the first and applied to the second will understaff it, and the understaffing will show up first as slower launches, then as QA being skipped, then as errors reaching clients.",
+      },
+      {
+        type: "p",
+        text: "This is why campaigns-per-specialist is a reasonable thing to track and a poor thing to import. Once an agency knows its own workload the ratio is a useful internal signal, showing whether load is rising against a known baseline. Borrowed from elsewhere, it describes someone else's operation.",
+      },
+
+      { type: "h2", text: "The seven drivers that determine ad operations workload", id: "workload-drivers" },
+      {
+        type: "p",
+        text: "Campaign operations is not one task. It is a sequence — brief, build, traffic, QA, validate, approve, launch, monitor — and each stage consumes time at a different rate depending on what is flowing through it. The [ad operations pipeline](/services/ad-operations) sets those stages out. Seven drivers move the total.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Launch volume — campaigns built or rebuilt per period. Builds are front-loaded work, so an agency launching weekly carries a different load from one launching quarterly with the same number live.",
+          "Active campaign volume — campaigns in flight and being monitored. The recurring floor beneath the launch spikes.",
+          "Platform count — not just how many, but how differently each works. Two platforms with similar build models cost less than two with different structures and validation needs.",
+          "Creative volume — assets, variants, formats and placements. Often the largest hidden multiplier: one campaign with forty variants is not one campaign's worth of trafficking and checking.",
+          "QA depth — how many validation points a launch passes and how thorough each is.",
+          "Reporting load — frequency, stakeholders, and how much is bespoke rather than templated. A daily report is roughly twenty times the annual production of a monthly one.",
+          "Measurement complexity — how much tracking implementation and validation the work requires, and how often it changes.",
+        ],
+      },
+      { type: "h3", text: "QA is capacity, not an afterthought" },
+      {
+        type: "p",
+        text: "QA is the driver most often left out of a capacity estimate, treated as a quick check after setup rather than work with its own duration.",
+      },
+      {
+        type: "p",
+        text: "A structured operation separates validation into distinct points — input QA on the brief and assets, creative QA against specification, build QA on the campaign as configured, launch QA once delivery starts, and ongoing QA in flight. Each is a real task performed by a person, and the deeper the standard, the more time the same number of campaigns consumes. What a thorough pre-launch and post-launch pass covers is set out in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist) — read it as a workload document, not only a quality one.",
+      },
+      {
+        type: "table",
+        caption: "Workload drivers and what to measure",
+        head: ["Workload driver", "What changes the workload", "What to measure"],
+        rows: [
+          ["Launch volume", "Launch frequency and how much is rebuilt each time", "Launches per month"],
+          ["Active campaigns", "Number in flight and how closely they are monitored", "Campaigns under management"],
+          ["Platforms", "Number of platforms and how far their workflows differ", "Platforms involved per campaign or account"],
+          ["Creative", "Variants, formats and placements per campaign", "Assets or placements processed per period"],
+          ["QA", "Number and depth of validation points", "QA cycles per launch"],
+          ["Reporting", "Frequency, stakeholders, and how much is bespoke", "Reports or reporting cycles per period"],
+          ["Measurement", "Tracking implementation and validation complexity", "Implementations or validations per period"],
+        ],
+      },
+
+      { type: "h2", text: "Measure your own capacity and workload", id: "measure-your-own" },
+      {
+        type: "p",
+        text: "The method below produces numbers specific to one agency, which is the point. Observe a representative period — long enough to include a launch cycle and a reporting cycle, and not one anyone would call unusual — rather than estimating from memory, which underestimates recurring work and forgets interruptions entirely.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Record the work arriving. Count launches, active campaigns, creative items processed, QA cycles, reports produced and measurement implementations over the period.",
+          "Measure the effort each took. Use observed time on completed work — timestamps, ticket durations, or a tally kept during the period. Not a benchmark, and not a recollection.",
+          "Separate execution from operating overhead. Briefing, clarifying, meeting, documenting and escalating are real and necessary, but they are not campaign execution — counting them as such is what makes plans look achievable and then fail.",
+          "Build your own model — either observed average durations per work type, or workload units weighted against your simplest repeatable item.",
+          "Compare workload with practical capacity, in the same unit on both sides.",
+        ],
+      },
+      { type: "h3", text: "The two calculations" },
+      {
+        type: "p",
+        text: "Practical capacity per person = total available working time − necessary non-execution time. Run it per person per period and total it across the team.",
+      },
+      {
+        type: "p",
+        text: "Required capacity = total operational workload ÷ practical capacity per person. This only holds if both sides use the same unit. If workload is in hours, practical capacity must be in hours; if workload is in weighted units, convert practical capacity into units first by measuring how many one person completes in a period. Mixing them produces a confident-looking number that means nothing.",
+      },
+      { type: "h3", text: "If you cannot measure time reliably" },
+      {
+        type: "p",
+        text: "Many agencies cannot, because the work is interleaved and timesheets approximate. Relative weighting is the alternative: take your simplest repeatable work item as the baseline, then weight more complex items against it from observation rather than from how hard something feels.",
+      },
+      {
+        type: "p",
+        text: "Those weights belong to the agency that measured them. Published multipliers describe a different operation and import its assumptions silently.",
+      },
+
+      { type: "h2", text: "Size for the peak, not just the average", id: "peak-demand" },
+      {
+        type: "p",
+        text: "Annual workload divided by twelve is a number almost no month resembles. Operational work arrives in concentrations: seasonal campaigns, a large launch, several clients activating in the same fortnight, month-end reporting landing on top of a creative refresh.",
+      },
+      {
+        type: "p",
+        text: "A team sized against the average can be adequately staffed on paper and overloaded for a predictable quarter of the year. The failure is quiet: launches slip by a day, then two; QA is compressed because the launch date did not move; reporting is carried forward rather than reconciled. None of it appears in a monthly average.",
+      },
+      {
+        type: "p",
+        text: "So inspect the distribution, not the total. Plot the drivers you measured by week or month across a year and look at the shape: how high is the peak against the mean, how long does it last, and how much notice do you get? A predictable annual peak and an unpredictable one call for different responses.",
+      },
+
+      { type: "h2", text: "Diagnose the kind of capacity gap you have", id: "diagnose-the-gap" },
+      {
+        type: "p",
+        text: "“We need more people” is a conclusion, not a diagnosis, and it is frequently the wrong one. These categories are not a formal taxonomy — they are a way of asking which part of the operation is actually constrained, because the answers differ.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Execution capacity gap — setup and trafficking volume exceeds what the team can build. The most straightforward gap, and the one most people assume they have.",
+          "Peak capacity gap — baseline workload is comfortable; concentrated periods are not. Hiring for the peak leaves the team over-staffed for the rest of the year.",
+          "Specialist capability gap — time is available, but not the platform, ad-server or measurement expertise the work requires. More generalist hours do not close it.",
+          "QA capacity gap — campaigns are built on time, but independent checking becomes the bottleneck, or is skipped under pressure.",
+          "Reporting capacity gap — reporting consumes operating time out of proportion to its value, usually because it is bespoke where it could be templated.",
+          "Measurement capacity gap — tracking implementation and validation needs specialist effort that competes with campaign delivery.",
+          "Management and coordination gap — the constraint is not execution at all but briefing, approvals and workflow coordination, and adding execution capacity makes it worse.",
+        ],
+      },
+      {
+        type: "p",
+        text: "The drivers you measured will usually point to the answer. If reporting hours rival build hours, the gap is not execution.",
+      },
+
+      { type: "h2", text: "How to close an ad operations capacity gap", id: "close-the-gap" },
+      {
+        type: "p",
+        text: "Different gaps have different sensible responses, and more than one may apply.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Hire — where demand is persistent, predictable and the capability is one the agency wants to own internally.",
+          "Reallocate — where capacity exists elsewhere and the constraint is distribution rather than total. The cheapest option when genuinely available.",
+          "Standardise — where variation is avoidable. Inconsistent briefs, naming and bespoke reporting generate work no client would pay for, and removing it often releases more capacity than expected.",
+          "Automate — where tasks are genuinely repeatable, such as reporting assembly and rule-based checks. Automation suits verification and aggregation better than judgement, and its setup and maintenance are themselves work.",
+          "Outsource — where execution capacity, specialist coverage or variable demand is difficult to absorb internally.",
+          "Hybrid — keep strategy, client ownership and escalation internally while extending execution capacity externally.",
+        ],
+      },
+      {
+        type: "p",
+        text: "None is the default. A standardisation problem does not improve with more hands, and a persistent execution gap is not fixed by automating the margins.",
+      },
+      {
+        type: "p",
+        text: "Once the amount and type of capacity are understood, the question changes from how much to where it comes from — a separate decision with costs on both sides, set out in [building versus outsourcing an ad operations team](/insights/building-vs-outsourcing-ad-operations-team). Where the answer involves an external team, what should be delegated and what stays internal is covered in [the ad operations outsourcing guide](/insights/agency-guide-to-outsourcing-ad-operations).",
+      },
+
+      {
+        type: "p",
+        text: "The discipline this guide asks for is a change of question. Not “how many campaigns can this team manage?”, which assumes campaigns are equivalent. Instead: what work do these campaigns generate, when does that work arrive, and how much practical capacity is available to absorb it?",
+      },
+      {
+        type: "p",
+        text: "Trafficomm works with agencies that have reached a capacity gap they do not want to close by hiring — adding execution capacity alongside an internal team, within the agency's own tools, conventions and approval points. How that works as an engagement is set out in [ad operations outsourcing](/ad-operations-outsourcing).",
+      },
+    ],
+    related: ["building-vs-outsourcing-ad-operations-team", "campaign-launch-qa-checklist", "agency-guide-to-outsourcing-ad-operations"],
+    links: [
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/insights/building-vs-outsourcing-ad-operations-team", label: "Building vs outsourcing an ad operations team", meta: "Guide" },
+      { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
     slug: "outsourced-ad-operations-governance",
     title: "How Agencies Can Outsource Ad Operations Without Losing Control",
     dek: "A governance framework for outsourced campaign execution — who owns what, how account access is granted, what needs approval, where optimisation authority ends, how exceptions escalate, and who owns reporting and the client relationship.",
@@ -956,7 +1178,7 @@ export const articles: Article[] = [
         text: "A small internal core keeps strategy, client relationships and escalation ownership, while an external team handles build, QA, monitoring and reporting at volume. Optimisation is usually shared: the partner surfaces what the data shows, the agency decides what to act on.",
       },
     ],
-    related: ["campaign-launch-qa-checklist", "outsourced-ad-operations-governance", "building-vs-outsourcing-ad-operations-team"],
+    related: ["campaign-launch-qa-checklist", "outsourced-ad-operations-governance", "ad-operations-capacity-planning", "building-vs-outsourcing-ad-operations-team"],
     links: [
       { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
@@ -977,7 +1199,7 @@ export const articles: Article[] = [
     body: [
       {
         type: "p",
-        text: "Every growing agency reaches the same decision point: campaign volume is rising, operators are stretched, and the choice is to hire more ad operations staff or bring in a partner. Neither answer is always right. The right answer depends on volume, volatility, specialization and how much management attention the agency can spare.",
+        text: "Every growing agency reaches the same decision point: campaign volume is rising, operators are stretched, and the choice is to hire more ad operations staff or bring in a partner. Neither answer is always right. The right answer depends on volume, volatility, specialization and how much management attention the agency can spare — and on first knowing how much capacity is actually required, which is a [separate exercise](/insights/ad-operations-capacity-planning)."
       },
       { type: "h2", text: "The real cost of building", id: "build" },
       {
@@ -1027,7 +1249,7 @@ export const articles: Article[] = [
         ],
       },
     ],
-    related: ["agency-guide-to-outsourcing-ad-operations", "campaign-launch-qa-checklist"],
+    related: ["ad-operations-capacity-planning", "agency-guide-to-outsourcing-ad-operations", "campaign-launch-qa-checklist"],
     links: [
       { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
       { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
