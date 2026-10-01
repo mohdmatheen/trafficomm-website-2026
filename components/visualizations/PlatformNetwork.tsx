@@ -47,7 +47,6 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
     if (!reduced) handshake.current?.beginElement();
   }, [active, reduced]);
   const n = items.length;
-  const p = items[active];
 
   // An odd count would leave two inner nodes adjacent at the seam, so the last
   // node falls back to the outer ring when the list length is odd.
@@ -130,7 +129,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     role="tab"
                     id={`${id}-tab-${i}`}
                     aria-selected={on}
-                    aria-controls={`${id}-panel`}
+                    aria-controls={`${id}-panel-${i}`}
                     aria-label={it.officialName ? `${it.name} (${it.officialName})` : it.name}
                     tabIndex={on ? 0 : -1}
                     onMouseEnter={() => setActive(i)}
@@ -175,48 +174,66 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
           </ul>
         </div>
 
-        <div id={`${id}-panel`} role="tabpanel" aria-labelledby={`${id}-tab-${active}`} className="rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark">
-          <div className="flex items-center justify-between border-b border-line-dark px-7 py-3.5">
-            <span className="eyebrow !text-[0.68rem] text-mute">Platform experience</span>
-            <span className="font-mono text-[0.72rem] uppercase tracking-[0.1em] text-mute">{p.category}</span>
-          </div>
-          <div key={p.slug} className="p-7 animate-enter">
-            <div className="flex items-center gap-4">
-              <PlatformMark slug={p.slug} size={64} scale={1.05} />
-              <div>
-                <p className="text-[2rem] leading-none tracking-[-0.04em] text-white">{p.name}</p>
-                <p className="mt-2 text-[0.92rem] text-mute">
-                  {p.officialName ? `${p.officialName} · ` : ""}
-                  {p.category}
-                </p>
+        {/* One panel per platform. Inactive panels carry `hidden`, so every
+            platform's functions are in the server HTML rather than being built
+            only for the selected index. Wrapped in a single element so the
+            parent grid still sees two children. */}
+        <div>
+          {items.map((it, pi) => {
+            const on = pi === active;
+            return (
+              <div
+                key={it.slug}
+                id={`${id}-panel-${pi}`}
+                role="tabpanel"
+                aria-labelledby={`${id}-tab-${pi}`}
+                hidden={!on}
+                className="rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark"
+              >
+                <div className="flex items-center justify-between border-b border-line-dark px-7 py-3.5">
+                  <span className="eyebrow !text-[0.68rem] text-mute">Platform experience</span>
+                  <span className="font-mono text-[0.72rem] uppercase tracking-[0.1em] text-mute">{it.category}</span>
+                </div>
+                <div key={on ? `on-${active}` : "off"} className={cn("p-7", on && "animate-enter")}>
+                  <div className="flex items-center gap-4">
+                    <PlatformMark slug={it.slug} size={64} scale={1.05} />
+                    <div>
+                      <p className="text-[2rem] leading-none tracking-[-0.04em] text-white">{it.name}</p>
+                      <p className="mt-2 text-[0.92rem] text-mute">
+                        {it.officialName ? `${it.officialName} · ` : ""}
+                        {it.category}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="eyebrow mt-8 mb-3 !text-[0.68rem] text-mute">{it.standardModel ? "Trafficomm operating model" : panelLabel}</p>
+                  <ul className="grid gap-px overflow-hidden rounded-lg bg-line-dark">
+                    {it.ecosystem.map((c, ci) => (
+                      <li
+                        key={c}
+                        className={cn("flex items-center justify-between bg-ink-2 px-4 py-2.5 text-[1.0rem] text-white", on && "animate-enter")}
+                        style={on ? { animationDelay: `${60 + ci * 40}ms` } : undefined}
+                      >
+                        <span className="flex items-center gap-3">
+                          <span className="font-mono text-[0.68rem] text-mute">{String(ci + 1).padStart(2, "0")}</span>
+                          {c}
+                        </span>
+                        <span className="size-1 rounded-full bg-signal" aria-hidden="true" />
+                      </li>
+                    ))}
+                  </ul>
+                  {it.href ? (
+                    <Link href={it.href} className="group mt-7 inline-flex items-center gap-2 text-[0.98rem] font-medium text-white">
+                      {it.name} operations <ArrowRight className="text-signal transition-transform group-hover:translate-x-1" />
+                    </Link>
+                  ) : (
+                    <p className="mt-7 text-[0.88rem] leading-relaxed text-mute">
+                      Operated under the same naming, QA and reporting standards as every other platform here.
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-            <p className="eyebrow mt-8 mb-3 !text-[0.68rem] text-mute">{p.standardModel ? "Trafficomm operating model" : panelLabel}</p>
-            <ul className="grid gap-px overflow-hidden rounded-lg bg-line-dark">
-              {p.ecosystem.map((c, i) => (
-                <li
-                  key={c}
-                  className="flex items-center justify-between bg-ink-2 px-4 py-2.5 text-[1.0rem] text-white animate-enter"
-                  style={{ animationDelay: `${60 + i * 40}ms` }}
-                >
-                  <span className="flex items-center gap-3">
-                    <span className="font-mono text-[0.68rem] text-mute">{String(i + 1).padStart(2, "0")}</span>
-                    {c}
-                  </span>
-                  <span className="size-1 rounded-full bg-signal" aria-hidden="true" />
-                </li>
-              ))}
-            </ul>
-            {p.href ? (
-              <Link href={p.href} className="group mt-7 inline-flex items-center gap-2 text-[0.98rem] font-medium text-white">
-                {p.name} operations <ArrowRight className="text-signal transition-transform group-hover:translate-x-1" />
-              </Link>
-            ) : (
-              <p className="mt-7 text-[0.88rem] leading-relaxed text-mute">
-                Operated under the same naming, QA and reporting standards as every other platform here.
-              </p>
-            )}
-          </div>
+            );
+          })}
         </div>
       </div>
 
@@ -250,7 +267,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     </span>
                     <ChevronDown className={cn("size-4 text-fog transition-transform duration-300", open && "rotate-180 text-signal")} />
                   </button>
-                  {open && <div id={pid} className="px-3 pb-4">
+                  <div id={pid} hidden={!open} className="px-3 pb-4">
                     <ul className="flex flex-wrap gap-1.5">
                       {it.ecosystem.map((c) => (
                         <li key={c} className="rounded-full bg-white/[0.06] px-3 py-1.5 text-[0.88rem] text-fog">
@@ -265,7 +282,7 @@ export function PlatformNetwork({ items, panelLabel = "What Trafficomm operates"
                     ) : (
                       <p className="mt-4 text-[0.85rem] leading-relaxed text-mute">Operated under the same naming, QA and reporting standards.</p>
                     )}
-                  </div>}
+                  </div>
                 </div>
               </li>
             );

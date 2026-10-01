@@ -221,3 +221,50 @@ test.describe("assessment form", () => {
     expect((await res.json()).delivered).toBeUndefined();
   });
 });
+
+test.describe("interactive panels are server-rendered", () => {
+  /**
+   * The ad operations pipeline and platform network used to build only the
+   * active panel, so seven of eight pipeline stages and nine of ten platform
+   * function lists existed in the data and never reached the DOM. Crawlers and
+   * no-JS visitors saw one stage and one platform.
+   *
+   * These phrases live in non-active panels. Fetching the HTML directly rather
+   * than through the page keeps the assertion about the *server response*, not
+   * about what hydration later produces.
+   */
+  const buried = [
+    "Input QA",
+    "Creative QA",
+    "Build QA",
+    "Launch QA",
+    "Ongoing QA",
+    "Tracking validation",
+    "Campaign settings",
+    "Campaigns go live on your approval, not automatically",
+    "IO / line items",
+    "PMP",
+    "Creative assignment",
+  ];
+
+  test("non-active tab content is present in the server HTML", async ({ request }) => {
+    const res = await request.get("/services/ad-operations");
+    expect(res.status()).toBe(200);
+    // Script blocks carry the RSC payload, which is not rendered markup: a
+    // phrase found only there is invisible to a reader and to a crawler.
+    const markup = (await res.text()).replace(/<script[^>]*>[\s\S]*?<\/script>/g, " ");
+    for (const phrase of buried) {
+      expect(markup, `"${phrase}" must be in rendered markup, not only in the RSC payload`).toContain(phrase);
+    }
+  });
+
+  test("every tab controls a panel that exists, and no id is emitted twice", async ({ request }) => {
+    const markup = (await (await request.get("/services/ad-operations")).text()).replace(/<script[^>]*>[\s\S]*?<\/script>/g, " ");
+    const ids = [...markup.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]);
+    expect(ids.filter((v, i) => ids.indexOf(v) !== i), "duplicate DOM ids").toEqual([]);
+    // Header menu triggers control panels that mount on open; the tab components must not.
+    const tabTargets = [...markup.matchAll(/role="tab"[^>]*aria-controls="([^"]+)"|aria-controls="([^"]+)"[^>]*role="tab"/g)].map((m) => m[1] ?? m[2]);
+    expect(tabTargets.length).toBeGreaterThan(20);
+    for (const t of tabTargets) expect(ids, `aria-controls="${t}" has no matching element`).toContain(t);
+  });
+});

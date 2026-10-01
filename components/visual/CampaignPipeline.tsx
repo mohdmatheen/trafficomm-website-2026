@@ -1,5 +1,7 @@
 "use client";
 
+import { Fragment, type ReactNode } from "react";
+
 import { SignalPipeline } from "./SignalPipeline";
 import { ValidationGates } from "./ValidationGates";
 import { adOpsPipeline, briefFields, campaignChecks, monitorCadence, monitorSignals, qaGateGroups, traffickingMap, validateGateGroups } from "@/data/visual/ad-operations-pipeline";
@@ -64,6 +66,120 @@ function BuildTree() {
   );
 }
 
+/** Per-stage detail for the pipeline. One entry per stage — see SignalPipeline. */
+function stageDetail(i: number): ReactNode {
+      if (i === 0)
+        return (
+          <Frame label="Illustrative campaign brief">
+            <ul className="grid gap-1.5 sm:grid-cols-3">
+              {briefFields.map((f) => (
+                <li key={f} className="rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
+                  <span className="block font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{f}</span>
+                  <span className="mt-1.5 block h-1.5 w-full rounded-full bg-white/10" aria-hidden="true" />
+                </li>
+              ))}
+            </ul>
+          </Frame>
+        );
+      if (i === 1) return <BuildTree />;
+      if (i === 2)
+        return (
+          <Frame label="Objects mapped into the structure">
+            <ul className="grid gap-1.5 sm:grid-cols-2">
+              {traffickingMap.map(([from, to]) => (
+                <li key={from} className="flex items-center gap-3 rounded-md bg-white/[0.04] px-3 py-2 text-[0.88rem] text-fog ring-1 ring-inset ring-line-dark">
+                  <span className="flex-1">{from}</span>
+                  <span className="text-signal" aria-hidden="true">
+                    →
+                  </span>
+                  <span className="flex-1 text-right text-fog/80">{to}</span>
+                </li>
+              ))}
+            </ul>
+          </Frame>
+        );
+      if (i === 3)
+        return (
+          <Frame label="Input & creative gates">
+            <GateGroups groups={qaGateGroups} />
+          </Frame>
+        );
+      if (i === 4)
+        return (
+          <Frame label="Independent campaign QA — build, launch and in-flight gates">
+            <ValidationGates checks={campaignChecks} />
+            <div className="mt-3">
+              <GateGroups groups={validateGateGroups} />
+            </div>
+          </Frame>
+        );
+      if (i === 5)
+        return (
+          <Frame label="Accountability">
+            <ol className="grid gap-2 sm:grid-cols-3">
+              {[
+                { t: "QA complete", who: "Trafficomm" },
+                { t: "Approval", who: "Your team" },
+                { t: "Launch ready", who: "Trafficomm" },
+              ].map((step, k) => (
+                <li
+                  key={step.t}
+                  className={`relative rounded-md px-3 py-3 ring-1 ring-inset ${k === 1 ? "bg-signal-soft/10 ring-signal/60" : "bg-white/[0.04] ring-line-dark"}`}
+                >
+                  <span className="block font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{step.who}</span>
+                  <span className={`mt-1 block text-[0.95rem] ${k === 1 ? "text-white" : "text-fog"}`}>{step.t}</span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">Campaigns go live on your approval, not automatically.</p>
+          </Frame>
+        );
+      if (i === 6)
+        return (
+          <Frame label="Go-live">
+            <div className="flex flex-wrap items-center gap-3">
+              <Chip muted>Launch ready</Chip>
+              <span className="text-signal" aria-hidden="true">
+                →
+              </span>
+              <span className="flex items-center gap-2 rounded-md bg-signal px-3 py-1.5 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-white">
+                <span className="size-1.5 rounded-full bg-white animate-pulse-dot" aria-hidden="true" />
+                Campaign live
+              </span>
+            </div>
+          </Frame>
+        );
+      return (
+        <>
+          <Frame label="Watched in flight">
+            <ul className="grid gap-1.5 sm:grid-cols-4">
+              {monitorSignals.map((m) => (
+                <li key={m} className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog ring-1 ring-inset ring-line-dark">
+                  <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </Frame>
+          {/* Reporting is an output of monitoring, not a separate process. */}
+          <Frame label="Reporting out of the operation">
+            <ul className="grid gap-1.5 sm:grid-cols-2">
+              {monitorCadence.map((c) => (
+                <li key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
+                  <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white">
+                    <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                    {c.label}
+                  </span>
+                  <span className="text-[0.86rem] text-fog">{c.note}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[0.84rem] text-mute">Delivered in your templates, under your brand.</p>
+          </Frame>
+        </>
+      );
+}
+
 /** Ad Operations pipeline: brief → build → traffic → QA → validate → approval → launch → monitor. */
 export function CampaignPipeline() {
   return (
@@ -71,118 +187,9 @@ export function CampaignPipeline() {
       stages={adOpsPipeline}
       label="Campaign operations pipeline"
       ownerLabels={{ client: "Your team", trafficomm: "Trafficomm", output: "In flight" }}
-      detail={(i) => {
-        if (i === 0)
-          return (
-            <Frame label="Illustrative campaign brief">
-              <ul className="grid gap-1.5 sm:grid-cols-3">
-                {briefFields.map((f) => (
-                  <li key={f} className="rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
-                    <span className="block font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{f}</span>
-                    <span className="mt-1.5 block h-1.5 w-full rounded-full bg-white/10" aria-hidden="true" />
-                  </li>
-                ))}
-              </ul>
-            </Frame>
-          );
-        if (i === 1) return <BuildTree />;
-        if (i === 2)
-          return (
-            <Frame label="Objects mapped into the structure">
-              <ul className="grid gap-1.5 sm:grid-cols-2">
-                {traffickingMap.map(([from, to]) => (
-                  <li key={from} className="flex items-center gap-3 rounded-md bg-white/[0.04] px-3 py-2 text-[0.88rem] text-fog ring-1 ring-inset ring-line-dark">
-                    <span className="flex-1">{from}</span>
-                    <span className="text-signal" aria-hidden="true">
-                      →
-                    </span>
-                    <span className="flex-1 text-right text-fog/80">{to}</span>
-                  </li>
-                ))}
-              </ul>
-            </Frame>
-          );
-        if (i === 3)
-          return (
-            <Frame label="Input & creative gates">
-              <GateGroups groups={qaGateGroups} />
-            </Frame>
-          );
-        if (i === 4)
-          return (
-            <Frame label="Independent campaign QA — build, launch and in-flight gates">
-              <ValidationGates checks={campaignChecks} />
-              <div className="mt-3">
-                <GateGroups groups={validateGateGroups} />
-              </div>
-            </Frame>
-          );
-        if (i === 5)
-          return (
-            <Frame label="Accountability">
-              <ol className="grid gap-2 sm:grid-cols-3">
-                {[
-                  { t: "QA complete", who: "Trafficomm" },
-                  { t: "Approval", who: "Your team" },
-                  { t: "Launch ready", who: "Trafficomm" },
-                ].map((step, k) => (
-                  <li
-                    key={step.t}
-                    className={`relative rounded-md px-3 py-3 ring-1 ring-inset ${k === 1 ? "bg-signal-soft/10 ring-signal/60" : "bg-white/[0.04] ring-line-dark"}`}
-                  >
-                    <span className="block font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{step.who}</span>
-                    <span className={`mt-1 block text-[0.95rem] ${k === 1 ? "text-white" : "text-fog"}`}>{step.t}</span>
-                  </li>
-                ))}
-              </ol>
-              <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">Campaigns go live on your approval, not automatically.</p>
-            </Frame>
-          );
-        if (i === 6)
-          return (
-            <Frame label="Go-live">
-              <div className="flex flex-wrap items-center gap-3">
-                <Chip muted>Launch ready</Chip>
-                <span className="text-signal" aria-hidden="true">
-                  →
-                </span>
-                <span className="flex items-center gap-2 rounded-md bg-signal px-3 py-1.5 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-white">
-                  <span className="size-1.5 rounded-full bg-white animate-pulse-dot" aria-hidden="true" />
-                  Campaign live
-                </span>
-              </div>
-            </Frame>
-          );
-        return (
-          <>
-            <Frame label="Watched in flight">
-              <ul className="grid gap-1.5 sm:grid-cols-4">
-                {monitorSignals.map((m) => (
-                  <li key={m} className="flex items-center gap-2 rounded-md bg-white/[0.04] px-3 py-2.5 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog ring-1 ring-inset ring-line-dark">
-                    <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-                    {m}
-                  </li>
-                ))}
-              </ul>
-            </Frame>
-            {/* Reporting is an output of monitoring, not a separate process. */}
-            <Frame label="Reporting out of the operation">
-              <ul className="grid gap-1.5 sm:grid-cols-2">
-                {monitorCadence.map((c) => (
-                  <li key={c.label} className="flex flex-wrap items-baseline gap-x-3 gap-y-1 rounded-md bg-white/[0.04] px-3 py-2.5 ring-1 ring-inset ring-line-dark">
-                    <span className="flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-white">
-                      <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-                      {c.label}
-                    </span>
-                    <span className="text-[0.86rem] text-fog">{c.note}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="mt-3 text-[0.84rem] text-mute">Delivered in your templates, under your brand.</p>
-            </Frame>
-          </>
-        );
-      }}
+      detail={adOpsPipeline.map((stage, i) => (
+        <Fragment key={stage.label}>{stageDetail(i)}</Fragment>
+      ))}
     />
   );
 }

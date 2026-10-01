@@ -42,15 +42,19 @@ export function SignalPipeline({
   stages: readonly PipelineStage[];
   label: string;
   tone?: "dark" | "light";
-  /** Optional per-stage visual rendered inside the active panel. */
-  detail?: (index: number, isActive: boolean) => ReactNode;
+  /**
+   * Optional per-stage visual, one entry per stage. An array rather than a
+   * render prop on purpose: a callback invoked with the active index only ever
+   * built one stage's JSX, so seven of eight stages never reached the DOM and
+   * were invisible to crawlers. An array cannot express that.
+   */
+  detail?: ReactNode[];
   ownerLabels?: Record<"client" | "trafficomm" | "output", string>;
 }) {
   const id = useId();
   const n = stages.length;
   const { ref, active, playing, select, reduced } = useSignalSequence(n);
   const dark = tone === "dark";
-  const s = stages[active];
   // Rail geometry: markers sit at the centre of each equal column.
   const start = 0.5 / n;
   const span = 1 - 1 / n;
@@ -85,38 +89,55 @@ export function SignalPipeline({
       <span className={cn("rounded-full px-2 py-0.5 font-mono text-[0.62rem] uppercase tracking-[0.1em]", dark ? "bg-white/[0.06] text-fog" : "bg-paper text-steel")}>{ownerLabels[owner]}</span>
     ) : null;
 
-  const panel = (
-    <div
-      id={`${id}-p`}
-      role="tabpanel"
-      aria-label={`${label}: ${s.label}`}
-      className={cn("overflow-hidden rounded-[var(--radius-panel)] ring-1", dark ? "bg-ink-2 ring-line-dark" : "bg-white ring-line")}
-    >
-      <div className={cn("flex items-center justify-between gap-3 border-b px-5 py-3", dark ? "border-line-dark" : "border-line")}>
-        <span className={cn("font-mono text-[0.72rem] uppercase tracking-[0.12em]", dark ? "text-white" : "text-ink")}>
-          {String(active + 1).padStart(2, "0")} · {s.label}
-        </span>
-        <span className={cn("flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em]", dark ? "text-fog" : "text-steel")}>
-          <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
-          {playing ? "Signal in motion" : "Select a stage"}
-        </span>
-      </div>
-      <div key={s.label} className="min-h-[24rem] p-5 sm:min-h-[19rem] sm:p-7 animate-enter">
-        <p className={cn("max-w-2xl text-[1.04rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{s.summary}</p>
-        {s.items && s.items.length > 0 && (
-          <ul className="mt-5 flex flex-wrap gap-1.5">
-            {s.items.map((it) => (
-              <li
-                key={it}
-                className={cn("rounded-md px-2.5 py-1.5 text-[0.9rem] ring-1 ring-inset", dark ? "bg-white/[0.06] text-fog ring-line-dark" : "bg-paper text-ink ring-line")}
-              >
-                {it}
-              </li>
-            ))}
-          </ul>
-        )}
-        {detail?.(active, true)}
-      </div>
+  /**
+   * Every stage renders. Inactive panels carry `hidden`, so presentation is the
+   * only thing JavaScript controls — the content itself is in the server HTML.
+   * Rendered once, below both rails, because rendering this set inside each
+   * responsive branch previously emitted the same panel id twice.
+   */
+  const panels = (
+    <div className="mt-6 lg:mt-8">
+      {stages.map((st, i) => {
+        const on = i === active;
+        return (
+          <div
+            key={st.label}
+            id={`${id}-p${i}`}
+            role="tabpanel"
+            aria-label={`${label}: ${st.label}`}
+            hidden={!on}
+            className={cn("overflow-hidden rounded-[var(--radius-panel)] ring-1", dark ? "bg-ink-2 ring-line-dark" : "bg-white ring-line")}
+          >
+            <div className={cn("flex items-center justify-between gap-3 border-b px-5 py-3", dark ? "border-line-dark" : "border-line")}>
+              <span className={cn("font-mono text-[0.72rem] uppercase tracking-[0.12em]", dark ? "text-white" : "text-ink")}>
+                {String(i + 1).padStart(2, "0")} · {st.label}
+              </span>
+              <span className={cn("flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em]", dark ? "text-fog" : "text-steel")}>
+                <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
+                {playing ? "Signal in motion" : "Select a stage"}
+              </span>
+            </div>
+            {/* Keyed on whether this panel is the active one, so becoming active
+                remounts it and replays the same entrance animation as before. */}
+            <div key={on ? `on-${active}` : "off"} className={cn("min-h-[24rem] p-5 sm:min-h-[19rem] sm:p-7", on && "animate-enter")}>
+              <p className={cn("max-w-2xl text-[1.04rem] leading-relaxed", dark ? "text-fog" : "text-steel")}>{st.summary}</p>
+              {st.items && st.items.length > 0 && (
+                <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {st.items.map((it) => (
+                    <li
+                      key={it}
+                      className={cn("rounded-md px-2.5 py-1.5 text-[0.9rem] ring-1 ring-inset", dark ? "bg-white/[0.06] text-fog ring-line-dark" : "bg-paper text-ink ring-line")}
+                    >
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {detail?.[i]}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 
@@ -149,7 +170,7 @@ export function SignalPipeline({
                     role="tab"
                     id={`${id}-t${i}`}
                     aria-selected={on}
-                    aria-controls={`${id}-p`}
+                    aria-controls={`${id}-p${i}`}
                     tabIndex={on ? 0 : -1}
                     onClick={() => select(i)}
                     onFocus={() => select(i)}
@@ -187,7 +208,6 @@ export function SignalPipeline({
             })}
           </ol>
         </div>
-        <div className="mt-8">{panel}</div>
       </div>
 
       {/* Mobile / tablet: vertical rail, one tap target per stage */}
@@ -209,7 +229,7 @@ export function SignalPipeline({
                   role="tab"
                   id={`${id}-m${i}`}
                   aria-selected={on}
-                  aria-controls={`${id}-p`}
+                  aria-controls={`${id}-p${i}`}
                   tabIndex={on ? 0 : -1}
                   onClick={() => select(i)}
                   onKeyDown={(e) => onKey(e, i, true)}
@@ -238,8 +258,9 @@ export function SignalPipeline({
             );
           })}
         </ol>
-        <div className="mt-6">{panel}</div>
       </div>
+
+      {panels}
     </div>
   );
 }
