@@ -86,6 +86,260 @@ export const articles: Article[] = [
     ],
   },
   {
+    slug: "agency-campaign-reporting-operations",
+    title: "Why Agency Reporting Becomes an Operations Problem",
+    dek: "Reporting is usually treated as the output of campaign management. Operationally it is recurring production work — collected, validated, normalised, analysed and delivered — and its workload grows with clients, platforms, cadences and bespoke templates rather than with campaign count.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-01",
+    hero: { kicker: "Reporting Operations", motif: "flow" },
+    tags: ["Agency Operations", "Reporting", "Campaign Reporting", "Ad Operations"],
+    body: [
+      {
+        type: "p",
+        text: "Reporting becomes a capacity problem without looking like one. Campaign volume stays manageable, nothing is visibly failing, and yet account teams spend a growing share of the week collecting figures, reconciling platforms that disagree, rebuilding the same layouts for different clients, writing commentary against a deadline and answering questions about numbers already sent.",
+      },
+      {
+        type: "p",
+        text: "None of it appears on a media plan. It is rarely scoped and almost never sized, because it is treated as what happens after the operational work is done — which is why it expands unnoticed. Reporting is not the end of campaign management. It is a production process, and can be designed, validated and resourced, or left to absorb whatever time is left over.",
+      },
+      {
+        type: "callout",
+        title: "In brief",
+        text: "Reporting is operational work, not an output. It consists of recurring stages — collection, validation, normalisation, analysis, commentary and delivery — and its workload scales with clients, platforms, cadences, bespoke templates and validation depth rather than with campaign count. Treating it as production makes it possible to validate it consistently, match cadence to the question being asked, and see when it has begun competing with campaign execution.",
+      },
+
+      { type: "h2", text: "Why reporting becomes an operations problem", id: "reporting-as-operations" },
+      {
+        type: "p",
+        text: "The assumption underneath most reporting workload is that reporting scales with campaigns. It does not. A campaign reported monthly in a standard template is a fraction of the work of the same campaign reported daily to two stakeholders in a bespoke layout. The campaign count is identical.",
+      },
+      {
+        type: "p",
+        text: "What drives the workload is a different set of factors, and they multiply rather than add:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Clients — each with its own expectations, approvers and questions.",
+          "Platforms — each contributing its own export, naming and metric definitions.",
+          "Cadences — how often a report is produced, which sets how many times a year the whole process runs.",
+          "Bespoke requirements — how much of each report is specific to one client rather than repeated across several.",
+          "Validation depth — how thoroughly figures are reconciled before anything is shared.",
+          "Commentary — whether a report carries an explanation and a recommended action, or only numbers.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Two of those are usually invisible. Cadence compounds: a weekly report runs roughly four times as often as a monthly one, and every validation and commentary step runs with it. Bespoke production defeats reuse, so each account's reporting is built rather than run.",
+      },
+      {
+        type: "p",
+        text: "The same argument is made from the other direction in [ad operations capacity planning](/insights/ad-operations-capacity-planning), where reporting load is one of the drivers that determine how much capacity a team needs. The point here is narrower: before you can size reporting, you have to be able to describe it as work.",
+      },
+
+      { type: "h2", text: "What campaign reporting operations include", id: "what-it-includes" },
+      {
+        type: "p",
+        text: "Three different jobs usually arrive inside the same deliverable, which is why reporting gets discussed as one thing. Separating them is the first useful structural decision.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Reporting answers what happened — delivery, spend and results against plan, accurate, reconciled and on time.",
+          "Analysis answers why it happened — the drivers behind the numbers: audiences, creatives, placements and pacing.",
+          "Insight answers what should be done next — a specific recommendation someone can act on.",
+        ],
+      },
+      {
+        type: "p",
+        text: "They need different time, skill and inputs. Reporting is production and verification. Analysis is diagnostic and requires someone who knows the account. Insight is a judgement — and supplying a recommendation is a separate act from deciding to apply it, which belongs to whoever owns the client relationship and the strategy.",
+      },
+      {
+        type: "p",
+        text: "Conflating them is how reporting quietly degrades. Under time pressure the two that get cut are analysis and insight, because they are the only ones not obviously missing. A report with no commentary still looks like a report.",
+      },
+      { type: "h3", text: "Campaign reporting and operational reporting" },
+      {
+        type: "p",
+        text: "A second distinction tends to be discovered late. Campaign reporting describes what the advertising did. Operational reporting describes what the operation did — what was delivered, when, to what standard, and what was escalated.",
+      },
+      {
+        type: "p",
+        text: "They are not interchangeable. Campaign reporting answers to the client; operational reporting answers to whoever is accountable for delivery, and holds detail a client-facing report should not. Where the operation is never reported, the only evidence that execution works is the absence of complaints.",
+      },
+
+      { type: "h2", text: "The reporting production pipeline", id: "production-pipeline" },
+      {
+        type: "p",
+        text: "What follows is the data production pipeline — what happens between a platform export and a report someone can act on, not the engagement workflow. A fully specified operation separates these stages further, splitting raw inputs from collection and recommendation from commentary; six is the useful level for designing the process.",
+      },
+      { type: "h3", text: "01 — Collection" },
+      {
+        type: "p",
+        text: "Reporting begins before analysis, and this stage is underestimated because it feels clerical. Inputs arrive from the advertising platforms, from analytics, and — where campaigns are trafficked through an ad server — from the ad server too, each with its own format, period handling and definitions. Collection recurs in full every cycle.",
+      },
+      { type: "h3", text: "02 — Validation" },
+      {
+        type: "p",
+        text: "Numbers should not move from export to presentation unchecked. Validation is a gate, not a formality: figures are verified and discrepancies identified before anything is shared, because a wrong number costs more to retract than to catch.",
+      },
+      { type: "h3", text: "03 — Normalisation" },
+      {
+        type: "p",
+        text: "Inputs from different systems do not compare honestly until they share a structure — aligned reporting periods, consistent naming, consolidation into one shape. Not a data-warehouse project: the difference between a report that compares platforms and one that appears to.",
+      },
+      { type: "h3", text: "04 — Analysis" },
+      {
+        type: "p",
+        text: "This stage asks why performance changed: results read against the agreed targets, trends identified, exceptions isolated. It produces an explanation, not a decision. Where strategy and KPI interpretation sit with the agency, analysis supplies the evidence they rest on.",
+      },
+      { type: "h3", text: "05 — Commentary" },
+      {
+        type: "p",
+        text: "Commentary is where a report stops describing and becomes useful: what moved, why it moved, and a recommended next action. A recommendation is a proposal — prepared by whoever analysed the data, acted on by whoever holds authority to change the campaign. Keeping those separate stops reporting becoming unreviewed optimisation.",
+      },
+      { type: "h3", text: "06 — Delivery" },
+      {
+        type: "p",
+        text: "Delivery is recurring production into the structure the agency and its clients already use — their templates, cadence and presentation. It is also the only stage with a fixed deadline, which is why pressure anywhere in the pipeline is absorbed by validation, analysis and commentary rather than by the date.",
+      },
+      {
+        type: "p",
+        text: "Post-launch verification should confirm a campaign has actually reached the reporting pipeline and is mapped to the right client and plan line — one of the checks in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist). How the pipeline runs as a delivered capability is described under [reporting and insights](/services/reporting).",
+      },
+
+      { type: "h2", text: "Validate before you present", id: "validate-before-presenting" },
+      {
+        type: "p",
+        text: "Validation is the stage most often compressed, because skipping it has no immediate consequence: a report with a wrong figure arrives on time and looks correct. The cost appears later and is disproportionate — an underdelivering campaign is a problem with one campaign, while an inaccurate report calls every other number into question.",
+      },
+      {
+        type: "p",
+        text: "Treat it as a gate with a small number of things that must be true before anything leaves:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Totals are checked before anything is shared.",
+          "Discrepancies are identified and explained rather than smoothed over.",
+          "Figures are reconciled against the platforms, not carried forward from the last report.",
+          "Reporting periods are aligned across every source in the report.",
+        ],
+      },
+      {
+        type: "p",
+        text: "That list is deliberately short. A longer one is easy to write and harder to run every cycle, and validation too heavy to perform consistently is worse than a gate actually applied. Methods differ by platform, so the check belongs against the source rather than a spreadsheet that was correct last month.",
+      },
+      {
+        type: "p",
+        text: "Validation does depend on something being settled first. Reconciling figures requires knowing which source is authoritative for each metric, what the metric means, and what happens when two systems disagree — definitions that belong to the agency and should exist before the first report rather than during the first discrepancy. Establishing metric ownership and source-of-truth rules is covered in [outsourcing ad operations without losing control](/insights/outsourced-ad-operations-governance).",
+      },
+      { type: "h3", text: "Reporting validation is not measurement validation" },
+      {
+        type: "p",
+        text: "These are related and frequently confused. Measurement validation asks whether the underlying signal is correct — whether the event, tag and conversion are implemented, firing and defined as intended. Reporting validation asks whether the figures presented are complete, reconciled and aligned.",
+      },
+      {
+        type: "p",
+        text: "Order matters, because reporting validation cannot detect a problem upstream of it. A perfectly reconciled report built on a miscounted conversion event is internally consistent and wrong. Implementation and validation of the tracking layer is a separate discipline, covered under [measurement and analytics](/services/measurement).",
+      },
+
+      { type: "h2", text: "Match reporting cadence to operating need", id: "cadence" },
+      {
+        type: "p",
+        text: "Cadence is usually treated as a frequency setting — the same report, sent more or less often. Operationally, as the interval lengthens, the question the report answers changes.",
+      },
+      {
+        type: "p",
+        text: "A daily report describes operational state, because a day is long enough to show delivery and not long enough to show a trend. A weekly report supports diagnosis, a monthly one evaluation against targets. An end-of-campaign report is retrospective, and its most valuable content applies to the next campaign rather than the one that finished.",
+      },
+      {
+        type: "table",
+        caption: "Reporting cadences and what each is for",
+        head: ["Cadence", "What it is for", "What changes at that cadence"],
+        rows: [
+          ["Daily", "Operational state", "Delivery · Spend · Pacing · Issues"],
+          ["Weekly", "Diagnosis", "Performance · Trends · Optimisation · Exceptions"],
+          ["Monthly", "Evaluation", "KPI performance · Campaign analysis · Insights · Recommendations"],
+          ["End of campaign", "Retrospective", "Results · Learnings · Performance summary · Future recommendations"],
+        ],
+      },
+      {
+        type: "p",
+        text: "The third column is the documented content of each cadence; the second summarises what that content is for, and is a way of thinking about cadence rather than an industry standard. There is no correct cadence for a client type. The distinction is diagnostic: a daily report full of monthly content answers the wrong question at the highest possible production cost.",
+      },
+
+      { type: "h2", text: "Decide what to standardise and what to customise", id: "standardise-or-customise" },
+      {
+        type: "p",
+        text: "This decision has the largest effect on reporting workload and is rarely made explicitly. It accumulates — one client's layout preference, another's extra metric, a third's different week-start — until every account's reporting is produced rather than run.",
+      },
+      {
+        type: "p",
+        text: "The cost is specific. Where accounts differ in structure, naming, layout and manual production steps, nothing carries from one to the next: no template, no validation routine, no shortcut. Each cycle is rebuilt, and that work scales with accounts and cadence at once.",
+      },
+      {
+        type: "p",
+        text: "The answer is not uniformity. Clients legitimately differ in the KPIs they are measured on, the commentary they need, the business context that makes the numbers meaningful, and the template the report is presented in. Removing those removes the reason the report exists.",
+      },
+      {
+        type: "p",
+        text: "So the question is not what to standardise, but which parts genuinely need to vary by client and which are repeated production work that only looks bespoke. Collection, validation and normalisation are usually the second kind; KPI selection, commentary and presentation the first. That split differs in every agency, which is why it is a decision rather than a framework.",
+      },
+      { type: "h3", text: "Automation applies to production, not to judgement" },
+      {
+        type: "p",
+        text: "Where production genuinely repeats, parts of it can be automated — assembly of recurring data, rule-based checks, and surfacing anomalies such as pacing or KPI deviations. Machine-assisted analysis can speed up diagnosis. One documented example: a publisher operation tracking inventory, billing and campaign performance manually moved to automated reporting and saved time doing so.",
+      },
+      {
+        type: "p",
+        text: "What automation does not do is decide. It accelerates analysis; experienced people drive action. A system can establish that cost per acquisition has drifted above target and which campaign is responsible; a person still decides whether that warrants a creative review, a budget reallocation or nothing. Automation also carries its own setup and maintenance work, which is why it suits verification and aggregation better than interpretation.",
+      },
+
+      { type: "h2", text: "When reporting becomes a capacity bottleneck", id: "capacity-bottleneck" },
+      {
+        type: "p",
+        text: "Reporting rarely fails outright. It degrades, and the signs are behavioural rather than numerical:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Account teams spend an increasing share of the week assembling recurring reports.",
+          "Bespoke production is repeated across accounts that could share a structure.",
+          "Validation is compressed because the delivery date did not move.",
+          "Commentary becomes an afterthought, or is dropped when the week is busy.",
+          "Campaign execution competes with reporting deadlines, and reporting wins because its deadline is external.",
+          "Questions after delivery consume as much time as the report.",
+        ],
+      },
+      {
+        type: "p",
+        text: "These are observations worth taking seriously, not a diagnostic taxonomy, and no threshold separates a busy week from a structural problem. The way to tell is to measure it — recording how much operating time reporting consumes over a representative period, against the other work the same people are responsible for. The method is set out in [ad operations capacity planning](/insights/ad-operations-capacity-planning), where reporting is one of the drivers it asks you to count.",
+      },
+      {
+        type: "p",
+        text: "What that settles is which problem you have. Reporting consuming operating time out of proportion to its value is not an execution capacity gap, and an execution specialist will not close it. It is more often a standardisation problem, a cadence problem, or a definitions problem generating avoidable reconciliation work every cycle.",
+      },
+
+      {
+        type: "p",
+        text: "Good reporting is not a dashboard or an export. It is a recurring production system turning campaign data into validated figures, an explanation of what moved and a recommendation someone can act on — on a schedule, without consuming the capacity needed to run the campaigns it reports on. The objective is not more reporting. It is a reporting process the agency can run consistently.",
+      },
+      {
+        type: "p",
+        text: "Trafficomm supports recurring campaign reporting as operational work: collection across the platforms in scope, validation and reconciliation before delivery, analysis and commentary, and production inside the templates and cadences an agency has already defined. Metric definitions, client relationships and final interpretation stay with the agency. How that works as an engagement is set out under [ad operations outsourcing](/ad-operations-outsourcing).",
+      },
+    ],
+    related: ["ad-operations-capacity-planning", "outsourced-ad-operations-governance", "campaign-launch-qa-checklist"],
+    links: [
+      { href: "/services/reporting", label: "Reporting & Insights", meta: "Service" },
+      { href: "/services/measurement", label: "Measurement & Analytics", meta: "Service" },
+      { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
     slug: "ad-operations-capacity-planning",
     title: "How Much Ad Operations Capacity Does Your Agency Actually Need?",
     dek: "Campaign count is an input, not a capacity model. A method for measuring the workload your campaigns actually generate, comparing it with the operating time your team actually has, and diagnosing the kind of gap you have.",
@@ -167,7 +421,7 @@ export const articles: Article[] = [
           "Platform count — not just how many, but how differently each works. Two platforms with similar build models cost less than two with different structures and validation needs.",
           "Creative volume — assets, variants, formats and placements. Often the largest hidden multiplier: one campaign with forty variants is not one campaign's worth of trafficking and checking.",
           "QA depth — how many validation points a launch passes and how thorough each is.",
-          "Reporting load — frequency, stakeholders, and how much is bespoke rather than templated. A daily report is roughly twenty times the annual production of a monthly one.",
+          "Reporting load — frequency, stakeholders, and how much is bespoke rather than templated. A daily report is roughly twenty times the annual production of a monthly one. What that production actually consists of is set out in [agency campaign reporting operations](/insights/agency-campaign-reporting-operations).",
           "Measurement complexity — how much tracking implementation and validation the work requires, and how often it changes.",
         ],
       },

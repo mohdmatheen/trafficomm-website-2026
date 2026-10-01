@@ -50,7 +50,7 @@ export function ArticleBody({ blocks }: { blocks: ArticleBlock[] }) {
             return (
               <ul key={i}>
                 {b.items.map((it) => (
-                  <li key={it}>{it}</li>
+                  <li key={it}>{withLinks(it)}</li>
                 ))}
               </ul>
             );

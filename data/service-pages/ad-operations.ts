@@ -124,6 +124,7 @@ export const adOperationsPage: ServicePageContent = {
     { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
     { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
     { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
+    { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
   ],
   cta: {
     eyebrow: "Let's talk Ad Operations",

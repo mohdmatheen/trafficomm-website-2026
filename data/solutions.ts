@@ -62,6 +62,7 @@ export const solutions: Solution[] = [
       { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
       { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },
       { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
+      { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
     ],
     cta: { title: "Where is delivery capacity running out?", body: "Tell us about your offices, platforms and monthly volumes. We'll look at which parts of execution, QA and reporting a dedicated operations team could take on." },
     faqs: [
@@ -197,6 +198,7 @@ export const solutions: Solution[] = [
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "One version of the data" },
       { href: "/services/reporting", label: "Reporting & Insights", meta: "Executive reporting" },
       { href: "/services/performance-marketing", label: "Performance Marketing", meta: "Paid social & search" },
+      { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
       { href: "/how-we-work", label: "How we work", meta: "Team & QA" },
     ],
     cta: { title: "Is your in-house team stretched across too many platforms?", body: "Tell us which platforms, markets and agencies you work with. We'll look at where operational support would give your team room to focus on strategy." },
