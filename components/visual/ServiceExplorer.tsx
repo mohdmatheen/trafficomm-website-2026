@@ -27,7 +27,6 @@ export function ServiceExplorer({ items }: { items: Item[] }) {
   const id = useId();
   const [active, setActive] = useState(0);
   const n = items.length;
-  const item = items[active];
 
   const focusTab = (i: number) => {
     setActive(i);
@@ -53,7 +52,7 @@ export function ServiceExplorer({ items }: { items: Item[] }) {
                 role="tab"
                 id={`${id}-t${i}`}
                 aria-selected={on}
-                aria-controls={`${id}-p`}
+                aria-controls={`${id}-p${i}`}
                 tabIndex={on ? 0 : -1}
                 onClick={() => setActive(i)}
                 onMouseEnter={() => setActive(i)}
@@ -74,22 +73,39 @@ export function ServiceExplorer({ items }: { items: Item[] }) {
         })}
       </ul>
 
-      <div id={`${id}-p`} role="tabpanel" aria-label={`${item.name} operating model`} className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
-          <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink">{item.name}</span>
-          <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-steel">{serviceCaption[item.slug]}</span>
-        </div>
-        <div key={item.slug} className="flex min-h-[17rem] flex-col justify-between gap-6 p-6 sm:min-h-[16rem] sm:p-8 animate-enter">
-          <div className="flex flex-1 items-center justify-center rounded-[var(--radius-card)] bg-paper px-5 py-6 ring-1 ring-line sm:px-8">
-            <ServiceIllustrationFluid slug={item.slug} className="max-w-[30rem]" />
-          </div>
-          <div className="flex flex-wrap items-end justify-between gap-4">
-            <p className="max-w-md text-[0.98rem] leading-relaxed text-steel">{item.short}</p>
-            <Link href={`/services/${item.slug}`} className="group flex items-center gap-2 whitespace-nowrap text-[0.94rem] font-medium text-ink">
-              {item.name} <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </div>
+      {/* One panel per capability, all in the document. Inactive panels carry
+          `hidden`, so the section reads completely without JavaScript while only
+          the selected capability is presented. */}
+      <div>
+        {items.map((it, i) => {
+          const on = i === active;
+          return (
+            <div
+              key={it.slug}
+              id={`${id}-p${i}`}
+              role="tabpanel"
+              aria-label={`${it.name} operating model`}
+              hidden={!on}
+              className="overflow-hidden rounded-[var(--radius-panel)] bg-white ring-1 ring-line"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3">
+                <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-ink">{it.name}</span>
+                <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-steel">{serviceCaption[it.slug]}</span>
+              </div>
+              <div key={on ? `on-${active}` : "off"} className={cn("flex min-h-[17rem] flex-col justify-between gap-6 p-6 sm:min-h-[16rem] sm:p-8", on && "animate-enter")}>
+                <div className="flex flex-1 items-center justify-center rounded-[var(--radius-card)] bg-paper px-5 py-6 ring-1 ring-line sm:px-8">
+                  <ServiceIllustrationFluid slug={it.slug} className="max-w-[30rem]" />
+                </div>
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <p className="max-w-md text-[0.98rem] leading-relaxed text-steel">{it.short}</p>
+                  <Link href={`/services/${it.slug}`} className="group flex items-center gap-2 whitespace-nowrap text-[0.94rem] font-medium text-ink">
+                    {it.name} <ArrowRight className="text-signal transition-transform duration-300 group-hover:translate-x-1" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
