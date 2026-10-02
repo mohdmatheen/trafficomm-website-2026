@@ -4,7 +4,20 @@
  * Do not add statistics that are not documented.
  */
 export const company = {
+  /**
+   * The short brand used everywhere a human reads it: the wordmark, page
+   * titles, the OG card. Unchanged on purpose — this is the name the site
+   * speaks in.
+   */
   name: "Trafficomm",
+  /**
+   * The preferred entity/site name for search engines, used only in the
+   * Organization and WebSite schema, `applicationName` and og:site_name.
+   * `name` stays the alternateName in both schemas, so "Trafficomm" remains
+   * an accepted form and the title suffix does not contradict the signal.
+   * Deliberately not wired into titles, headings or the logo.
+   */
+  publicName: "Trafficomm Digital",
   legalName: "Trafficomm Digital Media Services Pvt Ltd",
   founded: 2015,
   tagline: "Performance Operations. Built for Execution.",

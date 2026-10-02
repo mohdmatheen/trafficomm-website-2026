@@ -22,7 +22,7 @@ export function buildMetadata({ title, description, path, type = "website", publ
       title: `${title} | ${company.name}`,
       description,
       url,
-      siteName: company.name,
+      siteName: company.publicName,
       type,
       locale: "en_US",
       // Declaring `openGraph` here replaces the resolved parent object, which drops

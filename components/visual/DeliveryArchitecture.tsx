@@ -12,6 +12,7 @@ import {
   inventoryRoutes,
   lanes,
   programmaticChecks,
+  type ArchNode,
   type Lane,
 } from "@/data/visual/programmatic-architecture";
 import { cn } from "@/lib/cn";
@@ -51,8 +52,6 @@ const segment = (i: number) => {
 export function DeliveryArchitecture() {
   const id = useId();
   const { ref, active, playing, select } = useSignalSequence(N, undefined, 0);
-  const node = architecture[active];
-  const lane = lanes.find((l) => l.id === node.lane)!;
 
   const focusTab = (i: number, p: "t" | "m") => {
     select(i);
@@ -71,14 +70,14 @@ export function DeliveryArchitecture() {
     role: "tab",
     id: `${id}-${p}${i}`,
     "aria-selected": i === active,
-    "aria-controls": `${id}-p`,
+    "aria-controls": `${id}-p${i}`,
     tabIndex: i === active ? 0 : -1,
     onClick: () => select(i),
     onKeyDown: (e: React.KeyboardEvent) => onKey(e, i, p),
   });
 
-  const detail = () => {
-    if (node.id === "plan")
+  const detail = (n: ArchNode) => {
+    if (n.id === "plan")
       return (
         <Frame label="What arrives from the desk — illustrative booking order" className="mt-5">
           {/* Rows from sm up; on a phone the field names alone say the same thing in two lines. */}
@@ -100,7 +99,7 @@ export function DeliveryArchitecture() {
           <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">Field names only — Trafficomm never publishes a client&rsquo;s plan values.</p>
         </Frame>
       );
-    if (node.id === "dv360")
+    if (n.id === "dv360")
       return (
         <Frame label="Plan structure in the platform" className="mt-5">
           <ol className="grid gap-1.5">
@@ -116,7 +115,7 @@ export function DeliveryArchitecture() {
           </ol>
         </Frame>
       );
-    if (node.id === "inventory")
+    if (n.id === "inventory")
       return (
         <Frame label="Where the impression comes from" className="mt-5">
           <ul className="grid gap-1.5">
@@ -139,7 +138,7 @@ export function DeliveryArchitecture() {
           <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">{inventoryNote}</p>
         </Frame>
       );
-    if (node.id === "approval")
+    if (n.id === "approval")
       return (
         <Frame label="Approval status" className="mt-5">
           <ul className="flex flex-wrap items-center gap-2">
@@ -157,13 +156,13 @@ export function DeliveryArchitecture() {
           <p className="mt-3 text-[0.84rem] leading-relaxed text-mute">Rejections come back with the specific reason, so the fix happens once.</p>
         </Frame>
       );
-    if (node.id === "qa")
+    if (n.id === "qa")
       return (
         <Frame label="Configuration checked against the booking" className="mt-5">
           <ValidationGates checks={programmaticChecks} />
         </Frame>
       );
-    if (node.id === "delivery")
+    if (n.id === "delivery")
       return (
         <Frame label="Operational state — example" className="mt-5">
           <ol className="flex flex-wrap items-center gap-2">
@@ -275,50 +274,65 @@ export function DeliveryArchitecture() {
         })}
       </div>
 
-      {/* One panel for both compositions. */}
-      <div id={`${id}-p`} role="tabpanel" aria-label={`Delivery architecture: ${node.label}`} className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
-          <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">
-            {String(active + 1).padStart(2, "0")} · {node.label}
-          </span>
-          <span className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
-              <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
-              {playing ? "Media in transit" : "Select a stage"}
-            </span>
-            <span className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{lane.label}</span>
-          </span>
-        </div>
-        <div key={node.id} className="min-h-[35.5rem] p-5 sm:min-h-[26rem] sm:p-7 animate-enter">
-          <p className="max-w-2xl text-[1.04rem] leading-relaxed text-fog">{node.summary}</p>
-          {node.items && (
-            <ul className="mt-5 flex flex-wrap gap-1.5">
-              {node.items.map((it) => (
-                <li key={it} className="rounded-md bg-white/[0.06] px-2.5 py-1.5 text-[0.9rem] text-fog ring-1 ring-inset ring-line-dark">
-                  {it}
-                </li>
-              ))}
-            </ul>
-          )}
-          {detail()}
-          <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fog">
-            <span className="flex items-center gap-2 text-white">
-              <span className="size-1.5 bg-signal" aria-hidden="true" />
-              Media object here
-            </span>
-            {active < N - 1 ? (
-              <>
-                <span className="text-signal" aria-hidden="true">
-                  →
+      {/* Every stage renders once, for both compositions. Inactive panels carry
+          `hidden`, so the whole architecture is in the document before any
+          interaction while only the selected stage is presented. */}
+      {architecture.map((s, i) => {
+        const on = i === active;
+        const stageLane = lanes.find((l) => l.id === s.lane)!;
+        return (
+          <div
+            key={s.id}
+            id={`${id}-p${i}`}
+            role="tabpanel"
+            aria-label={`Delivery architecture: ${s.label}`}
+            hidden={!on}
+            className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">
+                {String(i + 1).padStart(2, "0")} · {s.label}
+              </span>
+              <span className="flex flex-wrap items-center gap-3">
+                <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
+                  <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
+                  {playing ? "Media in transit" : "Select a stage"}
                 </span>
-                <span>Next · {architecture[active + 1].label}</span>
-              </>
-            ) : (
-              <span>End of the operation</span>
-            )}
-          </p>
-        </div>
-      </div>
+                <span className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{stageLane.label}</span>
+              </span>
+            </div>
+            <div key={on ? `on-${active}` : "off"} className={cn("min-h-[35.5rem] p-5 sm:min-h-[26rem] sm:p-7", on && "animate-enter")}>
+              <p className="max-w-2xl text-[1.04rem] leading-relaxed text-fog">{s.summary}</p>
+              {s.items && (
+                <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {s.items.map((it) => (
+                    <li key={it} className="rounded-md bg-white/[0.06] px-2.5 py-1.5 text-[0.9rem] text-fog ring-1 ring-inset ring-line-dark">
+                      {it}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {detail(s)}
+              <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fog">
+                <span className="flex items-center gap-2 text-white">
+                  <span className="size-1.5 bg-signal" aria-hidden="true" />
+                  Media object here
+                </span>
+                {i < N - 1 ? (
+                  <>
+                    <span className="text-signal" aria-hidden="true">
+                      →
+                    </span>
+                    <span>Next · {architecture[i + 1].label}</span>
+                  </>
+                ) : (
+                  <span>End of the operation</span>
+                )}
+              </p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
