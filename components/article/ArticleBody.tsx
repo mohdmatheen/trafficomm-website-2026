@@ -14,7 +14,7 @@ import { ArticleChart } from "./ArticleChart";
  */
 const INLINE_LINK = /\[([^\]]+)\]\((\/[^)\s]*)\)/g;
 
-function withLinks(text: string): ReactNode[] {
+export function withLinks(text: string): ReactNode[] {
   const out: ReactNode[] = [];
   let cursor = 0;
   for (const m of text.matchAll(INLINE_LINK)) {

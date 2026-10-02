@@ -55,6 +55,12 @@ export type Solution = {
   workflow: { title: [string, string]; lead: string; steps: { label: string; items: string[]; owner: "client" | "trafficomm" | "output" }[] };
   /** Contextual links (services, platforms, sibling models) — kept short to avoid link spam. */
   links: { href: string; label: string; meta?: string }[];
+  /**
+   * Optional note on how the model behaves when one programme runs across
+   * several markets. Present only where documented campaign experience supports
+   * it; `body` paragraphs may carry inline [text](/path) links.
+   */
+  multiMarket?: { eyebrow: string; title: [string, string]; body: string[] };
   cta: { title: string; body: string };
 };
 

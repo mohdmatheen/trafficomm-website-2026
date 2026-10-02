@@ -1,4 +1,5 @@
 import { ViewEvent } from "@/components/analytics/ViewEvent";
+import { withLinks } from "@/components/article/ArticleBody";
 import { CaseStudyCard } from "@/components/cards/CaseStudyCard";
 import { ServiceModuleCard } from "@/components/cards/ServiceModuleCard";
 import { JsonLd, serviceSchema } from "@/components/seo/JsonLd";
@@ -162,6 +163,27 @@ export function SolutionTemplate({ solution }: { solution: Solution }) {
             ))}
           </div>
           <ConfidentialNote className="mt-8" />
+        </Section>
+      )}
+
+      {solution.multiMarket && (
+        <Section tone="white" labelledBy="multi-market-title">
+          <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-20">
+            <SectionHeading
+              id="multi-market-title"
+              eyebrow={solution.multiMarket.eyebrow}
+              title={
+                <>
+                  {solution.multiMarket.title[0]} <span className="block text-steel/70">{solution.multiMarket.title[1]}</span>
+                </>
+              }
+            />
+            <div className="prose-tc">
+              {solution.multiMarket.body.map((para) => (
+                <p key={para.slice(0, 40)}>{withLinks(para)}</p>
+              ))}
+            </div>
+          </div>
         </Section>
       )}
 

@@ -10,7 +10,7 @@ import type { ServicePageContent } from "./types";
 export const adOperationsPage: ServicePageContent = {
   slug: "ad-operations",
   seo: {
-    title: "Ad Operations Outsourcing for Agencies",
+    title: "Ad Operations Services \u2014 Campaign Setup, QA & Reporting",
     description:
       "Outsourced ad operations for agencies and media teams: campaign intake, trafficking, creative and campaign QA, monitoring, optimization support and reporting — delivered as an extension of your team.",
   },

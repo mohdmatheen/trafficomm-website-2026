@@ -224,6 +224,17 @@ export default function AdOperationsOutsourcingPage() {
           }
           lead="Documented campaign experience across Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia — delivered by one centralized operations team, not offices in each market."
         />
+        <div className="mt-8 grid max-w-4xl gap-4">
+          <p className="text-[1.02rem] leading-relaxed text-steel">
+            Campaigns that cross borders carry an operational problem single-market work does not: the same programme has to stay comparable across markets while remaining correct inside each one. One naming
+            convention, consistent conversion definitions, aligned reporting periods and an agreed source of truth per metric are what make that possible — and they are easier to hold centrally than to
+            reassemble per market. Trafficomm works inside the conventions an agency has already set rather than imposing its own.
+          </p>
+          <p className="text-[1.02rem] leading-relaxed text-steel">
+            That experience is historical rather than a boundary on where the model can operate. The largest single campaign handled to date was a UAE tourism campaign with an approximate campaign value of
+            $10M — the value of the media handled on that campaign, not Trafficomm revenue, and not a recurring figure.
+          </p>
+        </div>
         <div className="mt-14">
           <WorldMap />
         </div>

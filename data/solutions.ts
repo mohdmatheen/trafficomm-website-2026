@@ -339,6 +339,15 @@ export const solutions: Solution[] = [
       { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
       { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },
     ],
+    multiMarket: {
+      eyebrow: "Multi-market campaigns",
+      title: ["White-Label Operations", "Across Several Markets."],
+      body: [
+        "Agencies running one programme across several markets carry a problem single-market work does not: the campaign has to stay comparable between markets while remaining correct inside each one. One naming convention, consistent conversion definitions and aligned reporting periods are what make that possible, and they are easier to hold in one execution team than to reassemble per market.",
+        "The division of responsibility does not change when markets are added. Client ownership, strategy, commercial decisions and final approvals stay with the agency. Trafficomm supports the execution underneath \u2014 campaign build, trafficking, QA, pacing checks, optimisation support within the scope the agency has defined, reporting, measurement setup and documentation \u2014 under the agency's brand.",
+        "Trafficomm's documented campaign experience includes Saudi Arabia, the UAE, Qatar, Kuwait and Lebanon. That is historical experience rather than a boundary on where the model can operate, and delivery is centralised rather than run from offices in each market. What a demanding regional calendar does to execution load is set out in [the Saudi digital advertising outlook for 2027](/insights/saudi-digital-advertising-outlook-2027); how the engagement itself is structured is covered under [ad operations outsourcing](/ad-operations-outsourcing).",
+      ],
+    },
     cta: { title: "Which capabilities are your clients asking for?", body: "Tell us what you want to offer under your brand. We'll look at how a white-label operations team would deliver it without your clients ever seeing us." },
     faqs: [
       {
