@@ -57,7 +57,6 @@ export function CreativeFormatExplorer() {
   const id = useId();
   const [active, setActive] = useState(0);
   const n = formatGroups.length;
-  const g = formatGroups[active];
 
   const focusTab = (i: number) => {
     setActive(i);
@@ -89,7 +88,7 @@ export function CreativeFormatExplorer() {
                 role="tab"
                 id={`${id}-t${i}`}
                 aria-selected={on}
-                aria-controls={`${id}-p`}
+                aria-controls={`${id}-p${i}`}
                 tabIndex={on ? 0 : -1}
                 onClick={() => setActive(i)}
                 onKeyDown={(e) => onKey(e, i)}
@@ -105,7 +104,17 @@ export function CreativeFormatExplorer() {
         </div>
       </div>
 
-      <div id={`${id}-p`} role="tabpanel" aria-label={`${g.label} formats`} className="min-h-[21rem] p-5 sm:min-h-[19rem] sm:p-7">
+      {/* Every group renders once; inactive panels carry `hidden`, so the whole
+          format board is in the document before any interaction. */}
+      {formatGroups.map((g, gi) => (
+        <div
+          key={g.id}
+          id={`${id}-p${gi}`}
+          role="tabpanel"
+          aria-label={`${g.label} formats`}
+          hidden={gi !== active}
+          className="min-h-[21rem] p-5 sm:min-h-[19rem] sm:p-7"
+        >
         <p className="text-[1rem] leading-relaxed text-steel">{g.note}</p>
 
         {g.specimens && (
@@ -176,9 +185,10 @@ export function CreativeFormatExplorer() {
                 QA · trafficked
               </li>
             </ul>
-          </div>
-        )}
-      </div>
+            </div>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

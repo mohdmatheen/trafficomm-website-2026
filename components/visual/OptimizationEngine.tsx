@@ -36,7 +36,6 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
   const id = useId();
   const { ref, active, playing, select } = useSignalSequence(COUNT);
   const converged = active >= N;
-  const sig = converged ? null : engineSignals[active];
   /** A connector is drawn once its signal has entered the engine. */
   const drawn = (i: number) => converged || i <= active;
 
@@ -104,7 +103,7 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
           role="tab"
           id={`${id}-${p}${i}`}
           aria-selected={on}
-          aria-controls={`${id}-p`}
+          aria-controls={`${id}-p${i}`}
           tabIndex={on ? 0 : -1}
           onClick={() => select(i)}
           onKeyDown={(e) => onKey(e, i, p)}
@@ -130,7 +129,7 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
         role="tab"
         id={`${id}-${p}${N}`}
         aria-selected={converged}
-        aria-controls={`${id}-p`}
+        aria-controls={`${id}-p${N}`}
         tabIndex={converged ? 0 : -1}
         onClick={() => select(N)}
         onKeyDown={(e) => onKey(e, N, p)}
@@ -169,7 +168,7 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
    * Charts are decorative — every one of them sits beside the same reading in
    * text, so nothing is carried by colour or shape alone.
    */
-  const evidence = () => {
+  const evidence = (sig: (typeof engineSignals)[number] | null) => {
     const head = (t: string) => <p className="font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{t}</p>;
     const trend = (
       <>
@@ -189,7 +188,7 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
         </p>
       </>
     );
-    if (converged || !sig) return trend;
+    if (!sig) return trend;
     if (sig.id === "budget")
       return (
         <>
@@ -292,52 +291,68 @@ export function OptimizationEngine({ levers, kpis, loop, note }: { levers: reado
         </div>
       </div>
 
-      {/* One readout serves both compositions. */}
-      <div id={`${id}-p`} role="tabpanel" aria-label={`Optimization readout: ${converged ? engineCore.allLabel : sig!.label}`} className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
-          <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">Optimization readout</span>
-          <span className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
-              <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
-              {playing ? "Signals entering" : "Select a signal"}
-            </span>
-            <IllustrativeTag>Illustrative data</IllustrativeTag>
-          </span>
-        </div>
-        {/* Reserved to the tallest state at each breakpoint: the sequence changes stages on its own, so a growing panel would shift the page. */}
-        <div className="grid min-h-[35.5rem] sm:min-h-[28rem] lg:min-h-[19rem] lg:grid-cols-[1.35fr_1fr]">
-          <dl className="divide-y divide-line-dark">
-            {row("Target KPI", <span className="font-mono tabular">{engineCore.example}</span>)}
-            {row("Examining", converged ? convergedReadout.examining : sig!.label)}
-            {row("Observation", converged ? convergedReadout.observation : sig!.observation)}
-            {row("Option", converged ? convergedReadout.option : sig!.option)}
-            {row(
-              "Status",
-              <span className="flex items-center gap-2.5">
-                <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-                {statusLine}
-              </span>,
-            )}
-          </dl>
-          {/* The evidence behind the row above: a small operational view per signal. */}
-          <div className="border-t border-line-dark p-5 lg:border-l lg:border-t-0">{evidence()}</div>
-        </div>
-        <div className="border-t border-line-dark px-5 py-4">
-          <ol className="flex flex-wrap items-center gap-2">
-            {decisionChain.map((d, i) => (
-              <li key={d} className="flex items-center gap-2">
-                {i > 0 && (
-                  <span className="text-signal" aria-hidden="true">
-                    →
-                  </span>
+      {/* One readout per state, serving both compositions. Every signal and the
+          converged state render once; inactive readouts carry `hidden`, so the
+          whole engine is in the document before any interaction. */}
+      {Array.from({ length: COUNT }, (_, i) => {
+        const isCore = i === N;
+        const st = isCore ? null : engineSignals[i];
+        const on = i === active;
+        return (
+          <div
+            key={isCore ? "core" : st!.id}
+            id={`${id}-p${i}`}
+            role="tabpanel"
+            aria-label={`Optimization readout: ${isCore ? engineCore.allLabel : st!.label}`}
+            hidden={!on}
+            className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">Optimization readout</span>
+              <span className="flex flex-wrap items-center gap-3">
+                <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
+                  <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
+                  {playing ? "Signals entering" : "Select a signal"}
+                </span>
+                <IllustrativeTag>Illustrative data</IllustrativeTag>
+              </span>
+            </div>
+            {/* Reserved to the tallest state at each breakpoint: the sequence changes stages on its own, so a growing panel would shift the page. */}
+            <div className="grid min-h-[35.5rem] sm:min-h-[28rem] lg:min-h-[19rem] lg:grid-cols-[1.35fr_1fr]">
+              <dl className="divide-y divide-line-dark">
+                {row("Target KPI", <span className="font-mono tabular">{engineCore.example}</span>)}
+                {row("Examining", isCore ? convergedReadout.examining : st!.label)}
+                {row("Observation", isCore ? convergedReadout.observation : st!.observation)}
+                {row("Option", isCore ? convergedReadout.option : st!.option)}
+                {row(
+                  "Status",
+                  <span className="flex items-center gap-2.5">
+                    <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                    {statusLine}
+                  </span>,
                 )}
-                <Chip tone={i === 2 ? "plain" : "muted"}>{d}</Chip>
-              </li>
-            ))}
-          </ol>
-          <p className="mt-3 max-w-2xl text-[0.84rem] leading-relaxed text-mute">{autonomyNote}</p>
-        </div>
-      </div>
+              </dl>
+              {/* The evidence behind the row above: a small operational view per signal. */}
+              <div className="border-t border-line-dark p-5 lg:border-l lg:border-t-0">{evidence(st)}</div>
+            </div>
+            <div className="border-t border-line-dark px-5 py-4">
+              <ol className="flex flex-wrap items-center gap-2">
+                {decisionChain.map((d, k) => (
+                  <li key={d} className="flex items-center gap-2">
+                    {k > 0 && (
+                      <span className="text-signal" aria-hidden="true">
+                        →
+                      </span>
+                    )}
+                    <Chip tone={k === 2 ? "plain" : "muted"}>{d}</Chip>
+                  </li>
+                ))}
+              </ol>
+              <p className="mt-3 max-w-2xl text-[0.84rem] leading-relaxed text-mute">{autonomyNote}</p>
+            </div>
+          </div>
+        );
+      })}
 
       {/* The approved evidence loop, as labels only: the engine keeps running. */}
       <Frame label="The optimization loop" className="mt-4">

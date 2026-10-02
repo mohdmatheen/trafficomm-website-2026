@@ -41,7 +41,6 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
   const id = useId();
   // Rests on the ad server: the point of the page is that the two systems meet there.
   const { ref, active, playing, select } = useSignalSequence(N, undefined, bridgeIndex);
-  const node = systemNodes[active];
 
   const focusTab = (i: number) => {
     select(i);
@@ -68,7 +67,7 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
           role="tab"
           id={`${id}-n${i}`}
           aria-selected={on}
-          aria-controls={`${id}-p`}
+          aria-controls={`${id}-p${i}`}
           tabIndex={on ? 0 : -1}
           onClick={() => select(i)}
           onKeyDown={(e) => onKey(e, i)}
@@ -102,7 +101,7 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
     </div>
   );
 
-  const detail = () => {
+  const detail = (node: SystemNode) => {
     if (node.id === "creative-qa")
       return (
         <Frame label="Creative QA gate — illustrative specification" className="mt-5">
@@ -220,7 +219,7 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
     return null;
   };
 
-  const trackLabel = node.track === "creative" ? sides[0].label : node.track === "publisher" ? sides[1].label : node.track === "bridge" ? "Where they connect" : "Output";
+  const trackLabelFor = (n: SystemNode) => (n.track === "creative" ? sides[0].label : n.track === "publisher" ? sides[1].label : n.track === "bridge" ? "Where they connect" : "Output");
 
   return (
     <div ref={ref}>
@@ -255,47 +254,62 @@ export function ConnectedSystems({ sides }: { sides: readonly { code: string; la
         </div>
       </div>
 
-      <div id={`${id}-p`} role="tabpanel" aria-label={`Creative and AdTech operations: ${node.label}`} className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
-          <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">{node.label}</span>
-          <span className="flex flex-wrap items-center gap-3">
-            <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
-              <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
-              {playing ? "Creative in production" : "Select a stage"}
-            </span>
-            <span className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{trackLabel}</span>
-          </span>
-        </div>
-        <div key={node.id} className="min-h-[37.5rem] p-5 sm:min-h-[32.5rem] sm:p-7 animate-enter">
-          <p className="max-w-2xl text-[1.04rem] leading-relaxed text-fog">{node.summary}</p>
-          {node.items && (
-            <ul className="mt-5 flex flex-wrap gap-1.5">
-              {node.items.map((it) => (
-                <li key={it}>
-                  <Chip>{it}</Chip>
-                </li>
-              ))}
-            </ul>
-          )}
-          {detail()}
-          <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fog">
-            <span className="flex items-center gap-2 text-white">
-              <span className="size-1.5 bg-signal" aria-hidden="true" />
-              {node.track === "bridge" ? "Both systems meet here" : node.track === "output" ? "Out of the ad server" : node.track === "creative" ? "Creative production" : "Publisher setup"}
-            </span>
-            {node.feeds ? (
-              <>
-                <span className="text-signal" aria-hidden="true">
-                  →
+      {/* Every node renders once. Inactive panels carry `hidden`, so the whole
+          system map is in the document before any interaction while only the
+          selected stage is presented. */}
+      {systemNodes.map((n, i) => {
+        const on = i === active;
+        return (
+          <div
+            key={n.id}
+            id={`${id}-p${i}`}
+            role="tabpanel"
+            aria-label={`Creative and AdTech operations: ${n.label}`}
+            hidden={!on}
+            className="mt-6 overflow-hidden rounded-[var(--radius-panel)] bg-ink-2 ring-1 ring-line-dark"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line-dark px-5 py-3">
+              <span className="font-mono text-[0.72rem] uppercase tracking-[0.12em] text-white">{n.label}</span>
+              <span className="flex flex-wrap items-center gap-3">
+                <span className="flex items-center gap-2 font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">
+                  <span className={cn("size-1.5 rounded-full bg-signal", playing && "animate-pulse-dot")} aria-hidden="true" />
+                  {playing ? "Creative in production" : "Select a stage"}
                 </span>
-                <span>Feeds · {systemNodes[indexOf(node.feeds)].label}</span>
-              </>
-            ) : (
-              <span>End of the chain</span>
-            )}
-          </p>
-        </div>
-      </div>
+                <span className="rounded-full bg-white/[0.06] px-2.5 py-1 font-mono text-[0.62rem] uppercase tracking-[0.1em] text-fog">{trackLabelFor(n)}</span>
+              </span>
+            </div>
+            <div key={on ? `on-${active}` : "off"} className={cn("min-h-[37.5rem] p-5 sm:min-h-[32.5rem] sm:p-7", on && "animate-enter")}>
+              <p className="max-w-2xl text-[1.04rem] leading-relaxed text-fog">{n.summary}</p>
+              {n.items && (
+                <ul className="mt-5 flex flex-wrap gap-1.5">
+                  {n.items.map((it) => (
+                    <li key={it}>
+                      <Chip>{it}</Chip>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {detail(n)}
+              <p className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[0.66rem] uppercase tracking-[0.1em] text-fog">
+                <span className="flex items-center gap-2 text-white">
+                  <span className="size-1.5 bg-signal" aria-hidden="true" />
+                  {n.track === "bridge" ? "Both systems meet here" : n.track === "output" ? "Out of the ad server" : n.track === "creative" ? "Creative production" : "Publisher setup"}
+                </span>
+                {n.feeds ? (
+                  <>
+                    <span className="text-signal" aria-hidden="true">
+                      →
+                    </span>
+                    <span>Feeds · {systemNodes[indexOf(n.feeds)].label}</span>
+                  </>
+                ) : (
+                  <span>End of the chain</span>
+                )}
+              </p>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
