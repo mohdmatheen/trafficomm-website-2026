@@ -331,6 +331,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
     ],
     links: [
       { href: "/solutions/publishers-adtech", label: "For publishers & ad tech", meta: "Operating model" },
+      { href: "/insights/arabic-english-creative-operations", label: "Arabic and English creative operations", meta: "Guide" },
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Trafficking · QA" },
       { href: "/platforms/cm360", label: "CM360 operations", meta: "Ad serving" },
       { href: "/how-we-work", label: "How we work", meta: "Team & QA" },

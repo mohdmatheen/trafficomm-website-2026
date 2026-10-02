@@ -118,7 +118,7 @@ export const articles: Article[] = [
       },
       {
         type: "p",
-        text: "Multi-market execution introduces a problem that single-market execution does not have: the same campaign has to be comparable across markets while remaining correct within each one. That requires one naming convention applied everywhere, consistent conversion definitions so a lead in one market means what it means in another, aligned reporting periods, and a single place where the question \"which source is authoritative for this metric\" has already been answered. Where those are settled centrally, consolidated reporting is a production task. Where they are not, every reporting cycle becomes a reconciliation exercise — the mechanics of which are set out in [agency campaign reporting operations](/insights/agency-campaign-reporting-operations).",
+        text: "Multi-market execution introduces a problem that single-market execution does not have: the same campaign has to be comparable across markets while remaining correct within each one. That requires one naming convention applied everywhere, consistent conversion definitions so a lead in one market means what it means in another, aligned reporting periods, and a single place where the question \"which source is authoritative for this metric\" has already been answered. Where those are settled centrally, consolidated reporting is a production task. Where they are not, every reporting cycle becomes a reconciliation exercise. How to coordinate a programme running across several Gulf markets is set out in [GCC multi-market campaign operations](/insights/gcc-multi-market-campaign-operations); the reporting mechanics themselves in [agency campaign reporting operations](/insights/agency-campaign-reporting-operations).",
       },
       {
         type: "p",
@@ -174,6 +174,438 @@ export const articles: Article[] = [
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "Service" },
       { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
       { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
+    slug: "gcc-multi-market-campaign-operations",
+    title: "GCC Multi-Market Campaign Operations: A Practical Guide for Agencies",
+    dek: "Running one campaign across several Gulf markets is not a copy-and-change exercise. What to standardise, what genuinely has to differ by market, and how to keep structure, measurement, QA and reporting readable once a programme crosses borders.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-04",
+    hero: { kicker: "Multi-Market Operations", motif: "flow" },
+    tags: ["GCC Digital Advertising", "Agency Operations", "Multi-Market Campaigns", "Ad Operations"],
+    body: [
+      {
+        type: "p",
+        text: "A campaign that runs in Saudi Arabia, the UAE, Qatar and Kuwait is usually described as one campaign. Operationally it is four builds, four sets of creative, four approval chains and four reporting lines that have to agree with each other at the end of the month.",
+      },
+      {
+        type: "p",
+        text: "The gap between those two descriptions is where multi-market execution goes wrong. Nothing in it is difficult in isolation. All of it multiplies, and most of the multiplication happens in places a media plan does not show.",
+      },
+      {
+        type: "callout",
+        title: "In brief",
+        text: "Multi-market campaigns fail on consistency, not complexity. The work is to decide once what stays identical across markets so the programme remains comparable, and what genuinely differs so each market remains correct. Naming, conversion definitions, reporting periods and QA standards belong in the first group; creative, landing pages, budgets, flight dates and approvals in the second. Everything downstream depends on that split being made before the first build, not during the first discrepancy.",
+      },
+
+      { type: "h2", text: "What changes when one campaign becomes multi-market", id: "what-changes" },
+      {
+        type: "p",
+        text: "Duplicating a campaign across countries is not copying settings. Almost every dimension of the build acquires a per-market value, and each one is a place where two markets can quietly diverge:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Campaign structure — separate campaigns, separate ad sets, or separate accounts entirely.",
+          "Naming — the most consequential decision, because it determines what can be reported on later.",
+          "Budgets — allocated per market, often adjusted at different times by different people.",
+          "Flight dates — rarely identical once local calendars and approvals are involved.",
+          "Targeting — geography at minimum, usually audience definitions that do not translate directly.",
+          "Creative variants — multiplied by language, format and placement before any market-specific variation.",
+          "Landing URLs — different pages, different parameters, sometimes different domains.",
+          "Tracking — the same event names and parameters, or four subtly different ones.",
+          "Conversion definitions — what counts as a lead, and whether it counts the same way everywhere.",
+          "Reporting — per market, consolidated, or both.",
+          "Approvals — who signs off per market, and whether it is the same person.",
+        ],
+      },
+      {
+        type: "p",
+        text: "The failure mode is not that one of these is missed. It is that each is handled correctly in isolation by whoever happened to build that market, and the four results cannot be compared.",
+      },
+
+      { type: "h2", text: "Standardise what should stay consistent", id: "standardise" },
+      {
+        type: "p",
+        text: "Some things exist to make the programme legible as a whole. They are agency-level conventions rather than campaign settings, and they are worth settling before anything is built.",
+      },
+      {
+        type: "ul",
+        items: [
+          "A naming convention applied identically in every market, including the market identifier itself.",
+          "A taxonomy for campaign, objective, audience and creative that does not change by country.",
+          "A UTM structure with the same parameters in the same order, and the same values for the same concepts.",
+          "Metric definitions written down — a conversion, a view and an engagement each mean several things depending where they are read.",
+          "A named source of truth per metric, agreed before the first report rather than during the first disagreement.",
+          "Documentation of what was decided and who maintains it.",
+          "One QA standard, applied at the same depth in every market.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Standardising conventions is not the same as standardising campaigns. A consistent naming convention does not mean every market runs the same budget, the same creative or the same flight. It means that when four markets report, the numbers line up against the same labels. Teams that confuse the two end up either with four incomparable programmes or with one programme that fits no market properly.",
+      },
+
+      { type: "h2", text: "Localise what genuinely differs", id: "localise" },
+      {
+        type: "p",
+        text: "The second half of the decision is harder, because it requires saying out loud which differences are real and which are accumulated preference.",
+      },
+      {
+        type: "p",
+        text: "Genuinely market-specific in most programmes: creative assets and their language versions; landing pages and the URLs that reach them; budget allocation; flight dates; targeting and audience definitions; offers and their terms; and who approves what before launch. Each has a reason to differ that someone can state.",
+      },
+      {
+        type: "p",
+        text: "What usually should not differ: the naming convention, the event taxonomy, the conversion definitions and the reporting structure. Where those vary by market it is almost always because they were set by different people at different times rather than because the market required it.",
+      },
+      {
+        type: "p",
+        text: "Two cautions. Language versioning is an operational workload question, not a translation service — the copy belongs to whoever owns the brand voice in that market. And market-specific requirements around advertising, data and consent are a matter for the agency's own legal and compliance advice, not something an execution partner should assume on anyone's behalf.",
+      },
+
+      { type: "h2", text: "Build a structure that remains readable", id: "structure" },
+      {
+        type: "p",
+        text: "Campaign structure is the thing a team will be living inside for the length of the programme, and the test of a good one is simple: can someone who did not build it tell, from the platform alone, which market, objective, audience and creative version they are looking at?",
+      },
+      {
+        type: "p",
+        text: "The dimensions that usually need to be visible somewhere in the hierarchy are market, platform, objective, campaign, audience, creative and version. Where they sit differs by platform and by how the agency reports, and there is no universal answer — a structure that suits a programmatic trading desk will not match one built for paid social. What matters is that the decision is deliberate and applied everywhere, rather than emerging from whoever built the first market.",
+      },
+      {
+        type: "p",
+        text: "One practical consequence: structure determines what can be reported on later. A dimension that is not represented anywhere in the build cannot be broken out in a report without manual reconstruction, every cycle, for the life of the campaign. The execution functions this affects — setup, trafficking, QA and reporting — are set out under [ad operations](/services/ad-operations).",
+      },
+
+      { type: "h2", text: "Creative version control becomes an operations problem", id: "creative-versions" },
+      {
+        type: "p",
+        text: "Creative is where multi-market execution stops being arithmetic and starts being inventory management. One concept becomes several formats, each format becomes several language versions, each version is sized for several placements, and each of those may be revised more than once before launch.",
+      },
+      {
+        type: "p",
+        text: "The problem is rarely producing the assets. It is knowing, at the moment of trafficking, which file is the approved one. Drafts, review copies, superseded versions and finals accumulate in the same folders with names differing by a suffix. A market launching with a version replaced two days earlier is not a creative failure; it is a version-control failure, and nobody notices until someone looks at the live ad.",
+      },
+      {
+        type: "p",
+        text: "Where campaigns run in more than one language, this compounds in a specific way that deserves its own treatment — the asset naming, version states, destination mapping and approval visibility that keep bilingual execution straight are set out in [Arabic and English creative operations](/insights/arabic-english-creative-operations).",
+      },
+
+      { type: "h2", text: "Measurement needs one agreed operating language", id: "measurement" },
+      {
+        type: "p",
+        text: "Cross-market reporting becomes unreliable for a mundane reason: the markets are not counting the same thing. A conversion defined as a form submission in one market and a qualified lead in another produces two numbers that look comparable, sit in the same column, and are not comparable at all.",
+      },
+      {
+        type: "p",
+        text: "Agreeing the measurement layer means agreeing event names and parameters before implementation, implementing them the same way through Google Tag Manager and GA4, mapping them to the same platform conversions, and keeping UTM values consistent so the same source means the same thing everywhere. Where server-side signals such as Meta's Conversions API are used, they complement browser-side tracking rather than replacing it, and do not restore every lost signal.",
+      },
+      {
+        type: "p",
+        text: "The lifecycle that work runs through — requirement, design, implementation, validation before launch and verification after it — is set out in [campaign measurement implementation and validation](/insights/campaign-measurement-implementation-validation), and the implementation layer itself under [measurement and analytics](/services/measurement). The order matters here more than usual: a reporting process can reconcile four markets perfectly and still be wrong if one of them was counting the wrong event from the start.",
+      },
+
+      { type: "h2", text: "QA has to work at campaign and market level", id: "qa" },
+      {
+        type: "p",
+        text: "A structured operation separates validation into distinct points — input QA on the brief and assets, creative QA against specification, build QA on the campaign as configured, launch QA once delivery starts, and ongoing QA in flight. Multi-market work does not add a stage. It multiplies the combinations each stage has to cover.",
+      },
+      {
+        type: "p",
+        text: "Four markets, three platforms and two language versions is not nine things to check. It is the product of those dimensions, every time the campaign is rebuilt — and the checks that matter most only fail in combination: the right creative in the wrong market, the correct landing page carrying another market's tracking parameters, a conversion event mapped correctly in three markets and not the fourth.",
+      },
+      {
+        type: "p",
+        text: "What a thorough pre-launch and post-launch pass covers is set out in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist). Read as a multi-market document, its usefulness is less in any individual check than in the fact that the same sequence runs identically for every market, so no market is checked to a shallower standard because it was built last.",
+      },
+
+      { type: "h2", text: "Reporting should preserve local and regional views", id: "reporting" },
+      {
+        type: "p",
+        text: "Two audiences usually need the same data shaped differently. A market lead needs to see their own market in enough detail to act on it. A regional lead needs the markets side by side, against the same definitions, without being asked to interpret four different formats.",
+      },
+      {
+        type: "p",
+        text: "Both are possible from one pipeline, but only if the consolidation rules are settled in advance: which metrics roll up and which do not, how currency and period differences are handled, and what happens when one market's platform mix differs. Rolling up a metric never defined consistently produces a regional number that is precise and meaningless.",
+      },
+      {
+        type: "p",
+        text: "It is also worth resisting the pull toward one interpretation. Markets can legitimately perform differently for reasons that have nothing to do with execution quality, and a consolidated view that flattens that into a single ranking invites the wrong conversation. How recurring reporting is produced and validated is set out in [agency campaign reporting operations](/insights/agency-campaign-reporting-operations) and delivered under [reporting and insights](/services/reporting).",
+      },
+
+      { type: "h2", text: "Peak demand compounds across markets", id: "peaks" },
+      {
+        type: "p",
+        text: "Single-market operations have peaks. Multi-market operations have overlapping peaks, and the overlap is where sizing against an average breaks down.",
+      },
+      {
+        type: "p",
+        text: "The compression is familiar to anyone who has run a regional programme: several markets activating in the same window, creative arriving late in more than one, approvals clustering against the same deadline, seasonal activity overlapping, and monthly reporting landing on top of it. None is unusual alone. Together they produce a week in which the team does several weeks of work.",
+      },
+      {
+        type: "p",
+        text: "The failure is quiet rather than visible. Launches slip, QA is compressed because the launch date did not move, reporting is carried forward rather than reconciled. The way to tell a busy fortnight from a structural problem is to measure the workload rather than estimate it from campaign count — the method is set out in [ad operations capacity planning](/insights/ad-operations-capacity-planning), where market count, platform count and reporting load each appear as drivers in their own right.",
+      },
+
+      { type: "h2", text: "Define responsibility before execution begins", id: "responsibility" },
+      {
+        type: "p",
+        text: "Multi-market programmes have more handoffs than single-market ones, and every handoff is a place where ownership can be assumed rather than agreed.",
+      },
+      {
+        type: "p",
+        text: "The division that holds up is the ordinary one, applied per market as well as overall. The agency owns strategy and planning, client relationships, commercial decisions and the final approval before launch. An execution partner supports the work underneath: campaign build, trafficking, QA, pacing checks, optimisation support within the scope the agency has defined, reporting, measurement setup and documentation. Optimisation is worth naming, because it is the boundary most often left vague — the partner surfaces what the data shows and acts within agreed limits; the agency sets those limits.",
+      },
+      {
+        type: "p",
+        text: "Settling that before the first campaign rather than during the third is the whole argument of [outsourcing ad operations without losing control](/insights/outsourced-ad-operations-governance), and it applies with more force when four markets are involved, because an unstated boundary gets rediscovered four times.",
+      },
+
+      { type: "h2", text: "A practical multi-market operating checklist", id: "checklist" },
+      {
+        type: "p",
+        text: "Not a QA checklist — these are the coordination questions worth answering once, before the programme starts, rather than per campaign:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Is there one naming convention, written down, and does it carry a market identifier?",
+          "Is the campaign taxonomy the same in every market?",
+          "Are market-level budgets allocated and is it clear who may change them?",
+          "Are flight dates confirmed per market, including where they deliberately differ?",
+          "Are market-specific landing pages final, resolving, and the right page rather than a homepage?",
+          "Do UTM parameters use the same structure and the same values for the same concepts?",
+          "Are conversion definitions aligned, and does each one mean the same thing in every market?",
+          "Is the event taxonomy implemented identically across markets?",
+          "Is a source of truth named per metric?",
+          "Are creative versions identifiable from their names, including language and market?",
+          "Is it clear which creative version is approved for each market and placement?",
+          "Are approval owners named per market, and is it known who approves when they are unavailable?",
+          "Is the QA standard the same depth for every market, including the one built last?",
+          "Is the regional consolidated reporting view defined, including what rolls up and what does not?",
+          "Is the market-level reporting view defined separately from the regional one?",
+          "Is the escalation path known per market, including who speaks to the client?",
+          "Is there a written record of these decisions that a new team member could read?",
+        ],
+      },
+
+      {
+        type: "p",
+        text: "Multi-market campaigns are not harder than single-market campaigns in any individual step. They are harder because every decision left implicit gets made several times, differently, by different people — and the cost appears weeks later in a report nobody can reconcile. The work is to decide once, write it down, and apply it everywhere.",
+      },
+      {
+        type: "p",
+        text: "Trafficomm has campaign experience across Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, delivered from one centralised operation working inside the conventions an agency has already set. That is documented historical experience rather than a boundary on where the model can operate, and the constraints described here recur wherever a programme crosses borders. How it works as an engagement is set out under [ad operations outsourcing](/ad-operations-outsourcing).",
+      },
+    ],
+    related: ["saudi-digital-advertising-outlook-2027", "arabic-english-creative-operations", "ad-operations-capacity-planning"],
+    links: [
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/services/reporting", label: "Reporting & Insights", meta: "Service" },
+      { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
+    slug: "arabic-english-creative-operations",
+    title: "Arabic and English Creative Operations: Managing Bilingual Campaign Complexity",
+    dek: "Running campaigns in two languages is a version-control problem before it is a creative one. How to name, version, map and verify bilingual assets — and where linguistic approval ends and operational QA begins.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-04",
+    hero: { kicker: "Creative Operations", motif: "grid" },
+    tags: ["Creative Operations", "Agency Operations", "Bilingual Campaigns", "Ad Operations"],
+    body: [
+      {
+        type: "p",
+        text: "A bilingual campaign is usually discussed as a translation question. Operationally it is a version-control question, and the two have almost nothing to do with each other.",
+      },
+      {
+        type: "p",
+        text: "Whether the Arabic copy reads well is a judgement for whoever owns the brand voice in that market. Whether the approved Arabic file is the one that actually went live, in the right market, on the right placement, pointing at the right page with the right tracking, is an execution question — and it is the one that fails more often, because nothing about it is visible in the creative itself.",
+      },
+      {
+        type: "callout",
+        title: "In brief",
+        text: "Bilingual campaigns multiply execution paths rather than doubling them: one concept becomes several language versions, each sized for several formats, across several platforms and markets. The operational controls that keep that straight are a naming system a person can read, explicit version states, a mapping from every approved asset to its destination, and QA that verifies placement rather than language. Linguistic approval belongs to the client or agency; operational verification belongs to whoever executes.",
+      },
+
+      { type: "h2", text: "Bilingual campaigns multiply execution paths", id: "multiply" },
+      {
+        type: "p",
+        text: "The arithmetic is routinely underestimated, because people count concepts rather than deliverables.",
+      },
+      {
+        type: "p",
+        text: "One creative concept becomes two language versions. Each language version is produced in whatever formats the plan requires — static, video, vertical, square. Each format is sized for the placements each platform accepts. If the campaign runs in more than one market, some of those versions vary again by market. If there are audience-specific messages, they vary once more. The result is not two creatives with a translation; it is a set of deliverables large enough that nobody holds it in their head.",
+      },
+      {
+        type: "p",
+        text: "The number depends entirely on the plan, and there is no useful multiplier to publish — an agency's own count from one real campaign is worth more than any rule of thumb. The operational point is that the count is a product rather than a sum, and every item in it needs a name, an approval state and a destination.",
+      },
+      {
+        type: "p",
+        text: "Right-to-left layouts deserve one note. An Arabic execution is not a mirrored version of the English one: type, line length and composition change, which means the asset is built rather than flipped. For operations that matters because it produces a genuinely separate file with its own specification check, not a variant that can be assumed correct because its English counterpart passed.",
+      },
+
+      { type: "h2", text: "Separate language approval from operational QA", id: "separation" },
+      {
+        type: "p",
+        text: "This is the distinction the rest of the article rests on, and getting it wrong in either direction causes problems.",
+      },
+      {
+        type: "p",
+        text: "Linguistic approval answers whether the copy is correct, idiomatic and appropriate for the market. It covers translation quality, tone, cultural fit and brand voice, and belongs to the client, the agency, or the linguistic reviewer they appoint. It is a judgement about meaning, and requires someone who owns that meaning.",
+      },
+      {
+        type: "p",
+        text: "Operational QA answers whether the approved asset was executed correctly. It verifies that the file in the ad is the approved version rather than a draft or a superseded one; that it sits in the right campaign; targeted at the right market; on a placement it was built for; pointing at the correct landing page; carrying the correct tracking; and that what is live matches what was signed off.",
+      },
+      {
+        type: "p",
+        text: "Neither substitutes for the other. An execution partner should not be assessing Arabic grammar, translation accuracy or cultural appropriateness — that is not an operational check and claiming it would misrepresent what the verification actually covers. Equally, a linguistic reviewer approving copy in a document has not confirmed that the right file reached the right placement. Campaigns go wrong when each party assumes the other covered the gap.",
+      },
+
+      { type: "h2", text: "Build an asset naming system humans can read", id: "naming" },
+      {
+        type: "p",
+        text: "Naming is the cheapest control available and the one most often left to whoever exports the file. The test is simple: can someone who was not in the creative process tell, from the filename alone, what this asset is and whether it is the current one?",
+      },
+      {
+        type: "p",
+        text: "The dimensions usually worth encoding are market, language, format, platform, campaign or concept, version, and approval status. Not all of them belong in every name — a convention carrying nine fields stops being readable, which defeats the purpose.",
+      },
+      {
+        type: "p",
+        text: "An illustrative pattern, offered as an example rather than a required convention: market, then language, then concept, then format and size, then version — so a reader can scan left to right from the broadest dimension to the narrowest. Whatever the agency chooses, the properties that matter are that it is applied identically by everyone, that language and version are both visible, and that it survives being read in a platform interface where the name may be truncated.",
+      },
+
+      { type: "h2", text: "Control versions before trafficking", id: "versions" },
+      {
+        type: "p",
+        text: "The risk in bilingual work is not a missing asset. It is several assets with almost the same name, where only one is approved and the difference is a suffix.",
+      },
+      {
+        type: "p",
+        text: "A small set of explicit states is usually enough: draft, in review, approved, superseded and final. What makes them work is that they are recorded somewhere a trafficker can see at the moment of build, rather than inferred from a folder date or a message thread. An asset that has been replaced should be identifiable as replaced — moved, renamed or marked — because the most common version failure is not using the wrong file knowingly; it is using a file that was correct last week.",
+      },
+      {
+        type: "p",
+        text: "Where two languages are in play this compounds, because the versions rarely move in step. English copy is often approved first while the Arabic version is still in review, which means a campaign can be half-approved for days. Treating approval as a per-asset state rather than a per-campaign milestone is what keeps that visible.",
+      },
+
+      { type: "h2", text: "Map every approved asset to its destination", id: "mapping" },
+      {
+        type: "p",
+        text: "An approved asset with no stated destination is an open question that someone will answer from memory at build time.",
+      },
+      {
+        type: "p",
+        text: "The mapping worth maintaining connects each creative to the campaign it belongs to, the ad group, ad set or line item within it where applicable, the market, the language, the placement or format it was built for, and the landing page it should point to. On a single-language, single-market campaign this is obvious enough to be implicit. Across two languages and several markets it is the document that prevents the most expensive category of error.",
+      },
+      {
+        type: "p",
+        text: "That category is worth naming: the mismatched pairing. The Arabic creative in the English ad set. The UAE version live in Saudi Arabia. The correct asset on a placement whose dimensions it was not built for. Each is individually trivial and none of them is visible in the asset itself — only in the relationship between the asset and where it ended up.",
+      },
+
+      { type: "h2", text: "URLs and tracking are part of creative operations", id: "urls-tracking" },
+      {
+        type: "p",
+        text: "A creative is not finished when the visual is approved. It is finished when the visual, the destination and the measurement attached to it are all correct together.",
+      },
+      {
+        type: "p",
+        text: "In bilingual work the landing page is itself a language variant, which makes the pairing a real decision rather than a default: an Arabic ad reaching an English page is a complete execution even though every individual component passed its own check. The same applies to tracking parameters — a UTM structure that identifies campaign and source but not language or market produces reporting in which the two versions are indistinguishable, and any question about how they performed becomes unanswerable after the fact.",
+      },
+      {
+        type: "p",
+        text: "What has to be true before launch is that the landing URL is final and resolving, that it is the correct language variant for the ad, that tracking parameters are present and correctly formed, and that the conversion the campaign optimises toward is the one the KPI depends on. How that signal layer is implemented and validated is set out under [measurement and analytics](/services/measurement).",
+      },
+
+      { type: "h2", text: "QA bilingual campaigns in layers", id: "qa" },
+      {
+        type: "p",
+        text: "A structured operation separates validation into distinct points — input QA on the brief and assets, creative QA against specification, build QA on the campaign as configured, launch QA once delivery starts, and ongoing QA in flight. Bilingual work does not add a layer; it doubles what several of the existing layers have to cover.",
+      },
+      {
+        type: "p",
+        text: "Creative QA against specification is the layer most affected: file weight, dimensions, duration, safe areas and tag behaviour all have to pass for every language version independently, because an Arabic build is a separate file rather than a derived one. Build QA acquires the pairing checks described above. Launch QA has to confirm that both language versions are actually serving, which is a different question from whether both were uploaded.",
+      },
+      {
+        type: "p",
+        text: "What a thorough pre-launch and post-launch pass covers is set out in [the campaign launch QA checklist](/insights/campaign-launch-qa-checklist). Nothing in it is language-specific, and that is the point: the operational checks are the same in both languages, applied twice, at the same depth. The checks that vary by language are linguistic, and they sit with a different owner. Where creative is produced and audited against platform and publisher specification, that work is described under [creative and adtech](/services/creative-adtech).",
+      },
+
+      { type: "h2", text: "Approval status needs to remain visible", id: "approval-visibility" },
+      {
+        type: "p",
+        text: "Most approval breakdowns are not disputes. They are ambiguity: nobody can say with certainty who approved which version, or when.",
+      },
+      {
+        type: "p",
+        text: "The practices that prevent it are unglamorous and entirely manual if they need to be. Record who approved each asset and which version — a name against a version, not a general sign-off on the campaign. Keep the approval state attached to the asset rather than held in a conversation. When an asset is replaced, mark the old one superseded rather than deleting it, so a question about week one can still be answered in week six.",
+      },
+      {
+        type: "p",
+        text: "None of this requires a system. It requires a shared, current record that whoever is trafficking can read without asking. An agency with a clear spreadsheet that everyone updates is in better shape than one with sophisticated tooling that nobody maintains.",
+      },
+
+      { type: "h2", text: "Reporting needs consistent creative identifiers", id: "reporting" },
+      {
+        type: "p",
+        text: "The naming decision made at the start determines what can be asked at the end. If creative names do not carry language and market, a report can show which ads delivered without being able to show how the two language versions compared.",
+      },
+      {
+        type: "p",
+        text: "Consistent identifiers connect creative delivery back to campaign, market, language and version. Without them, answering a reasonable client question — which version performed better, in which market — means reconstructing the mapping by hand, every time, from whatever the platform export happens to carry.",
+      },
+      {
+        type: "p",
+        text: "One caution about interpretation. Differences between language versions can come from creative, audience, placement, timing, budget allocation or landing-page experience, and a reporting view that attributes them to language alone is drawing a conclusion the data does not support. Identifiers make the comparison possible; they do not make it causal.",
+      },
+
+      { type: "h2", text: "A practical bilingual creative handoff checklist", id: "handoff" },
+      {
+        type: "p",
+        text: "Questions worth answering at handoff, before anything is trafficked:",
+      },
+      {
+        type: "ul",
+        items: [
+          "Is every asset named to a convention that shows language, market and version?",
+          "Is it clear which version of each asset is the approved one?",
+          "Are superseded versions marked or removed so they cannot be picked up by mistake?",
+          "Is linguistic approval complete for every language, and recorded against a named person?",
+          "Is it clear that linguistic approval and operational verification are separate sign-offs?",
+          "Does every approved asset have a stated destination — campaign, market, placement?",
+          "Is each asset built to the specification of the placement it is mapped to?",
+          "Is the landing page final, resolving, and the correct language variant for the ad?",
+          "Do tracking parameters identify language and market, not only campaign and source?",
+          "Is the conversion event the ad optimises toward the one the KPI depends on?",
+          "Are both language versions complete, or is one still pending?",
+          "Is it known who may approve a replacement asset after launch?",
+          "Will creative identifiers in reporting let language and market be distinguished afterwards?",
+        ],
+      },
+
+      {
+        type: "p",
+        text: "Bilingual campaigns are not harder to execute than single-language ones in any individual step. They are harder because every control that was implicit becomes load-bearing: a naming convention that was a convenience becomes the only way to tell two files apart, and an approval that was understood becomes something that has to be written down. The work is to make those controls explicit before the volume arrives, not after a version goes live in the wrong market.",
+      },
+      {
+        type: "p",
+        text: "Trafficomm supports agencies with the execution layer around assets the agency and its client have approved — creative auditing against platform and publisher specification, trafficking, campaign build, QA, measurement setup and documentation — working inside the naming conventions and processes the agency already uses. Copy, translation and linguistic approval stay with the agency and its client. How multi-market programmes coordinate around this is set out in [GCC multi-market campaign operations](/insights/gcc-multi-market-campaign-operations); the execution functions themselves under [ad operations](/services/ad-operations).",
+      },
+    ],
+    related: ["gcc-multi-market-campaign-operations", "campaign-launch-qa-checklist", "saudi-digital-advertising-outlook-2027"],
+    links: [
+      { href: "/services/creative-adtech", label: "Creative & AdTech", meta: "Service" },
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/services/measurement", label: "Measurement & Analytics", meta: "Service" },
+      { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
     ],
   },
   {

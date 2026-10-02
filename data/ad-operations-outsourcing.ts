@@ -168,7 +168,7 @@ export const relatedLinks = [
   { href: "/services/reporting", label: "Reporting & Insights", meta: "Daily · Weekly · Monthly" },
   { href: "/solutions/media-agencies", label: "For Media Agencies", meta: "Operating model" },
   { href: "/how-we-work", label: "How We Work", meta: "Process" },
-  { href: "/case-studies", label: "Case Studies", meta: "Documented engagements" },
+  { href: "/insights/gcc-multi-market-campaign-operations", label: "GCC multi-market campaign operations", meta: "Guide" },
   { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing: the complete guide", meta: "Guide" },
   { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
   { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },
