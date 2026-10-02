@@ -228,6 +228,7 @@ export const serviceDepth: Record<string, ServiceDepth> = {
       { href: "/services/reporting", label: "Reporting & Insights", meta: "Daily to executive" },
       { href: "/services/performance-marketing", label: "Performance Marketing", meta: "Optimization" },
       { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
+      { href: "/insights/campaign-measurement-implementation-validation", label: "Campaign measurement implementation and validation", meta: "Guide" },
       { href: "/how-we-work", label: "How we work", meta: "Team & QA" },
     ],
     cta: { title: "Can you trace your numbers back to the action?", body: "Tell us which platforms and analytics tools you run. We'll look at where your measurement setup needs definition, validation or documentation." },

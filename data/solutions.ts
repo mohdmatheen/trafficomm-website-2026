@@ -131,6 +131,7 @@ export const solutions: Solution[] = [
     links: [
       { href: "/services/performance-marketing", label: "Performance Marketing", meta: "Optimization system" },
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "GA4 · GTM · CAPI" },
+      { href: "/insights/campaign-measurement-implementation-validation", label: "Campaign measurement implementation and validation", meta: "Guide" },
       { href: "/solutions/white-label-ad-operations", label: "White-label delivery", meta: "Your brand in front" },
       { href: "/how-we-work", label: "How we work", meta: "Team & QA" },
       { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
@@ -196,6 +197,7 @@ export const solutions: Solution[] = [
     },
     links: [
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "One version of the data" },
+      { href: "/insights/campaign-measurement-implementation-validation", label: "Campaign measurement implementation and validation", meta: "Guide" },
       { href: "/services/reporting", label: "Reporting & Insights", meta: "Executive reporting" },
       { href: "/services/performance-marketing", label: "Performance Marketing", meta: "Paid social & search" },
       { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
