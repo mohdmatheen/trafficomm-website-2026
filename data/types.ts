@@ -161,7 +161,14 @@ export type ArticleCategory = "Industry Insight" | "Report" | "Benchmark" | "Gui
 
 export type Article = {
   slug: string;
+  /** Editorial headline. Rendered as the H1 and used as the SEO title unless `seoTitle` overrides it. */
   title: string;
+  /**
+   * Shorter title for the `<title>` tag, where an editorial headline would
+   * truncate in search results. The brand suffix is appended by the layout's
+   * title template, so this must not include it. Omit it and `title` is used.
+   */
+  seoTitle?: string;
   dek: string;
   category: ArticleCategory;
   author: { name: string; role: string };

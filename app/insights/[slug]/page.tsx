@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps<"/insights/[slug]">
   const { slug } = await params;
   const a = await getArticle(slug);
   if (!a) return {};
-  return buildMetadata({ title: a.title, description: a.dek, path: `/insights/${a.slug}`, type: "article", publishedTime: a.publishedAt });
+  return buildMetadata({ title: a.seoTitle ?? a.title, description: a.dek, path: `/insights/${a.slug}`, type: "article", publishedTime: a.publishedAt });
 }
 
 export default async function ArticlePage({ params }: PageProps<"/insights/[slug]">) {

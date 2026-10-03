@@ -179,6 +179,7 @@ export const articles: Article[] = [
   {
     slug: "gcc-multi-market-campaign-operations",
     title: "GCC Multi-Market Campaign Operations: A Practical Guide for Agencies",
+    seoTitle: "GCC Multi-Market Campaign Operations",
     dek: "Running one campaign across several Gulf markets is not a copy-and-change exercise. What to standardise, what genuinely has to differ by market, and how to keep structure, measurement, QA and reporting readable once a programme crosses borders.",
     category: "Guide",
     author: labAuthor,
@@ -412,6 +413,7 @@ export const articles: Article[] = [
   {
     slug: "arabic-english-creative-operations",
     title: "Arabic and English Creative Operations: Managing Bilingual Campaign Complexity",
+    seoTitle: "Arabic & English Creative Operations",
     dek: "Running campaigns in two languages is a version-control problem before it is a creative one. How to name, version, map and verify bilingual assets — and where linguistic approval ends and operational QA begins.",
     category: "Guide",
     author: labAuthor,

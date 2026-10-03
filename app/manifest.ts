@@ -8,7 +8,9 @@ import { company } from "@/data/site";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: `${company.name} — ${company.tagline}`,
+    // The installed shortcut carries the public entity name; the short form is the
+    // brand the site speaks in, matching the schema's name/alternateName pair.
+    name: `${company.publicName} — ${company.tagline}`,
     short_name: company.name,
     description: company.description,
     start_url: "/",

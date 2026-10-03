@@ -12,7 +12,7 @@ export const adOperationsPage: ServicePageContent = {
   seo: {
     title: "Ad Operations Services \u2014 Campaign Setup, QA & Reporting",
     description:
-      "Outsourced ad operations for agencies and media teams: campaign intake, trafficking, creative and campaign QA, monitoring, optimization support and reporting — delivered as an extension of your team.",
+      "Campaign setup, trafficking, creative and campaign QA, monitoring, optimization support and reporting across major advertising platforms — delivered inside your agency's operating model, tools and conventions.",
   },
   hero: {
     eyebrow: "Ad Operations",
