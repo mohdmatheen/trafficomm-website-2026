@@ -37,7 +37,8 @@ export const company = {
    */
   email: null as string | null,
   phone: null as string | null,
-  linkedin: null as string | null,
+  /** Verified official company page. Feeds Organization.sameAs; no other profile is emitted. */
+  linkedin: "https://www.linkedin.com/company/trafficomm-media-services/" as string | null,
   /** Optional booking link (e.g. Calendly). When null, "Schedule a call" routes through the form. */
   bookingUrl: null as string | null,
 };

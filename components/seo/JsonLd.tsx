@@ -21,8 +21,9 @@ export function JsonLd({ data }: { data: Json | Json[] }) {
  * here, so the schema can never claim a platform the pages do not show. The
  * capability terms are the ones the service pages already use as headings.
  *
- * There is no sameAs: Trafficomm has no verified public profile recorded in the
- * codebase, and an unverified social URL in an entity graph is worse than none.
+ * sameAs carries the verified official company page only, read from
+ * `company.linkedin`. An unverified or personal profile in an entity graph is
+ * worse than none, so nothing else is emitted and the field stays conditional.
  * There is no aggregateRating, review or award, because none exists.
  */
 const knowsAbout = [
