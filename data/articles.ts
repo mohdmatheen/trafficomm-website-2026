@@ -168,12 +168,210 @@ export const articles: Article[] = [
         text: "The agencies that handle a demanding Saudi calendar well are rarely the ones with the largest teams. They are the ones whose operation was designed before the peak arrived — naming settled, specifications agreed, measurement validated, QA treated as work, and capacity measured rather than assumed. Trafficomm has operated as that execution layer behind agencies since 2015; how it works as an engagement is set out under [ad operations outsourcing](/ad-operations-outsourcing).",
       },
     ],
-    related: ["ad-operations-capacity-planning", "campaign-launch-qa-checklist", "agency-guide-to-outsourcing-ad-operations"],
+    related: ["uae-digital-advertising-operations", "ad-operations-capacity-planning", "campaign-launch-qa-checklist", "agency-guide-to-outsourcing-ad-operations"],
     links: [
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
       { href: "/services/measurement", label: "Measurement & Analytics", meta: "Service" },
       { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
       { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+    ],
+  },
+  {
+    slug: "uae-digital-advertising-operations",
+    title: "UAE Digital Advertising Operations: A Practical Guide for Agencies",
+    seoTitle: "UAE Digital Advertising Operations for Agencies",
+    dek: "UAE campaigns meet both sides of the ad stack — the platforms an agency buys on, and the direct and publisher inventory it sells against. What that does to setup, QA, measurement and reporting.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-05",
+    hero: { kicker: "Regional Operations", motif: "flow" },
+    tags: ["UAE Digital Advertising", "Agency Operations", "Ad Operations", "Publisher Operations"],
+    body: [
+      {
+        type: "p",
+        text: "Most guides to advertising in the UAE are about demand: which platforms reach which audiences, what the media mix should look like, where budget should sit. This one is about the layer underneath — what actually has to be built, checked, trafficked, measured and reported once the plan is signed off.",
+      },
+      {
+        type: "p",
+        text: "That layer behaves differently in the UAE than it does in a single-platform, single-language market, for a reason that is structural rather than cultural. A team running UAE campaigns tends to meet both halves of the advertising stack: the platforms it buys on, and the direct and publisher inventory it buys or sells against. Those two halves have different build models, different approval paths and different reporting expectations, and the operational cost of running them together is routinely underestimated.",
+      },
+      {
+        type: "callout",
+        title: "On geography",
+        text: "Where this guide says UAE it means the market, not a particular emirate. The operational constraints below do not change between Dubai and Abu Dhabi — they change with platform count, language count, approval depth and inventory type. Trafficomm delivers from a centralised operations team rather than from offices in the market.",
+      },
+
+      { type: "h2", text: "Why UAE campaign operations become complex", id: "complexity" },
+      {
+        type: "p",
+        text: "Operational load and media budget are not the same variable. A campaign that doubles its budget on one platform with the same three creatives generates almost no additional execution work. A campaign that holds its budget while moving from two platforms to five, from one language to two, and from monthly to weekly reporting generates several times the work it did before.",
+      },
+      {
+        type: "p",
+        text: "UAE plans tend toward the second shape. Social, search, video and programmatic frequently appear in a single flight. Each platform is not one unit of work — it is a build model, a creative specification, an approval path, an export format and a set of metric definitions, each learned once and then applied every flight. Add a second language and most of those multiply rather than add. The method for sizing this properly, against measured hours rather than campaign count, is set out in [ad operations capacity planning](/insights/ad-operations-capacity-planning).",
+      },
+
+      { type: "h2", text: "Both sides of the UAE ad stack", id: "two-sides" },
+      {
+        type: "p",
+        text: "This is the characteristic that most separates UAE operations from a purely platform-led market, and it is worth stating plainly because it changes how a team should be staffed.",
+      },
+      {
+        type: "p",
+        text: "On the buy side, work looks familiar: campaign setup and trafficking across self-serve and managed platforms, creative versioning, pacing, optimisation support and reporting. On the sell side — direct deals, publisher inventory, sponsorships and ad-server-delivered placements — the work is different in kind. Inventory has to be defined before it can be sold. Placements have to exist in an ad server with the right sizes, priorities and targeting. Delivery has to be reconciled against what was contracted, and billing has to agree with what actually served.",
+      },
+      {
+        type: "p",
+        text: "Agencies that run only the buy side and then encounter a direct or publisher-sold component mid-campaign usually discover the gap at the worst moment: the week the creative is due. The ad-server configuration, the trafficking sheet and the delivery reconciliation are all work that nobody scoped, because the media plan described it in one line.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Decide, at planning stage, which elements of the campaign are platform-bought and which are ad-server-delivered.",
+          "Confirm who owns the ad-server setup — the agency, the publisher, or a partner — before the creative deadline rather than after it.",
+          "Agree how direct-sold delivery will be reconciled against contracted impressions, and who produces that reconciliation.",
+          "Treat billing-facing reporting as a separate deliverable from performance reporting; they answer different questions to different people.",
+        ],
+      },
+
+      { type: "h2", text: "Campaign setup and trafficking", id: "setup" },
+      {
+        type: "p",
+        text: "Setup is where most downstream problems are created, and it is almost entirely preventable work. The failures that recur are not exotic: a naming convention that drifted between platforms, a tracking parameter applied to four of five placements, a creative that went live against a placement whose dimensions it was not built for.",
+      },
+      {
+        type: "p",
+        text: "What prevents them is unglamorous. One naming convention, agreed before the year starts rather than mid-flight, applied identically on every platform. One creative specification matrix covering every placement in the plan, including the ad-server-delivered ones. One build sequence, so that trafficking does not begin until creative and tracking are both final. Where programmatic is in the mix, insertion-order and line-item structure in DV360 and trafficking in CM360 add a further layer that social-first teams are frequently not resourced for — the shape of work described under [programmatic operations](/services/programmatic).",
+      },
+
+      { type: "h2", text: "Creative operations across two languages", id: "creative" },
+      {
+        type: "p",
+        text: "UAE campaigns commonly run in Arabic and English. That is not two creative sets; it is two creative sets multiplied by every placement size, every platform specification and every approval state, and it is a version-control problem before it is a creative one.",
+      },
+      {
+        type: "p",
+        text: "The failure mode worth naming is the mismatched pairing — the Arabic creative in the English ad set, the correct asset on a placement whose dimensions it was not built for, the approved version superseded by a later file that never reached trafficking. Each is individually trivial. None is visible in the asset itself, only in the relationship between the asset and where it ended up. The naming, mapping and handoff controls that catch these before launch are set out in [Arabic and English creative operations](/insights/arabic-english-creative-operations).",
+      },
+      {
+        type: "p",
+        text: "One boundary is worth stating: language approval and operational QA are different functions. Deciding whether the Arabic copy is right is the client's or the agency's judgement. Confirming that the approved Arabic file is the one that went live, on the right placement, with the right tracking, is operations.",
+      },
+
+      { type: "h2", text: "Campaign QA", id: "qa" },
+      {
+        type: "p",
+        text: "QA is where volume shows up first. A team that can check twenty placements by eye cannot check two hundred, and the point at which informal checking stops working is rarely noticed until something reaches a client report.",
+      },
+      {
+        type: "p",
+        text: "The practical answer is to make QA a defined step with named ownership rather than a habit that happens when there is time. The checks that matter most in a two-language, two-stack environment are the ones nobody can perform from the creative alone.",
+      },
+      {
+        type: "table",
+        caption: "Pre-launch checks that recur in UAE campaigns",
+        head: ["Check", "What it catches", "Typical owner"],
+        rows: [
+          ["Creative-to-placement mapping", "Right asset, wrong placement or wrong language ad set", "Ad operations"],
+          ["Specification conformance", "Dimensions, weight and format against each platform's spec", "Ad operations"],
+          ["Tracking completeness", "Missing or inconsistent parameters across placements", "Measurement lead"],
+          ["Ad-server configuration", "Priority, targeting and delivery settings on direct-sold inventory", "Ad operations"],
+          ["Approval state", "An asset superseded after approval but before trafficking", "Account lead"],
+          ["Landing destination", "Language mismatch between creative and landing page", "Account lead"],
+        ],
+      },
+      {
+        type: "p",
+        text: "A worked sequence for this, usable as-is, is in the [campaign launch QA checklist](/insights/campaign-launch-qa-checklist).",
+      },
+
+      { type: "h2", text: "Measurement and tracking", id: "measurement" },
+      {
+        type: "p",
+        text: "Measurement has to be settled before spend, not reconciled after the first report disagrees with itself. The common UAE failure is not an absent measurement plan; it is one that was agreed conceptually and never validated in the accounts it describes.",
+      },
+      {
+        type: "p",
+        text: "Validation means something specific: the tags fire, the conversions arrive, the platform definitions and the analytics definitions have been compared rather than assumed equivalent, and someone has confirmed this in the live configuration before budget is committed. Where direct-sold and platform-bought inventory run together, a further question applies — which system is the source of truth for delivery, and what the agreed tolerance is when two systems disagree, as they will. The implementation and validation sequence is set out in [campaign measurement implementation and validation](/insights/campaign-measurement-implementation-validation).",
+      },
+
+      { type: "h2", text: "Programmatic operations", id: "programmatic" },
+      {
+        type: "p",
+        text: "Programmatic adds a structural layer rather than another platform. Insertion orders and line items have to be built so that reporting remains readable at the end of the month, creative has to be trafficked through an ad server rather than uploaded to a platform, and the relationship between what was planned, what was bought and what served has to be traceable.",
+      },
+      {
+        type: "p",
+        text: "In a market where direct and publisher-sold inventory sits alongside programmatic, that traceability is the whole job. The structure decided at build time determines whether the end-of-month view can separate programmatic delivery from direct delivery without a manual rebuild — and whether a discrepancy can be investigated in an hour or a week.",
+      },
+
+      { type: "h2", text: "Reporting across agency, advertiser and publisher", id: "reporting" },
+      {
+        type: "p",
+        text: "Reporting in the UAE frequently has more than one audience, and they do not want the same document. An advertiser wants performance against objective. An agency wants delivery and pacing against plan. A publisher or a direct-sold partner wants delivered impressions against what was contracted, in a form that can support billing.",
+      },
+      {
+        type: "p",
+        text: "Teams that treat these as one report produce something that serves none of them well, and then rebuild it by hand every month. Teams that treat reporting as operational work — defined metrics, consistent creative identifiers, a scheduled production cycle and an owner — produce all three from the same validated base. What that looks like as a process is set out in [agency campaign reporting operations](/insights/agency-campaign-reporting-operations).",
+      },
+
+      { type: "h2", text: "What agencies should keep internally", id: "keep" },
+      {
+        type: "p",
+        text: "Not everything in this guide should move away from the agency, and the distinction is not about difficulty. It is about proximity to the client relationship and to the decision.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Strategy, planning and the recommendation itself — these are the agency's product.",
+          "The client relationship, and every conversation in which a judgement is being made.",
+          "Approval of language, tone and brand treatment.",
+          "Final accountability for what was delivered and what it achieved.",
+        ],
+      },
+      {
+        type: "p",
+        text: "What is more readily externalised is the process-led execution that follows an approved plan: build, traffic, check, pace, extract, assemble. The distinction, and how to test it against a specific operation, is examined in [building versus outsourcing an ad operations team](/insights/building-vs-outsourcing-ad-operations-team).",
+      },
+
+      { type: "h2", text: "Where an operations partner fits", id: "partner" },
+      {
+        type: "p",
+        text: "An operations partner is useful in a UAE context for a narrow and testable reason: the execution layer is volume-sensitive and specification-driven, which means it benefits from being done by a team that does only that, inside the conventions the agency has already set.",
+      },
+      {
+        type: "p",
+        text: "The arrangement works when responsibility is defined before execution begins — who builds, who checks, who approves, who reports, and what happens when something is wrong at eleven at night before a launch. It fails when it is treated as a staffing arrangement without an operating model. How the engagement is structured, and what governance it needs, is set out under [ad operations outsourcing](/ad-operations-outsourcing) and in [outsourced ad operations governance](/insights/outsourced-ad-operations-governance).",
+      },
+
+      { type: "h2", text: "Trafficomm's documented UAE campaign experience", id: "experience" },
+      {
+        type: "p",
+        text: "Two separate UAE engagements are documented, and they are worth distinguishing because they sit on opposite sides of the stack described above. Their figures belong to different pieces of work and should not be read together.",
+      },
+      {
+        type: "p",
+        text: "The first is publisher-side. For a UAE television broadcast group operating multiple channels, Trafficomm analysed the website, designed an advertising inventory framework and a video preroll strategy, integrated the site with Google Ad Manager, and launched and managed 50+ advertising campaigns through it, with automated inventory, billing and campaign reporting. That engagement is set out in full in the [UAE broadcaster monetization case study](/case-studies/uae-broadcaster-monetization).",
+      },
+      {
+        type: "p",
+        text: "The second is campaign scale on the buy side: one of the largest campaigns Trafficomm has handled was a UAE tourism campaign with an approximate campaign value of $10M. That figure is the media value handled on that single campaign. It is not Trafficomm revenue, client revenue, annual spend or a cumulative total, and it is unrelated to the broadcaster engagement above.",
+      },
+      {
+        type: "p",
+        text: "More broadly, Trafficomm's documented campaign experience spans Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, delivered from one centralised operations team rather than from offices in each market. That is historical experience rather than a boundary on where the model can operate. Separate engagements in the wider region — a leading MENA advertising agency operating from approximately 12 offices, and an international agency's performance accounts in the Middle East — are documented in their own right in the [case studies](/case-studies); their figures describe those engagements and not the UAE work above.",
+      },
+      {
+        type: "p",
+        text: "Running UAE campaigns well is rarely a question of team size. It is a question of whether the operation was designed before the volume arrived: naming settled, specifications agreed, measurement validated, ad-server responsibility assigned, QA treated as work rather than goodwill, and capacity measured rather than estimated from a campaign count.",
+      },
+    ],
+    related: ["gcc-multi-market-campaign-operations", "arabic-english-creative-operations", "saudi-digital-advertising-outlook-2027"],
+    links: [
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
+      { href: "/case-studies/uae-broadcaster-monetization", label: "UAE broadcaster monetization", meta: "Case study" },
     ],
   },
   {
@@ -402,7 +600,7 @@ export const articles: Article[] = [
         text: "Trafficomm has campaign experience across Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, delivered from one centralised operation working inside the conventions an agency has already set. That is documented historical experience rather than a boundary on where the model can operate, and the constraints described here recur wherever a programme crosses borders. How it works as an engagement is set out under [ad operations outsourcing](/ad-operations-outsourcing).",
       },
     ],
-    related: ["saudi-digital-advertising-outlook-2027", "arabic-english-creative-operations", "ad-operations-capacity-planning"],
+    related: ["saudi-digital-advertising-outlook-2027", "uae-digital-advertising-operations", "arabic-english-creative-operations", "ad-operations-capacity-planning"],
     links: [
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
       { href: "/services/reporting", label: "Reporting & Insights", meta: "Service" },
