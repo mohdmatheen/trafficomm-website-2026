@@ -127,6 +127,7 @@ export const adOperationsPage: ServicePageContent = {
     { href: "/insights/agency-campaign-reporting-operations", label: "Agency campaign reporting operations", meta: "Guide" },
     { href: "/insights/campaign-measurement-implementation-validation", label: "Campaign measurement implementation and validation", meta: "Guide" },
     { href: "/insights/gcc-multi-market-campaign-operations", label: "GCC multi-market campaign operations", meta: "Guide" },
+    { href: "/labs/adops-capacity", label: "AdOps capacity calculator", meta: "Free tool" },
   ],
   cta: {
     eyebrow: "Let's talk Ad Operations",

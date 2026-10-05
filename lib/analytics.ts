@@ -44,6 +44,12 @@ export type AnalyticsEvent =
   | "report_requested"
   | "pricing_requested"
   | "consultation_requested"
+  /** The visitor began the delivery-estimate form (first input, once per mount). */
+  | "delivery_estimate_started"
+  /** The server confirmed the request was delivered. The only Labs conversion event. */
+  | "delivery_estimate_submitted"
+  /** The analysis report was generated for download or print. */
+  | "report_downloaded"
   | "tool_completed";
 
 /**

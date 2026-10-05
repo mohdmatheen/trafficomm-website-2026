@@ -5,13 +5,33 @@
  * cell it comes from so the two can be diffed. Nothing is rounded except where
  * the workbook rounds (Engine!B25); presentation rounding happens in the UI.
  *
- * Two quirks are reproduced deliberately rather than "corrected", because the
- * workbook is the source of truth and changing them would change published
- * numbers:
- *   - Engine!B24 term 1 is COUNTIF(Inputs!B4:B4,"<>"), which is always 1.
- *   - The lead score counts "3+ markets" twice (Engine!E8 and E12).
- * Both are flagged in the discovery notes.
+ * METHODOLOGY v1.1 — two authorised departures from the workbook.
+ *
+ * Phase 1 reproduced the workbook exactly, including two defects. Both were
+ * reviewed and their correction signed off; everything else remains a faithful
+ * transcription.
+ *
+ *   1. Complexity index (Engine!B24). The first term was
+ *      COUNTIF(Inputs!B4:B4,"<>"), a count of non-empty cells in a single-cell
+ *      range — always 1, regardless of any input. What it was meant to measure
+ *      cannot be established from the workbook: B4 holds Business Type, which is
+ *      a category rather than a magnitude, and nothing else in the sheet suggests
+ *      a scale it belonged to. Rather than invent a replacement dimension, the
+ *      term is removed and the remaining dimensions carry the average. This
+ *      raises the index, because a constant 1 was dragging it down.
+ *
+ *   2. Lead score (Engine!D4:E14). "3+ markets" was scored twice, at E8 and
+ *      again at E12 under the label "Multi-market scale". The duplicate is
+ *      removed so one condition earns points once. Classification thresholds are
+ *      unchanged.
+ *
+ * Still reproduced as-is, and still worth noting: Engine!B24 carries a hardcoded
+ * 4 as its final term. It is a constant, not a measured dimension, but changing
+ * it was not part of this correction.
  */
+
+/** Stamped onto every lead submission so a figure can be traced to the model that produced it. */
+export const METHODOLOGY_VERSION = "1.1";
 import {
   ACTIVITIES,
   EFFICIENCY_INPUTS,
@@ -124,10 +144,9 @@ export function calculate(input: CalculatorInput): CalculatorResult {
   const externalizableFte = safeDiv(externalizableHours, productiveHoursPerFte);         // Engine!B22
   const externalizableCost = externalizableHours * effectiveHourlyCost;                  // Engine!B23
 
-  // Engine!B24. The first term is COUNTIF over a single non-empty cell, so it is
-  // always 1; kept to match the workbook rather than quietly re-weighting.
+  // Engine!B24, v1.1: the always-1 COUNTIF term is gone and the remaining
+  // dimensions carry the average. See the file header for why it is not replaced.
   const complexityIndex = mean([
-    1,
     clamp(input.marketsManaged, 1, 5),
     clamp(op.avgCreativesPerCampaign / 4, 1, 5),
     op.reportingComplexity,
@@ -188,9 +207,10 @@ export function calculate(input: CalculatorInput): CalculatorResult {
 
 /**
  * Engine!D4:E14. Internal routing signal for an intentional enquiry only — it is
- * never shown to the user and never derived from anything they did not submit.
- * Note Engine!E8 and E12 both score "3+ markets"; the duplication is the
- * workbook's and is preserved so the classification thresholds still line up.
+ * never shown to the user, never rendered in the report, and never sent to
+ * analytics. v1.1 removes the workbook's duplicate "3+ markets" scoring; the
+ * classification thresholds are unchanged, so a prospect's band can only move if
+ * the duplicate was what pushed them over one.
  */
 export function leadScore(input: CalculatorInput, r: CalculatorResult) {
   const marketName = MARKETS[input.market].name;
@@ -204,7 +224,7 @@ export function leadScore(input: CalculatorInput, r: CalculatorResult) {
     { key: "manualReporting", points: input.efficiency.reportingAutomation <= 2 ? 10 : 0 },
     { key: "manualSetup", points: input.efficiency.setupAutomation <= 2 ? 10 : 0 },
     { key: "executionShare", points: safeDiv(r.executionHours, r.productiveCapacity) >= 0.5 ? 10 : 0 },
-    { key: "multiMarketScale", points: input.marketsManaged >= 3 ? 5 : 0 },
+    // Engine!E12 duplicated the "markets" condition above. Removed in v1.1.
   ];
   const total = parts.reduce((s, p) => s + p.points, 0);
   const classification = total >= 70 ? "Priority" : total >= 50 ? "High" : total >= 30 ? "Medium" : "Low";

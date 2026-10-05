@@ -266,6 +266,26 @@ export function buildProviderRequest(config: EmailConfig, record: AssessmentReco
   };
 }
 
+/**
+ * Sends an already-composed message through the configured provider. Separated
+ * from `sendAssessmentEmail` so another intentional submission — the Labs
+ * delivery-estimate request — can reuse the same provider layer, credentials and
+ * failure semantics instead of duplicating them.
+ */
+export async function sendEmail(config: EmailConfig, email: AssessmentEmail): Promise<void> {
+  const provider = endpoints[config.provider];
+  const res = await fetch(provider.url, {
+    method: "POST",
+    headers: provider.headers(config.apiKey),
+    body: JSON.stringify(provider.body(config, email)),
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new Error(`${config.provider} responded ${res.status}${detail ? `: ${detail.slice(0, 300)}` : ""}`);
+  }
+}
+
 /** Throws on any non-2xx so the caller can refuse the submission rather than claim success. */
 export async function sendAssessmentEmail(config: EmailConfig, record: AssessmentRecord): Promise<void> {
   const { url, headers, body } = buildProviderRequest(config, record);

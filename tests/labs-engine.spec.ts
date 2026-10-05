@@ -56,7 +56,8 @@ test.describe("AdOps capacity engine — workbook parity (Saudi default scenario
   });
 
   test("complexity and efficiency (Engine!B24:B25, Dashboard!E8:E13)", () => {
-    near(r.complexityIndex, 3.2);
+    // v1.1: 3.2 under the workbook, which averaged in an always-1 COUNTIF term.
+    near(r.complexityIndex, 3.75);
     expect(r.efficiencyScore).toBe(65);
     near(r.efficiencyScoreRaw, 65.17647058823529);
     const by = Object.fromEntries(r.efficiencyBreakdown.map((b) => [b.key, b.score]));
@@ -82,9 +83,12 @@ test.describe("AdOps capacity engine — workbook parity (Saudi default scenario
   });
 
   test("lead score (Engine!D4:E14)", () => {
+    // v1.1: 85 under the workbook, which scored "3+ markets" twice.
     const s = leadScore(defaultInput("SA"), r);
-    expect(s.total).toBe(85);
+    expect(s.total).toBe(80);
     expect(s.classification).toBe("Priority");
+    expect(s.parts.filter((p) => p.key === "markets")).toHaveLength(1);
+    expect(s.parts.map((p) => p.key)).not.toContain("multiMarketScale");
   });
 });
 
@@ -244,5 +248,60 @@ test.describe("scenario simulator", () => {
     const high = applyScenario(input, { reportingAutomation: 99, externalAllocation: 99 });
     near(low.internalHours, base.workloadHours);
     near(high.internalHours, applyScenario(input, { reportingAutomation: 1, externalAllocation: 1 }).internalHours);
+  });
+});
+
+
+import { METHODOLOGY_VERSION } from "../lib/labs/engine";
+
+test.describe("methodology v1.1 — scope of the correction", () => {
+  test("is stamped so a figure can be traced to the model that produced it", () => {
+    expect(METHODOLOGY_VERSION).toBe("1.1");
+  });
+
+  test("no financial or capacity metric moved", () => {
+    // The two corrections touch the complexity index and the internal lead score
+    // only. Everything a visitor actually sees must still match the workbook, so
+    // these are asserted against the same cached values as before.
+    for (const market of ["SA", "AE"] as const) {
+      const r = calculate(defaultInput(market));
+      near(r.productiveCapacity, 1177.76);
+      near(r.workloadHours, 1169.0999999999999);
+      near(r.utilization, 0.99264705882352933);
+      near(r.executionHours, 801.05);
+      near(r.externalizableHours, 725.27500000000009);
+      near(r.externalizableFte, 4.9264705882352944);
+      expect(r.efficiencyScore).toBe(65);
+    }
+    const sa = calculate(defaultInput("SA"));
+    near(sa.loadedMonthlyCost, 112800);
+    near(sa.executionCost, 76720.588235294112);
+    near(sa.costPerCampaign, 511.47058823529409);
+    const ae = calculate(defaultInput("AE"));
+    near(ae.loadedMonthlyCost, 223800);
+  });
+
+  test("complexity index responds to its inputs instead of being anchored by a constant 1", () => {
+    const lo = defaultInput("SA");
+    lo.marketsManaged = 1;
+    lo.operating = { ...lo.operating, avgCreativesPerCampaign: 4, reportingComplexity: 1 };
+    const hi = defaultInput("SA");
+    hi.marketsManaged = 5;
+    hi.operating = { ...hi.operating, avgCreativesPerCampaign: 20, reportingComplexity: 5 };
+    // Under the workbook both ends were compressed by the always-1 term; the
+    // corrected index spans a usefully wider range.
+    near(calculate(lo).complexityIndex, (1 + 1 + 1 + 4) / 4);
+    near(calculate(hi).complexityIndex, (5 + 5 + 5 + 4) / 4);
+    expect(calculate(hi).complexityIndex).toBeGreaterThan(calculate(lo).complexityIndex);
+  });
+
+  test("one condition cannot be scored twice", () => {
+    const i = defaultInput("SA");
+    i.marketsManaged = 3;
+    const withMarkets = leadScore(i, calculate(i));
+    i.marketsManaged = 2;
+    const withoutMarkets = leadScore(i, calculate(i));
+    // Exactly one 5-point step, not two.
+    expect(withMarkets.total - withoutMarkets.total).toBe(5);
   });
 });

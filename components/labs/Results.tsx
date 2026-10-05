@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { BarRows, ScoreBars, ScoreDial, StackedBar, type Datum } from "@/components/labs/charts";
+import { DeliveryEstimate } from "@/components/labs/DeliveryEstimate";
+import { Report } from "@/components/labs/Report";
 import { CountUp, EstimatedTag, Money, Slider, Stat } from "@/components/labs/primitives";
 import { formatHours, formatMoney, formatNumber, formatPercent } from "@/lib/labs/currency";
 import { MAX_REPORTING_REDUCTION } from "@/lib/labs/scenario";
@@ -18,7 +19,7 @@ const CATEGORY_TONE: Record<string, Datum["tone"]> = {
 };
 
 export function Results(ctx: Ctx) {
-  const { state, dispatch, result: r, scenario, market, fx, context, trackEvent } = ctx;
+  const { state, dispatch, result: r, market, fx, context, trackEvent } = ctx;
   const over = r.utilization > 1;
 
   return (
@@ -68,8 +69,15 @@ export function Results(ctx: Ctx) {
           ))}
         </dl>
 
-        <p className="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.1em] text-steel">
-          USD at {fx.rate.toFixed(5)} · {fx.source === "fallback" ? `snapshot ${fx.asOf}` : `live rate ${fx.asOf}`}
+        {/* One line for the whole screen rather than FX metadata on every tile. */}
+        <p className="mt-4 text-[0.82rem] leading-relaxed text-steel">
+          USD equivalents use 1 {market.currency} = {fx.rate.toFixed(5)} USD,{" "}
+          {fx.source === "fallback" ? (
+            <>reference rate from {formatDate(fx.asOf)}</>
+          ) : (
+            <>rate updated {formatDate(fx.asOf)}</>
+          )}
+          .
         </p>
       </section>
 
@@ -170,38 +178,35 @@ export function Results(ctx: Ctx) {
 
       {/* Commercial bridge. No price is quoted, because no standardised delivery
           price exists in the model — stating one would be invention. */}
-      <section aria-labelledby="delivery-title" className="rounded-[var(--radius-panel)] bg-ink p-6 text-white sm:p-10">
-        <p className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-fog">Trafficomm delivery scenario</p>
-        <h3 id="delivery-title" className="mt-4 text-[clamp(1.6rem,1.3rem+1.4vw,2.4rem)] leading-[1.1] tracking-[-0.03em]">
-          {formatNumber(scenario.externallyDeliveredHours || r.externalizableHours, 0)} hours a month potentially suitable for external delivery.
-        </h3>
-        <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-fog">
-          Trafficomm has run campaign execution behind agencies since 2015 — setup, trafficking, QA, pacing checks, optimisation support within the scope you
-          define, reporting and measurement setup. What that costs depends on the scope, so we would rather look at your numbers than quote a rate against an estimate.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/contact"
-            onClick={() => trackEvent("pricing_requested", context())}
-            className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 text-[0.98rem] font-medium text-ink outline-offset-4 transition-colors duration-200 hover:bg-paper motion-reduce:transition-none"
-          >
-            Request a delivery estimate
-            <span aria-hidden="true">→</span>
-          </Link>
-          <Link
-            href="/contact#call"
-            onClick={() => trackEvent("consultation_requested", context())}
-            className="inline-flex min-h-11 items-center rounded-full px-6 text-[0.98rem] text-white outline-offset-4 ring-1 ring-inset ring-line-dark-strong transition-colors duration-200 hover:ring-white motion-reduce:transition-none"
-          >
-            Discuss my operation
-          </Link>
-        </div>
-        <p className="mt-6 max-w-2xl text-[0.84rem] leading-relaxed text-mute">
-          Your inputs stay in this browser. Nothing is sent to Trafficomm unless you choose to get in touch.
-        </p>
-      </section>
+      <DeliveryEstimate {...ctx} />
 
-      <div className="flex flex-wrap gap-4">
+      {/* Hidden on screen; the only thing that prints. */}
+      <div className="labs-report-host">
+        <Report {...ctx} />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <button
+          type="button"
+          onClick={() => {
+            trackEvent("report_downloaded", context());
+            // The browser's print dialog offers "Save as PDF" on every modern
+            // platform; see the print stylesheet in globals.css for why that is
+            // preferred to bundling a generator. The class scopes the isolation
+            // to this action, and is removed however the dialog is dismissed.
+            const body = document.body;
+            const clear = () => body.classList.remove("labs-printing");
+            body.classList.add("labs-printing");
+            window.addEventListener("afterprint", clear, { once: true });
+            // Safari does not always fire afterprint; this is the safety net.
+            window.setTimeout(clear, 60_000);
+            window.print();
+          }}
+          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-6 text-[0.95rem] font-medium text-white outline-offset-4 transition-colors duration-200 hover:bg-graphite motion-reduce:transition-none"
+        >
+          Download my analysis
+          <span aria-hidden="true">↓</span>
+        </button>
         <button
           type="button"
           onClick={() => dispatch({ type: "goto", step: "operations" })}
@@ -219,6 +224,12 @@ export function Results(ctx: Ctx) {
       </div>
     </div>
   );
+}
+
+/** "2026-10-05" reads as a date, not a key. */
+function formatDate(iso: string): string {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? iso : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
 }
 
 function Simulator({ ctx }: { ctx: Ctx }) {

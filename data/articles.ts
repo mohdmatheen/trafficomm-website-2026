@@ -1176,7 +1176,7 @@ export const articles: Article[] = [
       { type: "h2", text: "Measure your own capacity and workload", id: "measure-your-own" },
       {
         type: "p",
-        text: "The method below produces numbers specific to one agency, which is the point. Observe a representative period — long enough to include a launch cycle and a reporting cycle, and not one anyone would call unusual — rather than estimating from memory, which underestimates recurring work and forgets interruptions entirely.",
+        text: "The method below produces numbers specific to one agency, which is the point. The [AdOps capacity calculator](/labs/adops-capacity) runs the same method interactively if you would rather start there. Observe a representative period — long enough to include a launch cycle and a reporting cycle, and not one anyone would call unusual — rather than estimating from memory, which underestimates recurring work and forgets interruptions entirely.",
       },
       {
         type: "ul",

@@ -130,15 +130,28 @@ export const EFFICIENCY_INPUTS: { id: EfficiencyId; label: string; component: "a
   { id: "dashboardEfficiency", label: "Dashboard / reporting efficiency", component: "reporting" },
 ];
 
-/** Inputs!D4:E9 — editable operating assumptions. */
-export const OPERATING_DEFAULTS = {
+/**
+ * Inputs!D4:E9 — operating assumptions. These are editable, so the type carries
+ * `number` rather than the literal values: an `as const` here would narrow the
+ * defaults into the input type and reject any other figure.
+ */
+export type OperatingAssumptions = {
+  hoursPerWeek: number;
+  weeksPerMonth: number;
+  productiveAvailability: number;
+  employerOverhead: number;
+  avgCreativesPerCampaign: number;
+  reportingComplexity: number;
+};
+
+export const OPERATING_DEFAULTS: OperatingAssumptions = {
   hoursPerWeek: 40,
   weeksPerMonth: 4.33,
   productiveAvailability: 0.85,
   employerOverhead: 0.2,
   avgCreativesPerCampaign: 8,
   reportingComplexity: 4,
-} as const;
+};
 
 export type BusinessType = "Agency" | "Brand / In-house";
 
@@ -153,7 +166,7 @@ export type CalculatorInput = {
   salaries: Record<RoleId, number>;
   hoursPerWeek: Record<ActivityId, number>;
   efficiency: Record<EfficiencyId, number>;
-  operating: typeof OPERATING_DEFAULTS;
+  operating: OperatingAssumptions;
 };
 
 /** The workbook's own default scenario (Inputs sheet as supplied). */

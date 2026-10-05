@@ -7,9 +7,9 @@ import { siteUrl } from "@/data/site";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "Ad Operations Outsourcing Calculator — AdOps Capacity",
+  title: "Ad Operations Outsourcing Calculator — Cost & Capacity",
   description:
-    "Free calculator for agencies: work out what your ad operations cost, how much team capacity campaign execution consumes, and how many hours a month could be delivered externally. Saudi Arabia and UAE.",
+    "Free ad operations cost and capacity calculator for agencies. Measure what campaign execution costs your team, how much capacity it consumes, and how many hours a month could be delivered externally. Saudi Arabia and UAE, in SAR, AED and USD.",
   path: "/labs/adops-capacity",
 });
 
