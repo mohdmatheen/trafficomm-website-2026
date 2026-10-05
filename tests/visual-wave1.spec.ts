@@ -46,8 +46,11 @@ test.describe("performance optimization engine", () => {
 
     await pick(page, "Budget");
     await expect(panel(page)).toContainText("Most of the budget sitting in one ad set");
-    // Illustrative process data is labelled wherever it appears.
-    await expect(system(page).getByText("Illustrative data", { exact: true })).toBeVisible();
+    // Illustrative process data is labelled on the panel actually being shown.
+    // Every panel is now in the markup so the content is crawlable, so scoping
+    // this to the visible panel is the stronger assertion as well as the
+    // unambiguous one.
+    await expect(panel(page).getByText("Illustrative data", { exact: true })).toBeVisible();
   });
 
   test("every recommendation ends with a person", async ({ page }) => {

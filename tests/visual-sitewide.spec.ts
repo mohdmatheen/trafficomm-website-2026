@@ -104,7 +104,13 @@ test.describe("homepage service explorer", () => {
 });
 
 test.describe("creative format explorer", () => {
-  const panel = (page: Page) => page.locator("section[aria-labelledby=fmt-title] [role=tabpanel]");
+  /**
+   * The panel the viewer is actually shown. Every panel is in the markup so the
+   * format descriptions are crawlable, so an unqualified `[role=tabpanel]` now
+   * matches all five — scoping to the visible one is both unambiguous and the
+   * stronger assertion, since it proves the selected tab reveals its own content.
+   */
+  const panel = (page: Page) => page.locator("section[aria-labelledby=fmt-title] [role=tabpanel]:not([hidden])");
 
   test("formats are drawn to their real proportions", async ({ page }) => {
     await page.goto("/services/creative-adtech");
@@ -215,6 +221,6 @@ test.describe("reduced motion", () => {
     await expect(page.locator("section[aria-labelledby=services-title]").getByRole("tabpanel")).toContainText("Creative & AdTech");
 
     await page.goto("/services/creative-adtech");
-    await expect(page.locator("section[aria-labelledby=fmt-title] [role=tabpanel]")).toContainText("Standard IAB sizes");
+    await expect(page.locator("section[aria-labelledby=fmt-title] [role=tabpanel]:not([hidden])")).toContainText("Standard IAB sizes");
   });
 });

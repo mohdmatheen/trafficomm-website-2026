@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { calculate, leadScore } from "../lib/labs/engine";
+import { buildLabsLeadEmail, sanitizeLabsContext, type LabsLeadRecord } from "../lib/labs/lead";
 import { MARKETS, defaultInput } from "../lib/labs/model";
 
 /**
@@ -303,5 +304,36 @@ test.describe("methodology v1.1 — scope of the correction", () => {
     const withoutMarkets = leadScore(i, calculate(i));
     // Exactly one 5-point step, not two.
     expect(withMarkets.total - withoutMarkets.total).toBe(5);
+  });
+});
+
+/**
+ * Lead email framing.
+ *
+ * A preview or local submission lands in the same inbox as a real one, so the
+ * subject has to say which it is — /api/assessment already does this, and a test
+ * lead mistaken for a prospect is an expensive kind of confusion.
+ */
+test.describe("labs lead email", () => {
+  const record = (environment: LabsLeadRecord["environment"]): LabsLeadRecord => ({
+    type: "labs_delivery_estimate",
+    tool: "adops-capacity",
+    name: "Test Person",
+    company: "Meridian Media",
+    email: "test@example.com",
+    role: "",
+    phone: "",
+    submittedAt: "2026-10-05T00:00:00.000Z",
+    environment,
+    context: sanitizeLabsContext({ market: "Saudi Arabia", externalizableHours: 725 }),
+  });
+
+  test("non-production submissions are marked in the subject", () => {
+    expect(buildLabsLeadEmail(record("preview")).subject).toMatch(/^\[preview\] Labs delivery estimate/);
+    expect(buildLabsLeadEmail(record("development")).subject).toMatch(/^\[development\] Labs delivery estimate/);
+  });
+
+  test("production submissions carry no prefix", () => {
+    expect(buildLabsLeadEmail(record("production")).subject).toMatch(/^Labs delivery estimate — Meridian Media/);
   });
 });

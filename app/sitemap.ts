@@ -11,6 +11,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // "/ad-operations-outsourcing" is a cornerstone commercial page, ranked alongside
   // the section indexes rather than below them.
   const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact", "/ad-operations-outsourcing"];
+  // Labs is listed separately: the calculator is a search destination in its own
+  // right, the index is a hub. Both were reachable only through in-body links.
+  const labsRoutes: [string, number][] = [
+    ["/labs/adops-capacity", 0.8],
+    ["/labs", 0.5],
+  ];
   const entry = (path: string, priority: number, lastModified: Date = now): MetadataRoute.Sitemap[number] => ({
     url: `${siteUrl}${path}`,
     lastModified,
@@ -20,6 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getArticles();
   return [
     ...staticRoutes.map((p) => entry(p, p === "" ? 1 : 0.8)),
+    ...labsRoutes.map(([p, priority]) => entry(p, priority)),
     ...services.map((s) => entry(`/services/${s.slug}`, 0.9)),
     ...solutions.map((s) => entry(`/solutions/${s.slug}`, 0.8)),
     ...platforms.map((p) => entry(`/platforms/${p.slug}`, 0.7)),

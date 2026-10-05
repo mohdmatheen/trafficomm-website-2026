@@ -412,7 +412,7 @@
     text-transform: uppercase;
     color: #c42b27;
   }
-  .labs-report h1 { margin: 5pt 0 0; font: 600 20pt/1.1 var(--font-sans), sans-serif; letter-spacing: -0.02em; }
+  .labs-report .report-title { margin: 5pt 0 0; font: 600 20pt/1.1 var(--font-sans), sans-serif; letter-spacing: -0.02em; }
   .labs-report .report-meta { text-align: right; }
   .labs-report .report-meta p { margin: 0; font: 9pt/1.5 var(--font-mono), monospace; color: #5d5d64; }
 

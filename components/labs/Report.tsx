@@ -83,7 +83,9 @@ export function Report({ state, result: r, scenario, market, fx }: Ctx) {
       <header className="report-head">
         <div>
           <p className="report-brand">Trafficomm Labs</p>
-          <h1>AdOps Capacity Analysis</h1>
+          {/* Not an <h1>: the page already has one, and this block is in the DOM
+              at all times. The print styles carry the typography. */}
+          <p className="report-title">AdOps Capacity Analysis</p>
         </div>
         <div className="report-meta">
           <p>{today}</p>
@@ -118,7 +120,7 @@ export function Report({ state, result: r, scenario, market, fx }: Ctx) {
       <Table title="Externalizable workload" data={external} />
 
       <section className="report-block">
-        <h2>Capacity allocation</h2>
+        <h2>How productive capacity is consumed</h2>
         <table>
           <tbody>
             {[
@@ -163,7 +165,10 @@ export function Report({ state, result: r, scenario, market, fx }: Ctx) {
               </tr>
               <tr>
                 <th scope="row">Internal capacity released</th>
-                <td>{formatHours(released)} · equivalent to {formatNumber(released / (r.productiveHoursPerFte || 1), 1)} full-time productive capacities</td>
+                <td>
+                  {formatHours(released)} · equivalent to {formatNumber(released / (r.productiveHoursPerFte || 1), 1)} full-time productive capacities. The
+                  same hours as the row above, seen from the internal side — the two are not additive.
+                </td>
               </tr>
             </tbody>
           </table>

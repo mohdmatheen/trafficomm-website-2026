@@ -99,7 +99,7 @@ export function Results(ctx: Ctx) {
           </div>
         </div>
         <div>
-          <h3 className="text-[1.35rem] tracking-[-0.025em] text-ink">Capacity allocation</h3>
+          <h3 className="text-[1.35rem] tracking-[-0.025em] text-ink">How that capacity is consumed</h3>
           <p className="mt-2 text-[0.94rem] leading-relaxed text-steel">
             {over ? "The workload exceeds capacity, so there is no unused headroom." : "How the team's productive capacity divides."}
           </p>

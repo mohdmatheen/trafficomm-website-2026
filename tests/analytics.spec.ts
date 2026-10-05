@@ -158,9 +158,16 @@ test.describe("no personal data reaches dataLayer", () => {
     for (const key of allowedParams) {
       expect(key, `"${key}" reads like personal data`).not.toMatch(/email|phone|company|challenge|address|first_?name|last_?name|full_?name|user_|customer_|visitor_/i);
     }
-    // The three "*_name" keys are identifiers of published things, never of people:
-    // a form ("operations_assessment"), a solution slug and a case study slug.
-    expect([...allowedParams].filter((k) => k.endsWith("_name")).sort()).toEqual(["case_study_name", "form_name", "solution_name"]);
+    // Every "*_name" key identifies a published thing, never a person: a form
+    // ("operations_assessment"), a solution slug, a case study slug and a Labs
+    // tool slug ("adops-capacity"). The list is enumerated rather than pattern
+    // matched so that adding a key is a decision someone has to make here.
+    expect([...allowedParams].filter((k) => k.endsWith("_name")).sort()).toEqual([
+      "case_study_name",
+      "form_name",
+      "solution_name",
+      "tool_name",
+    ]);
   });
 
   test("any key outside the allowlist is dropped", async () => {

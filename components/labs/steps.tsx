@@ -114,7 +114,7 @@ export function TeamStep(ctx: Ctx) {
   return (
     <Question
       title="Who runs it?"
-      hint="Headcount by role. Salaries default to market assumptions — switch to your own costs if you prefer, and nothing you type leaves your browser."
+      hint="Count the people who do ad operations work — campaign execution, reporting and measurement — not the whole agency. Salaries default to market assumptions; switch to your own costs if you prefer, and nothing you type leaves your browser."
       aside={
         <div className="rounded-[var(--radius-card)] bg-white p-5 ring-1 ring-inset ring-line sm:p-6">
           <p className="font-mono text-[0.66rem] uppercase tracking-[0.12em] text-steel">Monthly team cost</p>

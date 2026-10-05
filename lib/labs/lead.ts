@@ -229,7 +229,11 @@ ${section("Internal", [row("Lead score", `${c.leadScore} — ${c.leadClassificat
 export function buildLabsLeadEmail(r: LabsLeadRecord) {
   const c = r.context;
   return {
-    subject: `Labs delivery estimate — ${r.company} (${c.market}, ${Math.round(c.externalizableHours)} hrs/mo externalizable)`,
+    // Prefixed off production, as /api/assessment does: a preview or local test
+    // landing in the same inbox must not be mistaken for a real lead.
+    subject: `${r.environment === "production" ? "" : `[${r.environment}] `}Labs delivery estimate — ${r.company} (${c.market}, ${Math.round(
+      c.externalizableHours,
+    )} hrs/mo externalizable)`,
     replyTo: r.email,
     text: labsLeadText(r),
     html: labsLeadHtml(r),

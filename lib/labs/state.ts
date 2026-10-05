@@ -99,8 +99,23 @@ function reducer(state: LabsState, action: Action): LabsState {
       return { ...state, input: { ...state.input, market: action.market, salaries } };
     }
 
-    case "patchInput":
-      return { ...state, input: { ...state.input, ...action.patch } };
+    case "patchInput": {
+      // The business questions are estimator drivers as well as engine inputs.
+      // They were previously only the latter, so campaign volume, client count
+      // and market count moved cost-per-campaign and the complexity index but
+      // left the estimated workload sitting on the baseline — the step says
+      // these shape the workload estimate, and now they do. `withEstimate` is a
+      // no-op once hours have been entered by hand, so a visitor who typed their
+      // own figures still keeps them.
+      const input = { ...state.input, ...action.patch };
+      const drivers = {
+        ...state.drivers,
+        campaignsPerMonth: input.campaignsPerMonth,
+        activeClients: input.activeClients,
+        marketsManaged: input.marketsManaged,
+      };
+      return withEstimate({ ...state, input, drivers });
+    }
 
     case "setHeadcount":
       return { ...state, input: { ...state.input, headcount: { ...state.input.headcount, [action.role]: Math.max(0, Math.min(999, action.value)) } } };

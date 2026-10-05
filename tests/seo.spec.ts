@@ -194,7 +194,10 @@ test.describe("structured data", () => {
     const all = (await schemas(page)).flat();
     const org = all.find((s) => s["@type"] === "Organization");
     expect(org).toBeDefined();
-    expect(org.name).toBe("Trafficomm");
+    // The entity name, not the wordmark: "Trafficomm Digital" is what the site
+    // tells Google to call the organisation, while "Trafficomm" stays the short
+    // brand used in titles and the mark. Both are deliberate and distinct.
+    expect(org.name).toBe("Trafficomm Digital");
     expect(org.foundingDate).toBe("2015");
     expect(org.url).toBe(org["@id"].replace("/#organization", ""));
     // Nothing invented: no ratings, reviews, awards or unverified profiles.

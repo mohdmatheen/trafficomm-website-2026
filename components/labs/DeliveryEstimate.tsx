@@ -126,7 +126,8 @@ export function DeliveryEstimate(ctx: Ctx) {
             Your request is with Trafficomm.
           </h3>
           <p className="mt-4 max-w-2xl text-[1rem] leading-relaxed text-fog">
-            We&rsquo;ve included your AdOps analysis, so you won&rsquo;t need to explain your operation again.
+            We&rsquo;ve included your AdOps analysis, so you won&rsquo;t need to explain your operation again. A Trafficomm operations lead will review it and
+            reply to the address you gave.
           </p>
           <dl className="mt-8 grid gap-3 sm:grid-cols-3">
             {[
