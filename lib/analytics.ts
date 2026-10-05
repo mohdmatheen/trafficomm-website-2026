@@ -28,7 +28,23 @@ export type AnalyticsEvent =
   /** A click on a mailto:, tel: or external LinkedIn link. */
   | "email_click"
   | "phone_click"
-  | "linkedin_click";
+  | "linkedin_click"
+  /* Trafficomm Labs — AdOps Capacity calculator. Every parameter these carry is a
+     band or a count; no salary, cost or contact detail is ever passed. */
+  | "labs_tool_viewed"
+  | "adops_tool_started"
+  | "market_selected"
+  | "business_completed"
+  | "team_completed"
+  | "workload_completed"
+  | "operations_completed"
+  | "analysis_started"
+  | "results_viewed"
+  | "scenario_changed"
+  | "report_requested"
+  | "pricing_requested"
+  | "consultation_requested"
+  | "tool_completed";
 
 /**
  * The complete set of parameter keys allowed to leave the browser.
@@ -57,6 +73,28 @@ export const allowedParams = [
   "error_reason",
   /** "production" | "preview" | "development", so non-production traffic can be excluded in GTM. */
   "site_environment",
+  /* Labs parameters. Deliberately banded: a band tells us the shape of the
+     opportunity without transmitting what a team is paid or how many people it
+     has. Salary, cost and headcount figures have no key here and therefore
+     cannot leave the browser. */
+  /** Slug of the Labs tool, e.g. "adops-capacity". */
+  "tool_name",
+  /** "SA" | "AE". */
+  "market",
+  /** Team-size band, e.g. "6-10". */
+  "team_band",
+  /** Platforms selected, as a count band, e.g. "4-6". */
+  "platforms_band",
+  /** Utilization band, e.g. "90-100%". */
+  "utilization_band",
+  /** Externalizable workload band in hours, e.g. "500-750". */
+  "externalizable_band",
+  /** Which scenario control moved: "reporting_automation" | "external_allocation". */
+  "scenario_control",
+  /** Which questionnaire step the event belongs to. */
+  "step",
+  /** "quick" | "detailed" — how workload was supplied. */
+  "workload_mode",
 ] as const;
 
 export type AnalyticsParams = Partial<Record<(typeof allowedParams)[number], string>>;
