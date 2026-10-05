@@ -50,6 +50,12 @@ export type AnalyticsEvent =
   | "delivery_estimate_submitted"
   /** The analysis report was generated for download or print. */
   | "report_downloaded"
+  /** The capacity-impact comparison reached the viewport, once per session. */
+  | "capacity_visual_viewed"
+  /** The external execution allocation was moved. */
+  | "externalization_changed"
+  /** A released-capacity category was reallocated. */
+  | "capacity_allocation_changed"
   | "tool_completed";
 
 /**

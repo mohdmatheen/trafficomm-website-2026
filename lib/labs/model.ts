@@ -99,21 +99,74 @@ export const MARKETS: Record<MarketCode, Market> = {
 };
 
 /**
- * Inputs!A21:D30. `externalizable` is the share of each activity's hours the
- * workbook treats as suitable for external delivery — it is an assumption in the
- * model, not an observation about any particular team.
+ * Where an externalizable percentage comes from. Shown to the visitor so no
+ * assumption can be mistaken for an industry benchmark.
+ *
+ *   workbook      — the figure as supplied in Inputs!D21:D30.
+ *   trafficomm    — Trafficomm's own operating judgement.
+ *   implementation— introduced by this application.
+ *
+ * Every percentage below is `workbook`. Nothing in this table was raised to make
+ * the outsourcing opportunity look larger, and none of it is an industry figure.
  */
-export const ACTIVITIES: { id: ActivityId; label: string; category: ActivityCategory; defaultHoursPerWeek: number; externalizable: number }[] = [
-  { id: "setup", label: "Campaign setup / trafficking", category: "Execution", defaultHoursPerWeek: 45, externalizable: 0.9 },
-  { id: "qa", label: "Campaign QA", category: "Execution", defaultHoursPerWeek: 20, externalizable: 0.9 },
-  { id: "reporting", label: "Reporting production", category: "Execution", defaultHoursPerWeek: 35, externalizable: 0.9 },
-  { id: "extraction", label: "Data extraction", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.95 },
-  { id: "pacing", label: "Budget pacing", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.85 },
-  { id: "optimization", label: "Routine optimization", category: "Execution", defaultHoursPerWeek: 40, externalizable: 0.7 },
-  { id: "creative", label: "Creative coordination", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.7 },
-  { id: "tracking", label: "Tracking / measurement", category: "Measurement", defaultHoursPerWeek: 10, externalizable: 0.6 },
-  { id: "strategy", label: "Strategy & analysis", category: "Strategy", defaultHoursPerWeek: 45, externalizable: 0.1 },
-  { id: "meetings", label: "Client / internal meetings", category: "Administration", defaultHoursPerWeek: 30, externalizable: 0.05 },
+export type AssumptionSource = "workbook" | "trafficomm" | "implementation";
+
+/**
+ * Inputs!A21:D30. `externalizable` is the share of each activity's hours the
+ * model treats as *potentially suitable* for external delivery — an assumption
+ * about the kind of work, never an observation about a particular team, and
+ * never a recommendation to move it.
+ */
+export const ACTIVITIES: {
+  id: ActivityId;
+  label: string;
+  category: ActivityCategory;
+  defaultHoursPerWeek: number;
+  externalizable: number;
+  source: AssumptionSource;
+  /** Why this share, in one sentence a prospect can argue with. */
+  rationale: string;
+}[] = [
+  {
+    id: "setup", label: "Campaign setup / trafficking", category: "Execution", defaultHoursPerWeek: 45, externalizable: 0.9, source: "workbook",
+    rationale: "Process-led build work against an approved plan. Suitable for external delivery once briefs, platform access and naming conventions are established; the residual covers judgement calls that go back to the account team.",
+  },
+  {
+    id: "qa", label: "Campaign QA", category: "Execution", defaultHoursPerWeek: 20, externalizable: 0.9, source: "workbook",
+    rationale: "Checking a build against the brief is a defined sequence, and is stronger performed by someone other than the builder. The residual is the sign-off itself, which stays with the agency.",
+  },
+  {
+    id: "reporting", label: "Reporting production", category: "Execution", defaultHoursPerWeek: 35, externalizable: 0.9, source: "workbook",
+    rationale: "Collection, validation and assembly are repeatable. The residual is the client-facing interpretation, which is most of what the agency is paid for.",
+  },
+  {
+    id: "extraction", label: "Data extraction", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.95, source: "workbook",
+    rationale: "The most mechanical activity in the set — pulling and normalising platform exports on a schedule. The highest share in the model, and the least contested.",
+  },
+  {
+    id: "pacing", label: "Budget pacing", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.85, source: "workbook",
+    rationale: "Monitoring delivery against plan is continuous and rule-based. Lower than setup because acting on a pacing problem can require a commercial decision.",
+  },
+  {
+    id: "optimization", label: "Routine optimization", category: "Execution", defaultHoursPerWeek: 40, externalizable: 0.7, source: "workbook",
+    rationale: "In-scope adjustments against an agreed plan can be externally delivered; changes to targeting, creative or total budget are decisions the agency keeps. The 30% residual is that boundary.",
+  },
+  {
+    id: "creative", label: "Creative coordination", category: "Execution", defaultHoursPerWeek: 15, externalizable: 0.7, source: "workbook",
+    rationale: "Specification checking, trafficking and version control move; creative direction and client conversations do not.",
+  },
+  {
+    id: "tracking", label: "Tracking / measurement", category: "Measurement", defaultHoursPerWeek: 10, externalizable: 0.6, source: "workbook",
+    rationale: "Implementation and validation are specialist execution. The lower share reflects that defining what should be measured stays with the agency and its client.",
+  },
+  {
+    id: "strategy", label: "Strategy & analysis", category: "Strategy", defaultHoursPerWeek: 45, externalizable: 0.1, source: "workbook",
+    rationale: "Deliberately near zero. A partner can supply analysis inputs; the strategy itself is the agency's product and the model does not treat it as movable.",
+  },
+  {
+    id: "meetings", label: "Client / internal meetings", category: "Administration", defaultHoursPerWeek: 30, externalizable: 0.05, source: "workbook",
+    rationale: "Effectively fixed. Only operational status reporting is treated as movable; the client relationship is not.",
+  },
 ];
 
 /** Inputs!G13:H22. Grouped as the Dashboard's efficiency components group them. */

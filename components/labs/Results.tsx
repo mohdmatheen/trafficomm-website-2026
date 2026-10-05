@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import { BarRows, ScoreBars, ScoreDial, StackedBar, type Datum } from "@/components/labs/charts";
+import { CapacityImpact } from "@/components/labs/CapacityImpact";
 import { DeliveryEstimate } from "@/components/labs/DeliveryEstimate";
 import { Report } from "@/components/labs/Report";
-import { CountUp, EstimatedTag, Money, Slider, Stat } from "@/components/labs/primitives";
+import { CountUp, EstimatedTag, Explain, Money, Slider, Stat } from "@/components/labs/primitives";
 import { formatHours, formatMoney, formatNumber, formatPercent } from "@/lib/labs/currency";
 import { MAX_REPORTING_REDUCTION } from "@/lib/labs/scenario";
 import type { useLabsCalculator } from "@/lib/labs/state";
@@ -46,7 +47,7 @@ export function Results(ctx: Ctx) {
           <Stat label="Execution cost" note="What the execution half of the workload costs at your effective hourly rate.">
             <Money amount={r.executionCost} currency={market.currency} fx={fx} size="xl" />
           </Stat>
-          <Stat label="Externalizable workload" tone="dark" note="Hours per month the model treats as suitable for external delivery.">
+          <Stat label="Externalizable workload" tone="dark" note="Hours per month potentially suitable for external delivery. An assessment of the work, not a recommendation.">
             <span className="block whitespace-nowrap text-[clamp(1.6rem,11cqi,3rem)] font-medium tabular-nums tracking-[-0.04em] text-white">
               <CountUp value={r.externalizableHours} format={(n) => formatNumber(n, 0)} />
             </span>
@@ -122,7 +123,7 @@ export function Results(ctx: Ctx) {
       <section aria-labelledby="score-title" className="rounded-[var(--radius-panel)] bg-white p-6 ring-1 ring-inset ring-line sm:p-8">
         <div className="grid gap-10 lg:grid-cols-[auto_1fr] lg:gap-14">
           <div className="lg:w-56">
-            <h3 id="score-title" className="text-[1.35rem] tracking-[-0.025em] text-ink">Operational efficiency</h3>
+            <h3 id="score-title" className="text-[1.35rem] tracking-[-0.025em] text-ink">Trafficomm Operational Efficiency Score</h3>
             <div className="mt-6">
               <ScoreDial score={r.efficiencyScore}>
                 <span className="block text-[2.8rem] font-medium tabular-nums leading-none tracking-[-0.04em] text-ink">
@@ -134,9 +135,14 @@ export function Results(ctx: Ctx) {
           </div>
           <div>
             <p className="text-[0.98rem] leading-relaxed text-steel">
-              The score is the sum of five weighted components. It is a description of how the operation runs, not a grade — a low automation score on a team
-              with strong standards means something different from the reverse.
+              The sum of five weighted components, from the inputs you gave. It describes how this operation runs — a low automation score on a team with
+              strong standards means something different from the reverse.
             </p>
+            <Explain label="What does this score mean?">
+              Trafficomm&rsquo;s own diagnostic, scored out of 100 from the operational inputs on the previous step. It is <strong className="font-medium text-ink">not</strong>{" "}
+              an industry percentile and not a comparison against other agencies — a 65 does not mean you are ahead of 65% of anyone. It is a way of seeing
+              which parts of the operation are carrying the most manual effort.
+            </Explain>
             <div className="mt-6">
               <ScoreBars caption="Operational efficiency score components" data={r.efficiencyBreakdown} />
             </div>
@@ -148,10 +154,15 @@ export function Results(ctx: Ctx) {
       <section aria-labelledby="external-title">
         <h3 id="external-title" className="text-[1.35rem] tracking-[-0.025em] text-ink">Externalizable workload</h3>
         <p className="mt-3 max-w-prose text-[1.02rem] leading-relaxed text-steel">
-          Approximately <strong className="font-medium text-ink">{formatNumber(r.externalizableHours, 0)} hours per month</strong> of this workload — about{" "}
-          {formatNumber(r.externalizableFte, 1)} full-time equivalents — may be suitable for external delivery. That is an assessment of the work, not a
-          recommendation: whether any of it should move is a decision about your operating model.
+          Approximately <strong className="font-medium text-ink">{formatNumber(r.externalizableHours, 0)} hours per month</strong> of this workload — equivalent
+          to about {formatNumber(r.externalizableFte, 1)} full-time productive capacities — is potentially suitable for external delivery. That is an
+          assessment of the kind of work, not a recommendation: whether any of it should move is a decision about your operating model.
         </p>
+        <Explain label={`What does ${formatNumber(r.externalizableFte, 1)} FTE mean here?`}>
+          It means this workload is equivalent to roughly {formatNumber(r.externalizableFte, 1)} full-time productive capacities at your team&rsquo;s available
+          operating hours. It does not mean {formatNumber(r.externalizableFte, 1)} roles are surplus, and it is not a suggestion to remove anyone — the same
+          hours are usually spread thinly across several people rather than concentrated in a few.
+        </Explain>
         <div className="mt-6">
           <BarRows
             caption="Externalizable hours per month by activity"
@@ -173,6 +184,8 @@ export function Results(ctx: Ctx) {
           <span>The share per activity is a Trafficomm assumption, not an observation about your team.</span>
         </p>
       </section>
+
+      <CapacityImpact {...ctx} />
 
       <Simulator ctx={ctx} />
 
@@ -244,9 +257,10 @@ function Simulator({ ctx }: { ctx: Ctx }) {
 
   return (
     <section aria-labelledby="sim-title" className="rounded-[var(--radius-panel)] bg-paper-2 p-6 ring-1 ring-inset ring-line sm:p-8">
-      <h3 id="sim-title" className="text-[1.35rem] tracking-[-0.025em] text-ink">Explore your operation</h3>
+      <h3 id="sim-title" className="text-[1.35rem] tracking-[-0.025em] text-ink">Explore your operating model</h3>
       <p className="mt-2 max-w-prose text-[0.98rem] leading-relaxed text-steel">
-        Change an assumption and the model recalculates. These show how hours and capacity move — not a saving, because the model holds no delivery price.
+        What could happen to internal capacity if the operating model changed? These show how hours and capacity move — not a saving, because the model holds
+        no delivery price, and not a headcount decision.
       </p>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
@@ -268,22 +282,9 @@ function Simulator({ ctx }: { ctx: Ctx }) {
           <p className="-mt-4 text-[0.84rem] leading-relaxed text-steel">
             Caps at {Math.round(MAX_REPORTING_REDUCTION * 100)}% of reporting and extraction hours. Assembly automates; deciding what the numbers mean does not.
           </p>
-          <Slider
-            id="sim-external"
-            label="If execution were externally delivered"
-            min={0}
-            max={100}
-            value={Math.round(s.externalAllocation * 100)}
-            valueLabel={s.externalAllocation === 0 ? "All internal" : `${Math.round(s.externalAllocation * 100)}% external`}
-            minLabel="0%"
-            maxLabel="100%"
-            onChange={(v) => {
-              dispatch({ type: "setScenario", patch: { externalAllocation: v / 100 } });
-              report("external_allocation");
-            }}
-          />
-          <p className="-mt-4 text-[0.84rem] leading-relaxed text-steel">
-            Applies to the externalizable share of each activity only — strategy and client meetings stay almost entirely internal.
+          <p className="-mt-2 text-[0.84rem] leading-relaxed text-steel">
+            The external execution allocation lever sits with the capacity comparison above, where its effect is visible. Both levers feed the same model, so
+            the figures here reflect whatever it is set to.
           </p>
         </div>
 

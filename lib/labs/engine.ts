@@ -25,9 +25,28 @@
  *      removed so one condition earns points once. Classification thresholds are
  *      unchanged.
  *
- * Still reproduced as-is, and still worth noting: Engine!B24 carries a hardcoded
- * 4 as its final term. It is a constant, not a measured dimension, but changing
- * it was not part of this correction.
+ * ENGINE!B24 — the hardcoded final term, investigated and retained.
+ *
+ * The complexity index averages three live dimensions (markets, creative volume,
+ * reporting complexity) with a literal 4. Searching the workbook establishes:
+ *   - nothing references Engine!B24. The Dashboard reads B6, B10, B12-B18, B20,
+ *     B21, B22 and B25; the two charts plot Dashboard ranges. B24 is a terminal
+ *     output, so it feeds no financial figure, no externalizable workload, no
+ *     efficiency score and no lead scoring.
+ *   - no sheet, note or label explains the constant. Inputs!F8 annotates which
+ *     inputs feed the complexity score; no annotation covers a constant.
+ *   - the Inputs sheet has no platform-count field at all, which makes a
+ *     stand-in for an unwired dimension a plausible reading — but a reading is
+ *     not evidence.
+ *
+ * Intent therefore cannot be established, and inventing a replacement dimension
+ * (platform count is available in this application, and would raise the index)
+ * would be exactly the kind of invention the model should not contain. It is
+ * retained as an explicitly documented Trafficomm assumption: a baseline floor
+ * that compresses the index toward the middle of its range. The honest
+ * consequence is that the index cannot reach 1.0 even for the simplest
+ * operation — which is why it is kept as supporting context rather than
+ * promoted to a headline figure.
  */
 
 /** Stamped onto every lead submission so a figure can be traced to the model that produced it. */

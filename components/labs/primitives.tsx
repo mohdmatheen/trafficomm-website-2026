@@ -305,3 +305,25 @@ export function EstimatedTag({ children = "Estimated" }: { children?: ReactNode 
     </span>
   );
 }
+
+/**
+ * A short explanation attached to a figure that is easy to misread.
+ *
+ * A native `<details>` rather than a hover tooltip: it works on touch, it is
+ * keyboard-operable without any JavaScript, and screen readers announce its
+ * state. The figures it explains — FTE equivalence above all — are the ones a
+ * prospect could otherwise read as a headcount recommendation.
+ */
+export function Explain({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <details className="group mt-2">
+      <summary className="inline-flex min-h-11 cursor-pointer list-none items-center gap-1.5 text-[0.82rem] text-steel outline-offset-4 hover:text-ink [&::-webkit-details-marker]:hidden">
+        <span aria-hidden="true" className="grid size-4 place-items-center rounded-full text-[0.62rem] font-medium ring-1 ring-inset ring-line-strong">
+          ?
+        </span>
+        {label}
+      </summary>
+      <p className="mt-2 max-w-prose text-[0.86rem] leading-relaxed text-steel">{children}</p>
+    </details>
+  );
+}

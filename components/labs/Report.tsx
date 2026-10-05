@@ -1,5 +1,6 @@
 "use client";
 
+import { allocationRows } from "@/lib/labs/allocation";
 import { formatHours, formatMoney, formatNumber, formatPercent, formatUsd } from "@/lib/labs/currency";
 import { METHODOLOGY_VERSION } from "@/lib/labs/engine";
 import type { useLabsCalculator } from "@/lib/labs/state";
@@ -40,9 +41,10 @@ function Table({ title, data }: { title: string; data: [string, string][] }) {
   );
 }
 
-export function Report({ state, result: r, market, fx }: Ctx) {
+export function Report({ state, result: r, scenario, market, fx }: Ctx) {
   const today = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
   const money = (n: number) => `${formatMoney(n, market.currency)}  ${formatUsd(n, fx.rate)}`;
+  const released = Math.max(0, r.workloadHours - scenario.internalHours);
 
   const rows: [string, string][] = [
     ["Team", `${formatNumber(r.headcount, 0)} people`],
@@ -138,8 +140,63 @@ export function Report({ state, result: r, market, fx }: Ctx) {
         </table>
       </section>
 
+      {released > 0.5 && (
+        <section className="report-block">
+          <h2>Capacity impact of external delivery</h2>
+          <p className="report-intro">
+            At {Math.round(state.scenario.externalAllocation * 100)}% of eligible workload delivered externally. Externally delivered hours are performed
+            outside the internal team; they are not removed from the campaign.
+          </p>
+          <table>
+            <tbody>
+              <tr>
+                <th scope="row">Current model — operational execution, internal</th>
+                <td>{formatHours(r.workloadHours)} · {formatPercent(r.utilization)} utilization</td>
+              </tr>
+              <tr>
+                <th scope="row">With external delivery — retained internally</th>
+                <td>{formatHours(scenario.internalHours)} · {formatPercent(scenario.internalUtilization)} utilization</td>
+              </tr>
+              <tr>
+                <th scope="row">Delivered externally</th>
+                <td>{formatHours(scenario.externallyDeliveredHours)}</td>
+              </tr>
+              <tr>
+                <th scope="row">Internal capacity released</th>
+                <td>{formatHours(released)} · equivalent to {formatNumber(released / (r.productiveHoursPerFte || 1), 1)} full-time productive capacities</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="report-intro">
+            Equivalent capacity describes workload, not roles. It is not a recommendation to change headcount.
+          </p>
+        </section>
+      )}
+
+      {released > 0.5 && state.allocationEdited && (
+        <section className="report-block">
+          <h2>Illustrative capacity allocation</h2>
+          <p className="report-intro">
+            How the released capacity could be used, as explored in the calculator. This is the reader&rsquo;s own illustration — it is not a Trafficomm
+            prediction or recommendation.
+          </p>
+          <table>
+            <tbody>
+              {allocationRows(state.allocation, released).map((a) => (
+                <tr key={a.id}>
+                  <th scope="row">{a.label}</th>
+                  <td>
+                    {formatHours(a.hours)} · {a.percent}%
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      )}
+
       <section className="report-block">
-        <h2>Operational efficiency score</h2>
+        <h2>Trafficomm Operational Efficiency Score</h2>
         <table>
           <tbody>
             {r.efficiencyBreakdown.map((b) => (
@@ -178,7 +235,8 @@ export function Report({ state, result: r, market, fx }: Ctx) {
           The externalizable share of each activity is a Trafficomm model assumption, not an observation about your team.
         </p>
         <p>
-          Amounts are shown in {market.currency} with a USD equivalent at 1 {market.currency} = {fx.rate} USD
+          The operational efficiency score is Trafficomm&rsquo;s own diagnostic from the inputs supplied. It is not an industry percentile and not a comparison
+          against other agencies. Amounts are shown in {market.currency} with a USD equivalent at 1 {market.currency} = {fx.rate} USD
           {fx.source === "fallback" ? ` (reference rate, ${fx.asOf}).` : ` (rate updated ${fx.asOf}).`} This analysis describes workload and cost. It does not
           contain a Trafficomm delivery price and is not a quotation.
         </p>

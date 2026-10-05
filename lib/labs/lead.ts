@@ -50,6 +50,10 @@ export type LabsLeadContext = {
   workloadBasis: "quick-estimate" | "detailed";
   externalAllocation: number | null;
   reportingAutomation: number | null;
+  /** Internal capacity released at the visitor's current scenario settings. */
+  releasedCapacityHours: number;
+  /** Only present when the visitor adjusted the illustrative split themselves. */
+  capacityAllocation: { label: string; percent: number; hours: number }[] | null;
   leadScore: number;
   leadClassification: string;
   capturedAt: string;
@@ -133,6 +137,14 @@ export function sanitizeLabsContext(input: unknown): LabsLeadContext {
     workloadBasis: workload,
     externalAllocation: typeof raw.externalAllocation === "number" ? num(raw.externalAllocation) : null,
     reportingAutomation: typeof raw.reportingAutomation === "number" ? num(raw.reportingAutomation) : null,
+    releasedCapacityHours: num(raw.releasedCapacityHours),
+    capacityAllocation: Array.isArray(raw.capacityAllocation)
+      ? raw.capacityAllocation
+          .slice(0, 12)
+          .map((a) => (a && typeof a === "object" ? (a as Record<string, unknown>) : {}))
+          .map((a) => ({ label: str(a.label, 60), percent: num(a.percent), hours: num(a.hours) }))
+          .filter((a) => a.label)
+      : null,
     leadScore: num(raw.leadScore),
     leadClassification: str(raw.leadClassification, 16),
     capturedAt: str(raw.capturedAt, 32) || new Date().toISOString(),
@@ -177,8 +189,12 @@ export function labsLeadText(r: LabsLeadRecord): string {
     "HOW THE FIGURES WERE PRODUCED",
     `Salaries               ${c.salaryBasis === "custom" ? "their own costs" : "Trafficomm market estimates"}`,
     `Workload               ${c.workloadBasis === "detailed" ? "entered directly" : "quick estimate"}`,
-    c.externalAllocation !== null ? `Simulator externalization  ${pct(c.externalAllocation)}` : null,
+    c.externalAllocation !== null ? `Simulator externalization  ${pct(c.externalAllocation)} of eligible workload` : null,
     c.reportingAutomation !== null ? `Simulator reporting automation  ${pct(c.reportingAutomation)}` : null,
+    c.releasedCapacityHours > 0 ? `Capacity released      ${hrs(c.releasedCapacityHours)}` : null,
+    c.capacityAllocation
+      ? `Their capacity split   ${c.capacityAllocation.map((a) => `${a.label} ${a.percent}%`).join(", ")}`
+      : "Their capacity split   not adjusted (illustrative default)",
     `FX                     1 ${c.currency} = ${c.fxRate} USD (${c.fxSource}, ${c.fxAsOf})`,
     `Methodology            v${c.methodologyVersion}`,
     `Analysed at            ${c.capturedAt}`,
@@ -205,7 +221,7 @@ export function labsLeadHtml(r: LabsLeadRecord): string {
 ${section("Contact", [row("Name", r.name), row("Company", r.company), row("Email", r.email + (isFreeEmailDomain(r.email) ? " (free domain)" : "")), r.role ? row("Role", r.role) : "", r.phone ? row("Phone", r.phone) : ""].join(""))}
 ${section("The operation they analysed", [row("Market", `${c.market} (${c.currency})`), row("Business type", c.businessType), row("Team", `${c.headcount} people`), row("Campaigns / month", String(c.campaignsPerMonth)), row("Clients / accounts", String(c.activeClients)), row("Markets managed", String(c.marketsManaged)), row("Platforms", c.platforms.join(", ") || "none selected")].join(""))}
 ${section("Results", [row("Utilization", pct(c.utilization)), row("Monthly workload", hrs(c.workloadHours)), row("Execution hours", hrs(c.executionHours)), row("Externalizable", `${hrs(c.externalizableHours)} (${c.externalizableFte.toFixed(1)} FTE)`), row("Complexity index", `${c.complexityIndex.toFixed(2)} / 5`), row("Efficiency score", `${c.efficiencyScore} / 100`), row("Loaded monthly cost", `${money(c.loadedMonthlyCost, c.currency)} (~USD ${Math.round(c.loadedMonthlyCost * c.fxRate).toLocaleString("en-US")})`), row("Execution cost", `${money(c.executionCost, c.currency)} (~USD ${Math.round(c.executionCost * c.fxRate).toLocaleString("en-US")})`)].join(""))}
-${section("How the figures were produced", [row("Salaries", c.salaryBasis === "custom" ? "their own costs" : "Trafficomm market estimates"), row("Workload", c.workloadBasis === "detailed" ? "entered directly" : "quick estimate"), c.externalAllocation !== null ? row("Simulator externalization", pct(c.externalAllocation)) : "", c.reportingAutomation !== null ? row("Simulator reporting automation", pct(c.reportingAutomation)) : "", row("FX", `1 ${c.currency} = ${c.fxRate} USD (${c.fxSource}, ${c.fxAsOf})`), row("Analysed at", c.capturedAt)].join(""))}
+${section("How the figures were produced", [row("Salaries", c.salaryBasis === "custom" ? "their own costs" : "Trafficomm market estimates"), row("Workload", c.workloadBasis === "detailed" ? "entered directly" : "quick estimate"), c.externalAllocation !== null ? row("Simulator externalization", `${pct(c.externalAllocation)} of eligible workload`) : "", c.releasedCapacityHours > 0 ? row("Capacity released", hrs(c.releasedCapacityHours)) : "", row("Their capacity split", c.capacityAllocation ? c.capacityAllocation.map((a) => `${a.label} ${a.percent}%`).join(", ") : "not adjusted (illustrative default)"), c.reportingAutomation !== null ? row("Simulator reporting automation", pct(c.reportingAutomation)) : "", row("FX", `1 ${c.currency} = ${c.fxRate} USD (${c.fxSource}, ${c.fxAsOf})`), row("Analysed at", c.capturedAt)].join(""))}
 ${section("Internal", [row("Lead score", `${c.leadScore} — ${c.leadClassification}`), row("Environment", r.environment)].join(""))}
 </div>`;
 }

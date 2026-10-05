@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useRef, useState } from "react";
+import { allocationRows } from "@/lib/labs/allocation";
 import { formatNumber } from "@/lib/labs/currency";
 import { METHODOLOGY_VERSION, leadScore } from "@/lib/labs/engine";
 import type { LabsLeadContext, LabsLeadErrors } from "@/lib/labs/lead";
@@ -29,6 +30,7 @@ export function DeliveryEstimate(ctx: Ctx) {
 
   const buildContext = (): LabsLeadContext => {
     const score = leadScore(state.input, result);
+    const released = Math.max(0, result.workloadHours - scenario.internalHours);
     return {
       methodologyVersion: METHODOLOGY_VERSION,
       market: market.name,
@@ -55,6 +57,12 @@ export function DeliveryEstimate(ctx: Ctx) {
       workloadBasis: state.workloadMode === "detailed" ? "detailed" : "quick-estimate",
       externalAllocation: state.scenario.externalAllocation > 0 ? state.scenario.externalAllocation : null,
       reportingAutomation: state.scenario.reportingAutomation > 0 ? state.scenario.reportingAutomation : null,
+      releasedCapacityHours: released,
+      // Only sent when the visitor moved it; the default split is Trafficomm's
+      // illustration and tells us nothing about their intentions.
+      capacityAllocation: state.allocationEdited
+        ? allocationRows(state.allocation, released).map((r) => ({ label: r.label, percent: r.percent, hours: r.hours }))
+        : null,
       leadScore: score.total,
       leadClassification: score.classification,
       capturedAt: new Date().toISOString(),

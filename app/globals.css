@@ -455,7 +455,9 @@
   }
   .labs-report td { padding: 4pt 0; font-variant-numeric: tabular-nums; vertical-align: top; }
 
-  .labs-report .report-note p { margin: 0 0 6pt; font-size: 9pt; color: #5d5d64; }
+  .labs-report .report-note p,
+  .labs-report .report-intro { margin: 0 0 6pt; font-size: 9pt; color: #5d5d64; }
+  .labs-report .report-intro + table { margin-top: 2pt; }
   .labs-report .report-foot {
     margin-top: 18pt;
     padding-top: 8pt;

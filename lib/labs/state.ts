@@ -7,6 +7,7 @@ import { fallbackRate, getUsdRate, type FxRate } from "./currency";
 import { calculate, type CalculatorResult } from "./engine";
 import { defaultDrivers, estimateHoursPerWeek, type EstimatorDrivers } from "./estimator";
 import { ACTIVITIES, MARKETS, defaultInput, type ActivityId, type CalculatorInput, type MarketCode, type RoleId } from "./model";
+import { DEFAULT_ALLOCATION, redistribute, type AllocationId } from "./allocation";
 import { BASE_SCENARIO, applyScenario, type Scenario, type ScenarioResult } from "./scenario";
 
 export type StepId = "market" | "business" | "team" | "workload" | "platforms" | "operations" | "results";
@@ -35,6 +36,10 @@ export type LabsState = {
   /** Custom salaries survive a switch to market estimates and back. */
   customSalaries: Record<RoleId, number>;
   scenario: Scenario;
+  /** Released-capacity split, as percentages. Illustrative until the visitor moves one. */
+  allocation: Record<AllocationId, number>;
+  /** Whether the visitor changed the split, so the lead payload can say which it is. */
+  allocationEdited: boolean;
   analysed: boolean;
 };
 
@@ -51,6 +56,7 @@ type Action =
   | { type: "togglePlatform"; id: string }
   | { type: "setEfficiency"; id: keyof CalculatorInput["efficiency"]; value: number }
   | { type: "setScenario"; patch: Partial<Scenario> }
+  | { type: "setAllocation"; id: AllocationId; value: number }
   | { type: "analysed" }
   | { type: "restore"; state: LabsState }
   | { type: "reset" };
@@ -69,6 +75,8 @@ function initial(): LabsState {
     salaryMode: "market",
     customSalaries: { ...input.salaries },
     scenario: { ...BASE_SCENARIO },
+    allocation: { ...DEFAULT_ALLOCATION },
+    allocationEdited: false,
     analysed: false,
   };
 }
@@ -133,6 +141,9 @@ function reducer(state: LabsState, action: Action): LabsState {
 
     case "setScenario":
       return { ...state, scenario: { ...state.scenario, ...action.patch } };
+
+    case "setAllocation":
+      return { ...state, allocation: redistribute(state.allocation, action.id, action.value), allocationEdited: true };
 
     case "analysed":
       return { ...state, analysed: true, step: "results", visited: state.visited.includes("results") ? state.visited : [...state.visited, "results"] };

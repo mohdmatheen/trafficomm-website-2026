@@ -38,24 +38,32 @@ for (const width of WIDTHS) {
     await page.waitForTimeout(2600);
     await check("results");
 
-    // Simulator: move both levers, since a long delta string is a plausible break.
-    const sliders = page.locator('input[type="range"]');
-    await sliders.nth(0).evaluate((el: HTMLInputElement) => {
-      el.value = "100";
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    await sliders.nth(1).evaluate((el: HTMLInputElement) => {
-      el.value = "100";
-      el.dispatchEvent(new Event("input", { bubbles: true }));
-    });
-    await page.waitForTimeout(400);
+    // Capacity impact: externalise everything, which is the widest the two
+    // comparison bars and their labels ever get.
+    const setRange = async (id: string, value: string) => {
+      await page.locator(`#${id}`).evaluate((el, v) => {
+        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")!.set!;
+        setter.call(el, v);
+        el.dispatchEvent(new Event("input", { bubbles: true }));
+      }, value);
+      await page.waitForTimeout(260);
+    };
+    await setRange("capacity-external", "100");
+    await check("capacity impact");
+
+    // Allocation appears only once capacity has been released.
+    await page.locator("#alloc-strategy").scrollIntoViewIfNeeded();
+    await setRange("alloc-strategy", "85");
+    await check("capacity allocation");
+
+    await setRange("sim-automation", "100");
     await check("simulator");
 
     // Lead form, then its error state — the longest strings on the screen.
     await page.getByRole("button", { name: /Request a delivery estimate/i }).scrollIntoViewIfNeeded();
     await check("lead form");
 
-    expect(stages.length).toBe(9);
+    expect(stages.length).toBe(11);
   });
 }
 
