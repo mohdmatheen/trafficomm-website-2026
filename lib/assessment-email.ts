@@ -31,6 +31,12 @@ export type AssessmentRecord = {
   /** "preview" marks a test submission so it is never mistaken for a real lead. */
   environment: "production" | "preview" | "development";
   context?: SubmissionContext;
+  /**
+   * Carried into the webhook payload, not into the email body. It is what lets a
+   * lead be recovered later without creating a second one, so it has to travel
+   * with the copy of the submission that leaves this process.
+   */
+  idempotencyKey?: string;
 };
 
 export type AssessmentEmail = {

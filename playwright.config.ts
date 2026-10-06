@@ -26,7 +26,7 @@ const widths = [
  * in all six projects started 144 of them and starved the browser tests of CPU
  * until unrelated assertions timed out. Six identical passes bought no coverage.
  */
-const viewportIndependent = [/leads-db\.spec\.ts/, /admin-auth\.spec\.ts/, /attribution\.spec\.ts/];
+const viewportIndependent = [/leads-db\.spec\.ts/, /persistence-reliability\.spec\.ts/, /admin-auth\.spec\.ts/, /attribution\.spec\.ts/];
 
 export default defineConfig({
   testDir: "./tests",

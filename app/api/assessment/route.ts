@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { sanitizeContext, validateAssessment, type AssessmentInput } from "@/lib/assessment";
 import { assessmentEmailConfig, buildAssessmentEmail, sendAssessmentEmail, type AssessmentRecord } from "@/lib/assessment-email";
 import { isDuplicateSubmission } from "@/lib/recent-submissions";
 import { isPreviewDeployment } from "@/lib/deployment";
 import { attributionColumns, sanitizeAttribution } from "@/lib/attribution";
-import { recordLead } from "@/lib/leads/store";
+import { deriveIdempotencyKey, persistWithRetry } from "@/lib/leads/persist";
 
 /**
  * Receives Operations Assessment requests and delivers them to every channel
@@ -64,6 +64,19 @@ export async function POST(request: Request) {
   const context = sanitizeContext(body.context);
   if (Object.keys(context).length) record.context = context;
   const attribution = sanitizeAttribution((body as { attribution?: unknown }).attribution);
+  // Minted by the browser once per form mount, so a visitor's own retry resolves
+  // to the same lead rather than a second one.
+  const submissionId = typeof (body as { submissionId?: unknown }).submissionId === "string" ? (body as { submissionId: string }).submissionId : null;
+  const idempotencyKey = deriveIdempotencyKey({
+    submissionId,
+    source: record.type,
+    email: record.email,
+    company: record.company,
+    submittedAt: record.submittedAt,
+  });
+  // Travels with the webhook payload so a recovery call can reproduce exactly
+  // this key, which is what makes recovery unable to duplicate the lead.
+  record.idempotencyKey = idempotencyKey;
 
   let email;
   try {
@@ -111,23 +124,29 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "We couldn't send your request. Please try again." }, { status: 502 });
   }
 
-  // Persistence runs after delivery, and deliberately cannot fail the request.
-  // The inbox is the system of record for reaching a prospect; the database is
-  // the system of record for managing them. If the database is unreachable we
-  // would rather lose a row than tell someone with a real enquiry that it failed
-  // when it is already sitting in Trafficomm's inbox. `recordLead` logs and
-  // swallows; the lead can be re-entered from the notification email.
-  await recordLead({
-    source: record.type === "call_request" ? "website_call" : "website_assessment",
-    email: record.email,
-    submittedAt: record.submittedAt,
-    company: record.company,
-    requirement: record.challenge || null,
-    campaignVolume: record.campaignsPerMonth,
-    // The form asks for one name field, so splitting it into first/last would be
-    // inventing a structure the visitor never supplied.
-    firstName: record.name,
-    attribution: attributionColumns(attribution),
+  // Persistence runs after the response, not before it.
+  //
+  // Delivery has already succeeded, so the prospect is told so immediately and
+  // the database work happens behind that: `after` keeps the function alive once
+  // the response has been sent, which buys several retries without a visitor
+  // waiting for any of them. The ordering is deliberate in both directions — the
+  // inbox first, so a database outage can never show a failure for an enquiry
+  // that did arrive; retries second, so a transient outage does not quietly cost
+  // us the row.
+  after(async () => {
+    await persistWithRetry({
+      source: record.type === "call_request" ? "website_call" : "website_assessment",
+      email: record.email,
+      submittedAt: record.submittedAt,
+      idempotencyKey,
+      company: record.company,
+      requirement: record.challenge || null,
+      campaignVolume: record.campaignsPerMonth,
+      // The form asks for one name field, so splitting it into first/last would be
+      // inventing a structure the visitor never supplied.
+      firstName: record.name,
+      attribution: attributionColumns(attribution),
+    });
   });
 
   return NextResponse.json({ ok: true, delivered: true });

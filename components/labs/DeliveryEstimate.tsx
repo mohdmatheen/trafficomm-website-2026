@@ -26,6 +26,11 @@ export function DeliveryEstimate(ctx: Ctx) {
   const [errors, setErrors] = useState<LabsLeadErrors>({});
   const [message, setMessage] = useState("");
   const started = useRef(false);
+  // One id per form mount, reused on every retry of that mount, so a visitor who
+  // submits twice because the first attempt looked slow produces one lead rather
+  // than two. A lazy useState initialiser rather than a ref written during render:
+  // it runs exactly once per mount and does not mutate anything while rendering.
+  const [submissionId] = useState(() => crypto.randomUUID());
   const successRef = useRef<HTMLDivElement>(null);
   const uid = useId();
 
@@ -91,6 +96,7 @@ export function DeliveryEstimate(ctx: Ctx) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          submissionId,
           name: form.get("name"),
           company: form.get("company"),
           email: form.get("email"),

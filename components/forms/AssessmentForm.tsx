@@ -30,6 +30,11 @@ function readContext(): SubmissionContext {
 
 /** `privacyNote`: set false where the page already states the confidentiality line (Contact). */
 export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = true }: { tone?: Tone; idPrefix?: string; privacyNote?: boolean }) {
+  // One id per form mount, reused on every retry of that mount, so a visitor who
+  // submits twice because the first attempt looked slow produces one lead rather
+  // than two. A lazy useState initialiser rather than a ref written during render:
+  // it runs exactly once per mount and does not mutate anything while rendering.
+  const [submissionId] = useState(() => crypto.randomUUID());
   const [values, setValues] = useState<AssessmentInput>(empty);
   const [errors, setErrors] = useState<FieldErrors>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -86,7 +91,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
       const res = await fetch("/api/assessment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, context: readContext(), attribution: readStoredAttribution() }),
+        body: JSON.stringify({ ...payload, context: readContext(), attribution: readStoredAttribution(), submissionId }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; duplicate?: boolean; message?: string; errors?: FieldErrors };
       if (!res.ok || !data.ok) {

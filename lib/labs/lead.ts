@@ -67,6 +67,8 @@ export type LabsLeadContext = {
 };
 
 export type LabsLeadRecord = {
+  /** See AssessmentRecord.idempotencyKey — same purpose, same reason. */
+  idempotencyKey?: string;
   type: "labs_delivery_estimate";
   tool: "adops-capacity";
   name: string;

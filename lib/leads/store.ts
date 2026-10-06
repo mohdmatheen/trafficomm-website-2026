@@ -30,6 +30,14 @@ export type NewLead = {
   source: LeadSource;
   email: string;
   submittedAt: string;
+  /**
+   * Makes every write path converge on one row. Derived by `deriveIdempotencyKey`
+   * and carried through the webhook payload so a recovery hours later produces
+   * the same key as the original attempt would have.
+   */
+  idempotencyKey: string;
+  /** `recovered` marks a lead the database nearly lost. Default is the normal path. */
+  deliveryState?: "delivered" | "recovered";
   firstName?: string | null;
   lastName?: string | null;
   company?: string | null;
@@ -57,7 +65,7 @@ export type NewLead = {
 };
 
 const COLUMNS = `
-  id, source, external_lead_id, lead_urn, first_name, last_name, email,
+  id, source, external_lead_id, lead_urn, idempotency_key, delivery_state, first_name, last_name, email,
   company, job_title, country_code, li_fat_id,
   utm_source, utm_medium, utm_campaign, utm_content, utm_term,
   referrer, landing_path, first_touch_at,
@@ -77,6 +85,8 @@ function toLead(r: Row): Lead {
     source: r.source as LeadSource,
     externalLeadId: str(r.external_lead_id),
     leadUrn: str(r.lead_urn),
+    idempotencyKey: String(r.idempotency_key),
+    deliveryState: (r.delivery_state as Lead["deliveryState"]) ?? "delivered",
     firstName: str(r.first_name),
     lastName: str(r.last_name),
     email: String(r.email),
@@ -120,19 +130,22 @@ export async function insertLead(lead: NewLead, conn?: Queryable): Promise<Lead 
   const a = lead.attribution ?? {};
   const rows = await c.query<Row>(
     `INSERT INTO leads (
-       source, external_lead_id, lead_urn, first_name, last_name, email, email_sha256,
+       source, external_lead_id, lead_urn, idempotency_key, delivery_state,
+       first_name, last_name, email, email_sha256,
        company, job_title, country_code, li_fat_id,
        utm_source, utm_medium, utm_campaign, utm_content, utm_term,
        referrer, landing_path, first_touch_at,
        campaign_urn, creative_urn, form_urn,
        requirement, campaign_volume, is_test_lead, submitted_at
-     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26)
-     ON CONFLICT (external_lead_id) WHERE external_lead_id IS NOT NULL DO NOTHING
+     ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28)
+     ON CONFLICT (idempotency_key) DO NOTHING
      RETURNING ${COLUMNS}`,
     [
       lead.source,
       lead.externalLeadId ?? null,
       lead.leadUrn ?? null,
+      lead.idempotencyKey,
+      lead.deliveryState ?? "delivered",
       lead.firstName ?? null,
       lead.lastName ?? null,
       lead.email,
@@ -159,8 +172,10 @@ export async function insertLead(lead: NewLead, conn?: Queryable): Promise<Lead 
     ],
   );
   if (!rows.length) {
-    // Already ingested. Return the existing row so the caller sees one lead.
-    const existing = await c.query<Row>(`SELECT ${COLUMNS} FROM leads WHERE external_lead_id = $1`, [lead.externalLeadId]);
+    // Already ingested — a user retry, a webhook redelivered, or a recovery call
+    // for a lead that turned out to have persisted after all. Return the row that
+    // exists so every caller sees exactly one lead.
+    const existing = await c.query<Row>(`SELECT ${COLUMNS} FROM leads WHERE idempotency_key = $1`, [lead.idempotencyKey]);
     return existing.length ? toLead(existing[0]) : null;
   }
   const row = toLead(rows[0]);

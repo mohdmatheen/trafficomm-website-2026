@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { assessmentEmailConfig, sendEmail } from "@/lib/assessment-email";
 import { isPreviewDeployment } from "@/lib/deployment";
 import { buildLabsLeadEmail, sanitizeLabsContext, validateLabsLead, type LabsLeadInput, type LabsLeadRecord } from "@/lib/labs/lead";
 import { isDuplicateSubmission } from "@/lib/recent-submissions";
 import { attributionColumns } from "@/lib/attribution";
-import { recordLead } from "@/lib/leads/store";
+import { deriveIdempotencyKey, persistWithRetry } from "@/lib/leads/persist";
 
 /**
  * Delivery-estimate requests from the AdOps Capacity calculator.
@@ -79,6 +79,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, delivered: false });
   }
 
+  const submissionId = typeof (body as { submissionId?: unknown }).submissionId === "string" ? (body as { submissionId: string }).submissionId : null;
+  const idempotencyKey = deriveIdempotencyKey({
+    submissionId,
+    source: "website_labs",
+    email: record.email,
+    company: record.company,
+    submittedAt: record.submittedAt,
+  });
+  record.idempotencyKey = idempotencyKey;
+
   const fingerprint = ["labs", record.email, record.company, Math.round(record.context.externalizableHours)].join("\u0000").toLowerCase();
   if (isDuplicateSubmission(fingerprint)) return NextResponse.json({ ok: true, duplicate: true });
 
@@ -94,21 +104,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, message: "We couldn't send your request. Please try again." }, { status: 502 });
   }
 
-  // After delivery, and unable to fail the request — same reasoning as
-  // /api/assessment: the inbox already has the lead.
-  await recordLead({
-    source: "website_labs",
-    email: record.email,
-    submittedAt: record.submittedAt,
-    company: record.company,
-    firstName: record.name,
-    jobTitle: record.role || null,
-    countryCode: record.context.market === "Saudi Arabia" ? "SA" : record.context.market === "UAE" ? "AE" : null,
-    // The calculator's own market and volume, which is the closest thing the
-    // Labs flow has to a stated requirement.
-    requirement: `${Math.round(record.context.externalizableHours)} hrs/mo externalizable`,
-    campaignVolume: String(record.context.campaignsPerMonth),
-    attribution: attributionColumns(record.context.attribution),
+  // Same ordering and the same reasoning as /api/assessment: delivered, response
+  // sent, then persisted with retries behind it.
+  after(async () => {
+    await persistWithRetry({
+      source: "website_labs",
+      email: record.email,
+      submittedAt: record.submittedAt,
+      company: record.company,
+      firstName: record.name,
+      jobTitle: record.role || null,
+      countryCode: record.context.market === "Saudi Arabia" ? "SA" : record.context.market === "UAE" ? "AE" : null,
+      // The calculator's own market and volume, which is the closest thing the
+      // Labs flow has to a stated requirement.
+      requirement: `${Math.round(record.context.externalizableHours)} hrs/mo externalizable`,
+      campaignVolume: String(record.context.campaignsPerMonth),
+      attribution: attributionColumns(record.context.attribution),
+      idempotencyKey,
+    });
   });
 
   return NextResponse.json({ ok: true, delivered: true });

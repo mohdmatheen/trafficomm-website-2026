@@ -44,10 +44,14 @@ async function freshDb(): Promise<{ conn: Queryable; close: () => Promise<void> 
   return { conn, close: () => pg.close() };
 }
 
+let seq = 0;
 const sample = (over: Partial<NewLead> = {}): NewLead => ({
   source: "website_assessment",
   email: "Ops.Lead@Meridian-Media.ae",
   submittedAt: new Date("2026-10-01T09:00:00Z").toISOString(),
+  // Unique per call unless a test deliberately reuses one, which is how the
+  // convergence cases below are expressed.
+  idempotencyKey: `test:${++seq}`,
   company: "Meridian Media",
   firstName: "Sara",
   requirement: "Reporting is eating the team",
@@ -120,15 +124,10 @@ test.describe("lead persistence", () => {
 
   test("the same LinkedIn lead delivered twice produces one lead", async () => {
     const { conn, close } = await freshDb();
-    const first = await insertLead(
-      sample({ source: "linkedin_leadgen", externalLeadId: "aaaa-1111", leadUrn: "urn:li:leadGenFormResponse:aaaa-1111" }),
-      conn,
-    );
+    const li = { source: "linkedin_leadgen" as const, externalLeadId: "aaaa-1111", leadUrn: "urn:li:leadGenFormResponse:aaaa-1111", idempotencyKey: "li:aaaa-1111" };
+    const first = await insertLead(sample(li), conn);
     // Webhook first, backfill poll second — the case Lead Sync will actually produce.
-    const second = await insertLead(
-      sample({ source: "linkedin_leadgen", externalLeadId: "aaaa-1111", leadUrn: "urn:li:leadGenFormResponse:aaaa-1111" }),
-      conn,
-    );
+    const second = await insertLead(sample(li), conn);
     expect(second!.id).toBe(first!.id);
     expect(await listLeads(conn)).toHaveLength(1);
     await close();

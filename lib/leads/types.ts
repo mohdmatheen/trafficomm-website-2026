@@ -81,6 +81,8 @@ export type Lead = {
   source: LeadSource;
   externalLeadId: string | null;
   leadUrn: string | null;
+  idempotencyKey: string;
+  deliveryState: "delivered" | "recovered";
   firstName: string | null;
   lastName: string | null;
   email: string;
