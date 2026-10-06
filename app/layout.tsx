@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { Analytics, AnalyticsNoScript } from "@/components/analytics/Analytics";
+import { FirstTouch } from "@/components/analytics/FirstTouch";
 import { LinkEvents } from "@/components/analytics/LinkEvents";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -69,6 +70,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <RevealObserver />
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <LinkEvents />
+        {/* Records the first page of the visit, so a campaign click that converts
+            three pages later still carries its attribution. */}
+        <FirstTouch />
         <Analytics />
       </body>
     </html>

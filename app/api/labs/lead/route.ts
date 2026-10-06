@@ -3,6 +3,8 @@ import { assessmentEmailConfig, sendEmail } from "@/lib/assessment-email";
 import { isPreviewDeployment } from "@/lib/deployment";
 import { buildLabsLeadEmail, sanitizeLabsContext, validateLabsLead, type LabsLeadInput, type LabsLeadRecord } from "@/lib/labs/lead";
 import { isDuplicateSubmission } from "@/lib/recent-submissions";
+import { attributionColumns } from "@/lib/attribution";
+import { recordLead } from "@/lib/leads/store";
 
 /**
  * Delivery-estimate requests from the AdOps Capacity calculator.
@@ -91,6 +93,23 @@ export async function POST(request: Request) {
     for (const f of failed) console.error("[labs-lead] delivery failed:", f.reason);
     return NextResponse.json({ ok: false, message: "We couldn't send your request. Please try again." }, { status: 502 });
   }
+
+  // After delivery, and unable to fail the request — same reasoning as
+  // /api/assessment: the inbox already has the lead.
+  await recordLead({
+    source: "website_labs",
+    email: record.email,
+    submittedAt: record.submittedAt,
+    company: record.company,
+    firstName: record.name,
+    jobTitle: record.role || null,
+    countryCode: record.context.market === "Saudi Arabia" ? "SA" : record.context.market === "UAE" ? "AE" : null,
+    // The calculator's own market and volume, which is the closest thing the
+    // Labs flow has to a stated requirement.
+    requirement: `${Math.round(record.context.externalizableHours)} hrs/mo externalizable`,
+    campaignVolume: String(record.context.campaignsPerMonth),
+    attribution: attributionColumns(record.context.attribution),
+  });
 
   return NextResponse.json({ ok: true, delivered: true });
 }

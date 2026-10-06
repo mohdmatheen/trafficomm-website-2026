@@ -3,6 +3,8 @@ import { sanitizeContext, validateAssessment, type AssessmentInput } from "@/lib
 import { assessmentEmailConfig, buildAssessmentEmail, sendAssessmentEmail, type AssessmentRecord } from "@/lib/assessment-email";
 import { isDuplicateSubmission } from "@/lib/recent-submissions";
 import { isPreviewDeployment } from "@/lib/deployment";
+import { attributionColumns, sanitizeAttribution } from "@/lib/attribution";
+import { recordLead } from "@/lib/leads/store";
 
 /**
  * Receives Operations Assessment requests and delivers them to every channel
@@ -61,6 +63,7 @@ export async function POST(request: Request) {
   };
   const context = sanitizeContext(body.context);
   if (Object.keys(context).length) record.context = context;
+  const attribution = sanitizeAttribution((body as { attribution?: unknown }).attribution);
 
   let email;
   try {
@@ -107,6 +110,25 @@ export async function POST(request: Request) {
     for (const f of failed) console.error("[assessment] delivery failed:", f.reason);
     return NextResponse.json({ ok: false, message: "We couldn't send your request. Please try again." }, { status: 502 });
   }
+
+  // Persistence runs after delivery, and deliberately cannot fail the request.
+  // The inbox is the system of record for reaching a prospect; the database is
+  // the system of record for managing them. If the database is unreachable we
+  // would rather lose a row than tell someone with a real enquiry that it failed
+  // when it is already sitting in Trafficomm's inbox. `recordLead` logs and
+  // swallows; the lead can be re-entered from the notification email.
+  await recordLead({
+    source: record.type === "call_request" ? "website_call" : "website_assessment",
+    email: record.email,
+    submittedAt: record.submittedAt,
+    company: record.company,
+    requirement: record.challenge || null,
+    campaignVolume: record.campaignsPerMonth,
+    // The form asks for one name field, so splitting it into first/last would be
+    // inventing a structure the visitor never supplied.
+    firstName: record.name,
+    attribution: attributionColumns(attribution),
+  });
 
   return NextResponse.json({ ok: true, delivered: true });
 }

@@ -367,6 +367,19 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Internal pages.
+
+   /admin is an operations tool, not a page of the website. The public header and
+   footer are rendered by the root layout for every route; rather than restructure
+   every public route into a group to exclude one internal branch, the admin
+   layout marks itself and the site chrome steps out of the way.
+   --------------------------------------------------------------------------- */
+body:has([data-admin]) > header,
+body:has([data-admin]) > footer {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
    Trafficomm Labs — printable analysis.
 
    The downloadable report is produced by the browser's own print engine rather

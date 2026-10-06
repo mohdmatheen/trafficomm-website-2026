@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useId, useRef, useState } from "react";
+import { readStoredAttribution } from "@/lib/attribution";
 import { allocationRows } from "@/lib/labs/allocation";
 import { formatNumber } from "@/lib/labs/currency";
 import { METHODOLOGY_VERSION, leadScore } from "@/lib/labs/engine";
@@ -66,6 +67,10 @@ export function DeliveryEstimate(ctx: Ctx) {
       leadScore: score.total,
       leadClassification: score.classification,
       capturedAt: new Date().toISOString(),
+      // First-touch, from the landing page of this visit — not from the current
+      // URL, which by this point is always /labs/adops-capacity and tells us
+      // nothing about where the visitor came from.
+      attribution: readStoredAttribution(),
     };
   };
 

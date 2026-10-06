@@ -18,6 +18,16 @@ const widths = [
   { name: "w390", width: 390, height: 844, touch: true },
 ];
 
+/**
+ * Specs whose behaviour has nothing to do with viewport width: the lead store,
+ * access control and attribution. They run once, in the first project.
+ *
+ * The database tests in particular start a WASM Postgres per test; running them
+ * in all six projects started 144 of them and starved the browser tests of CPU
+ * until unrelated assertions timed out. Six identical passes bought no coverage.
+ */
+const viewportIndependent = [/leads-db\.spec\.ts/, /admin-auth\.spec\.ts/, /attribution\.spec\.ts/];
+
 export default defineConfig({
   testDir: "./tests",
   snapshotPathTemplate: "{testDir}/__screenshots__/{projectName}/{arg}{ext}",
@@ -31,9 +41,10 @@ export default defineConfig({
     channel: "chrome",
     trace: "retain-on-failure",
   },
-  projects: widths.map((w) => ({
+  projects: widths.map((w, i) => ({
     name: w.name,
     use: { viewport: { width: w.width, height: w.height }, hasTouch: Boolean(w.touch), isMobile: Boolean(w.touch) },
+    ...(i === 0 ? {} : { testIgnore: viewportIndependent }),
   })),
   webServer: external
     ? undefined

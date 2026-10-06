@@ -12,6 +12,8 @@
  * context carries cost *outputs* and never the per-role figures behind them.
  */
 
+import { sanitizeAttribution, type Attribution } from "@/lib/attribution";
+
 export type LabsLeadInput = {
   name?: string;
   company?: string;
@@ -57,6 +59,11 @@ export type LabsLeadContext = {
   leadScore: number;
   leadClassification: string;
   capturedAt: string;
+  /**
+   * First-touch campaign attribution. The Labs flow previously carried none, so
+   * a Labs lead from a paid campaign was indistinguishable from an organic one.
+   */
+  attribution: Attribution;
 };
 
 export type LabsLeadRecord = {
@@ -148,6 +155,7 @@ export function sanitizeLabsContext(input: unknown): LabsLeadContext {
     leadScore: num(raw.leadScore),
     leadClassification: str(raw.leadClassification, 16),
     capturedAt: str(raw.capturedAt, 32) || new Date().toISOString(),
+    attribution: sanitizeAttribution(raw.attribution),
   };
 }
 

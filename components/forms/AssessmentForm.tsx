@@ -2,7 +2,8 @@
 
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company, enquiryConfidentialityNote } from "@/data/site";
-import { utmKeys, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors, type SubmissionContext } from "@/lib/assessment";
+import { validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors, type SubmissionContext } from "@/lib/assessment";
+import { readStoredAttribution } from "@/lib/attribution";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
 import { buttonClasses } from "@/components/ui/Button";
@@ -20,17 +21,11 @@ const empty: AssessmentInput = { name: "", company: "", email: "", volume: "", c
  */
 function readContext(): SubmissionContext {
   if (typeof window === "undefined") return {};
-  const context: SubmissionContext = { path: window.location.pathname };
-  // Same-origin navigation is not a referral; only an external source is worth recording.
-  if (document.referrer && !document.referrer.startsWith(window.location.origin)) context.referrer = document.referrer;
-  const params = new URLSearchParams(window.location.search);
-  const utm: NonNullable<SubmissionContext["utm"]> = {};
-  for (const key of utmKeys) {
-    const value = params.get(`utm_${key}`);
-    if (value) utm[key] = value;
-  }
-  if (Object.keys(utm).length) context.utm = utm;
-  return context;
+  // `path` is where the form was submitted; the campaign fields come from the
+  // first page of the visit, not this one. Reading UTMs from the current URL —
+  // which is what this did — lost the campaign for every visitor who landed on
+  // one page and converted on another, which is most of them.
+  return { path: window.location.pathname };
 }
 
 /** `privacyNote`: set false where the page already states the confidentiality line (Contact). */
@@ -91,7 +86,7 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
       const res = await fetch("/api/assessment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, context: readContext() }),
+        body: JSON.stringify({ ...payload, context: readContext(), attribution: readStoredAttribution() }),
       });
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; duplicate?: boolean; message?: string; errors?: FieldErrors };
       if (!res.ok || !data.ok) {
