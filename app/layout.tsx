@@ -31,6 +31,8 @@ export const metadata: Metadata = {
   openGraph: { siteName: company.publicName, type: "website", locale: "en_US" },
   twitter: { card: "summary" },
   formatDetection: { telephone: false, email: false, address: false },
+  // Meta Business domain verification for www.trafficomm.com (rendered as a <meta> in the server HTML <head>).
+  verification: { other: { "facebook-domain-verification": "2r9yqzt717a1fvukbaa78pptk40ppl" } },
   // noindex, nofollow unless the deployment explicitly opts in (see lib/deployment.ts).
   ...(isIndexable ? {} : { robots: { index: false, follow: false } }),
 };
