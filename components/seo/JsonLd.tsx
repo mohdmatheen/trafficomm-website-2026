@@ -71,6 +71,7 @@ export const organizationSchema = (): Json => ({
   slogan: company.tagline,
   knowsAbout,
   ...(company.email ? { email: company.email } : {}),
+  ...(company.address ? { address: { "@type": "PostalAddress", ...company.address } } : {}),
   ...(company.linkedin ? { sameAs: [company.linkedin] } : {}),
 });
 
