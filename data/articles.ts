@@ -12,6 +12,7 @@ export const articles: Article[] = [
   {
     slug: "saudi-digital-advertising-outlook-2027",
     title: "Saudi Digital Advertising Outlook 2027: What Agency Operations Teams Should Prepare For",
+    seoTitle: "Saudi Digital Advertising Outlook 2027",
     dek: "Saudi campaigns are getting operationally heavier, not just larger — more platforms, more creative versions, tighter launch windows and measurement that has to hold. What agency operations teams should settle before 2027.",
     category: "Industry Insight",
     author: labAuthor,
