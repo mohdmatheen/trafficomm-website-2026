@@ -17,6 +17,7 @@ export function Footer() {
         { label: "All solutions", href: "/solutions" },
         { label: "Platforms", href: "/platforms" },
         { label: "Performance Lab", href: "/insights" },
+        { label: "Tools", href: "/labs" },
         { label: "AdOps capacity calculator", href: "/labs/adops-capacity" },
       ],
     },
