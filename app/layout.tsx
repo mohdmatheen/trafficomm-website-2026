@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
-import { Analytics, AnalyticsNoScript } from "@/components/analytics/Analytics";
+import { Analytics, AnalyticsEnvironment, AnalyticsNoScript } from "@/components/analytics/Analytics";
 import { LinkEvents } from "@/components/analytics/LinkEvents";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
@@ -53,6 +53,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         {/* Enables reveal animations only when JS is running, so content is never hidden without it. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+        {/* Must precede the GTM loader: the container's Google tag reads this on Initialization. */}
+        <AnalyticsEnvironment />
       </head>
       <body className="flex min-h-dvh flex-col">
         {/* Google places this immediately after <body>. It is inert when JS runs. */}

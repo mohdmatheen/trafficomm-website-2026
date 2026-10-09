@@ -99,11 +99,17 @@ test.describe("Google Tag Manager", () => {
 
   test("dataLayer carries the deployment environment so GTM can exclude non-production", async ({ page }) => {
     await page.goto("/", { waitUntil: "domcontentloaded" });
-    // next/script runs the dataLayer initialiser after hydration, so wait for the
-    // value rather than reading the array the moment the document parses.
-    await page.waitForFunction(() => (window.dataLayer ?? []).some((p) => typeof (p as Record<string, unknown>).site_environment === "string"), null, { timeout: 15_000 });
+    // next/script pushes the gtm.js message after hydration, so wait for it.
+    await page.waitForFunction(() => (window.dataLayer ?? []).some((p) => (p as Record<string, unknown>).event === "gtm.js"), null, { timeout: 15_000 });
     const seen = await pushes(page);
-    expect(seen.some((p) => typeof p.site_environment === "string")).toBe(true);
+    const env = seen.findIndex((p) => typeof p.site_environment === "string");
+    const gtmJs = seen.findIndex((p) => p.event === "gtm.js");
+    expect(env, "site_environment must be in dataLayer").toBeGreaterThanOrEqual(0);
+    // The Google tag fires on Initialization and reads site_environment then; a later push is invisible to it.
+    expect(env, "site_environment must be pushed before the gtm.js message").toBeLessThan(gtmJs);
+    // Set when the build under test is known, e.g. "production" for SITE_INDEXABLE=true on VERCEL_ENV=production.
+    const expected = process.env.EXPECT_SITE_ENVIRONMENT;
+    if (expected) expect(seen[env].site_environment).toBe(expected);
   });
 });
 
