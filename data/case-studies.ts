@@ -156,7 +156,7 @@ export const caseStudies: CaseStudy[] = [
     number: "04",
     category: "Publisher Monetization",
     market: "UAE",
-    client: "UAE Broadcast Group",
+    client: "UAE Television Broadcaster",
     title: "Turning Digital Inventory Into Revenue.",
     cardTitle: "Turning Digital Inventory Into Revenue",
     subtitle: "How Trafficomm designed and operated an advertising framework that monetized a UAE television broadcaster's website.",
