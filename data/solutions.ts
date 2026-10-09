@@ -354,6 +354,22 @@ export const solutions: Solution[] = [
         q: "Do you compete with our agency for clients?",
         a: "Trafficomm is built to work behind agencies, not against them. Our role is to make your offer stronger — client relationships stay with you.",
       },
+      {
+        q: "What does a white-label ad operations team do?",
+        a: "It carries the execution underneath your client work: campaign build, trafficking, QA, pacing checks, optimisation support within the scope you define, reporting, measurement setup and documentation. The team works in your tools, follows your naming conventions and processes, and reports in your templates, so the output reaches your client as your own.",
+      },
+      {
+        q: "What stays with our agency in a white-label model?",
+        a: "Your brand, client relationships, pricing and contracts, account leadership, strategy, commercial decisions and final approvals. Campaigns go live on your approval rather than automatically.",
+      },
+      {
+        q: "Will our clients know Trafficomm is involved?",
+        a: "Not from us. Trafficomm does not publicise client relationships, and confidentiality is standard rather than an add-on. Reports go out in your format and are sent by you.",
+      },
+      {
+        q: "Can we white-label one capability rather than a whole team?",
+        a: "Yes. Some agencies use a fully white-labelled team; others add a single capability such as programmatic, measurement or rich media to their offer without building a new department.",
+      },
     ],
   },
 ];
