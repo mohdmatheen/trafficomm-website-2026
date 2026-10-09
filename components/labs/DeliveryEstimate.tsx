@@ -215,7 +215,11 @@ export function DeliveryEstimate(ctx: Ctx) {
 
         <p className="max-w-2xl text-[0.84rem] leading-relaxed text-mute">
           Submitting attaches the analysis above — your team size, campaign volume, workload and the figures it produced — so we can scope the work without
-          asking you to repeat it. Individual salary inputs are never sent. Nothing left your browser before this point.
+          asking you to repeat it. Individual salary inputs are never sent. Nothing left your browser before this point.{" "}
+          <Link href="/privacy" className="underline decoration-line-dark-strong underline-offset-4 hover:text-white">
+            Privacy policy
+          </Link>
+          .
         </p>
       </form>
     </section>

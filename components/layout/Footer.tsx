@@ -63,6 +63,9 @@ export function Footer() {
             © {new Date().getFullYear()} {company.legalName}. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
+            <Link href="/privacy" className="transition-colors hover:text-white">
+              Privacy
+            </Link>
             {company.linkedin && (
               <a href={company.linkedin} rel="me noopener" target="_blank" className="transition-colors hover:text-white">
                 LinkedIn

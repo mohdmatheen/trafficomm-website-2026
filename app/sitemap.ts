@@ -9,7 +9,7 @@ import { getArticles } from "@/lib/content";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // "/ad-operations-outsourcing" is a cornerstone commercial page, ranked alongside
   // the section indexes rather than below them.
-  const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact", "/ad-operations-outsourcing"];
+  const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact", "/ad-operations-outsourcing", "/privacy"];
   // Labs is listed separately: the calculator is a search destination in its own
   // right, the index is a hub. Both were reachable only through in-body links.
   const labsRoutes: [string, number][] = [

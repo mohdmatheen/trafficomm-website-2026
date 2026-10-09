@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState, type FormEvent, type ReactNode } from "react";
 import { company, enquiryConfidentialityNote } from "@/data/site";
 import { utmKeys, validateAssessment, volumeOptions, type AssessmentInput, type FieldErrors, type SubmissionContext } from "@/lib/assessment";
@@ -232,7 +233,11 @@ export function AssessmentForm({ tone = "dark", idPrefix = "af", privacyNote = t
         )}
       </div>
       <p className={cn("mt-4 text-[0.83rem] leading-relaxed", dark ? "text-mute" : "text-steel")}>
-        {privacyNote && `${enquiryConfidentialityNote} `}We use these details only to respond to your request.
+        {privacyNote && `${enquiryConfidentialityNote} `}We use these details only to respond to your request. See our{" "}
+        <Link href="/privacy" className="underline underline-offset-4">
+          privacy policy
+        </Link>
+        .
       </p>
     </form>
   );
