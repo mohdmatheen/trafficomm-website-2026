@@ -1757,7 +1757,7 @@ export const articles: Article[] = [
         text: "Trafficomm works as an execution layer inside boundaries the agency defines — its tools, naming conventions, templates and approval points — with QA performed separately from the build and a named account manager accountable for the engagement. The commercial shape of that is set out in [ad operations outsourcing](/ad-operations-outsourcing).",
       },
     ],
-    related: ["agency-guide-to-outsourcing-ad-operations", "campaign-launch-qa-checklist"],
+    related: ["agency-guide-to-outsourcing-ad-operations", "campaign-launch-qa-checklist", "building-vs-outsourcing-ad-operations-team"],
     links: [
       { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing guide", meta: "Guide" },
       { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
@@ -2031,7 +2031,7 @@ export const articles: Article[] = [
       },
       {
         type: "p",
-        text: "This guide covers what can be outsourced and what should not be, when the model fits, how the operating layer works day to day, what a complete handoff contains, how QA should be staged, and what to examine in a partner before committing.",
+        text: "This guide covers what can be outsourced and what should not be, when the model fits, how the operating layer works day to day, what a complete handoff contains, how QA should be staged, and what to examine in a partner before committing. If you are already comparing providers, Trafficomm's [ad operations outsourcing services](/ad-operations-outsourcing) set out scope, platforms and how an engagement starts.",
       },
       {
         type: "callout",
