@@ -170,6 +170,7 @@ export const relatedLinks = [
   { href: "/how-we-work", label: "How We Work", meta: "Process" },
   { href: "/insights/gcc-multi-market-campaign-operations", label: "GCC multi-market campaign operations", meta: "Guide" },
   { href: "/insights/uae-digital-advertising-operations", label: "UAE digital advertising operations", meta: "Guide" },
+  { href: "/insights/saudi-digital-advertising-outlook-2027", label: "Saudi digital advertising outlook 2027", meta: "Outlook" },
   { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing: the complete guide", meta: "Guide" },
   { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
   { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },

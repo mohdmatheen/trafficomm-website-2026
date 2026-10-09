@@ -128,6 +128,7 @@ export const adOperationsPage: ServicePageContent = {
     { href: "/insights/campaign-measurement-implementation-validation", label: "Campaign measurement implementation and validation", meta: "Guide" },
     { href: "/insights/gcc-multi-market-campaign-operations", label: "GCC multi-market campaign operations", meta: "Guide" },
     { href: "/insights/uae-digital-advertising-operations", label: "UAE digital advertising operations", meta: "Guide" },
+    { href: "/insights/saudi-digital-advertising-outlook-2027", label: "Saudi digital advertising outlook 2027", meta: "Outlook" },
     { href: "/labs/adops-capacity", label: "AdOps capacity calculator", meta: "Free tool" },
   ],
   cta: {
