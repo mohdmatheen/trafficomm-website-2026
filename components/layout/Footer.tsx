@@ -9,6 +9,17 @@ export function Footer() {
     { title: "Services", links: services.links },
     { title: "Solutions", links: solutions.links },
     { title: "Company", links: [...secondaryNav, { label: "Contact", href: "/contact" }] },
+    // Hubs that are otherwise reachable only through breadcrumbs or in-body links.
+    {
+      title: "Explore",
+      links: [
+        { label: "All services", href: "/services" },
+        { label: "All solutions", href: "/solutions" },
+        { label: "Platforms", href: "/platforms" },
+        { label: "Performance Lab", href: "/insights" },
+        { label: "AdOps capacity calculator", href: "/labs/adops-capacity" },
+      ],
+    },
   ];
 
   return (
@@ -28,7 +39,7 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
             {columns.map((col) => (
               <nav key={col.title} aria-label={`Footer ${col.title}`}>
                 <p className="eyebrow mb-5 text-mute">{col.title}</p>
@@ -50,7 +61,14 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {company.legalName}. All rights reserved.
           </p>
-          <p className="font-mono uppercase tracking-[0.12em]">Execute · Optimize · Measure · Report</p>
+          <div className="flex items-center gap-6">
+            {company.linkedin && (
+              <a href={company.linkedin} rel="me noopener" target="_blank" className="transition-colors hover:text-white">
+                LinkedIn
+              </a>
+            )}
+            <p className="font-mono uppercase tracking-[0.12em]">Execute · Optimize · Measure · Report</p>
+          </div>
         </div>
 
         {/* Platform marks appear in the homepage hero and across /platforms, so
