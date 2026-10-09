@@ -173,6 +173,7 @@ export const relatedLinks = [
   { href: "/insights/saudi-digital-advertising-outlook-2027", label: "Saudi digital advertising outlook 2027", meta: "Outlook" },
   { href: "/insights/agency-guide-to-outsourcing-ad-operations", label: "Ad operations outsourcing: the complete guide", meta: "Guide" },
   { href: "/insights/campaign-launch-qa-checklist", label: "Campaign launch QA checklist", meta: "Checklist" },
+  { href: "/insights/outsourced-ad-trafficking", label: "Outsourced ad trafficking", meta: "Guide" },
   { href: "/insights/outsourced-ad-operations-governance", label: "Outsourcing without losing control", meta: "Governance" },
   { href: "/insights/ad-operations-capacity-planning", label: "Ad operations capacity planning", meta: "Guide" },
   { href: "/labs/adops-capacity", label: "AdOps capacity calculator", meta: "Free tool" },

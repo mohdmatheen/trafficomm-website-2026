@@ -2061,7 +2061,7 @@ export const articles: Article[] = [
       {
         type: "ul",
         items: [
-          "Build and launch — campaign setup, trafficking, creative implementation, targeting and placement configuration, budget and flight-date validation.",
+          "Build and launch — campaign setup, [trafficking](/insights/outsourced-ad-trafficking), creative implementation, targeting and placement configuration, budget and flight-date validation.",
           "Verification — creative QA against specification, tracking validation, UTM implementation, conversion-event checks, naming enforcement, pre-launch review.",
           "In-flight operations — pacing and delivery monitoring, optimisation support within agreed scope, delegated budget reallocation, delivery and ad-server troubleshooting.",
           "Reporting and reconciliation — scheduled and end-of-campaign reporting, report QA, reconciliation against the plan, proof of delivery, measurement support.",
@@ -2432,6 +2432,126 @@ export const articles: Article[] = [
       { href: "/solutions/media-agencies", label: "For media agencies", meta: "Solution" },
       { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
       { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+    ],
+  },
+  {
+    slug: "outsourced-ad-trafficking",
+    title: "Outsourced Ad Trafficking: What Agencies Hand Off, and What Stays In-House",
+    seoTitle: "Outsourced Ad Trafficking for Agencies",
+    dek: "Trafficking is the step where an approved plan becomes live delivery. What it involves, what an agency has to hand over before anyone can do it well, and how to keep control when an external team does it.",
+    category: "Guide",
+    author: labAuthor,
+    publishedAt: "2026-10-09",
+    hero: { kicker: "Ad Operations", motif: "flow" },
+    tags: ["Ad Trafficking", "Ad Operations", "Outsourcing", "Agency Operations"],
+    body: [
+      {
+        type: "p",
+        text: "Ad trafficking is the part of campaign execution where an approved plan, a set of approved creatives and a set of tracking requirements become placements that actually serve. It is the narrowest step in ad operations and one of the least forgiving: the plan can be right and the creative can be right, and the campaign can still deliver the wrong asset, to the wrong placement, with tracking that does not count.",
+      },
+      {
+        type: "p",
+        text: "Agencies outsource trafficking more readily than almost any other operational task, because it is specification-driven and volume-sensitive. That is also why it is worth being precise about what is being handed over. This guide covers what the work involves, what has to exist before an external team can do it, and where control should stay. The wider model it sits inside is set out in [the complete guide to ad operations outsourcing](/insights/agency-guide-to-outsourcing-ad-operations).",
+      },
+
+      { type: "h2", text: "What ad trafficking actually covers", id: "scope" },
+      {
+        type: "p",
+        text: "The word is used loosely, so it helps to separate the two places trafficking happens. On self-serve platforms such as Meta, TikTok, Snapchat, LinkedIn or Google Ads, trafficking is mostly part of campaign build: uploading approved creatives to the right ad sets or ad groups, attaching destination URLs and tracking parameters, and mapping each asset to the placements it was made for. In an ad server such as Campaign Manager 360, trafficking is a discipline of its own: placements are created to match what was bought, creatives are assigned and rotated, tags are generated and sent to publishers or to a DSP such as Display & Video 360, and delivery is later reconciled against what each side counted.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Placement setup that mirrors the media plan, with sizes, dates and naming that the end-of-month report will depend on.",
+          "Creative assignment and rotation, including which version runs where and when it is swapped.",
+          "Click-through URLs, tracking parameters and third-party tags applied consistently to every placement, not most of them.",
+          "Tag delivery to publishers or a DSP, and confirmation that what was sent is what went live.",
+          "Changes in flight: new creatives, extended dates, paused placements, each recorded so the build still matches the plan.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Where programmatic is in the plan, insertion-order and line-item structure in DV360 sits directly on top of the trafficking in CM360, and the two have to be designed together. That shape of work is described under [programmatic operations](/services/programmatic).",
+      },
+
+      { type: "h2", text: "What has to exist before anyone can traffic well", id: "inputs" },
+      {
+        type: "p",
+        text: "Most trafficking errors are created before trafficking starts. An external team inherits whatever the handoff contains, so the quality of outsourced trafficking is set largely by the quality of what the agency passes across.",
+      },
+      {
+        type: "table",
+        caption: "Trafficking inputs and what goes wrong without them",
+        head: ["Input", "What it settles", "Failure when it is missing"],
+        rows: [
+          ["Final media plan or insertion order", "What was bought, where, for which dates", "Placements built to a draft plan, then rebuilt"],
+          ["Naming convention", "How every placement, creative and campaign is named", "Reports that cannot be broken out without manual rework"],
+          ["Creative specification matrix", "Which asset fits which placement", "Right asset, wrong size or wrong placement"],
+          ["Approved creative set with version labels", "Which file is the approved one", "A superseded version goes live"],
+          ["Tracking requirements", "URLs, parameters, third-party tags per placement", "Tracking on four of five placements"],
+          ["Approval point", "Who confirms before launch", "Campaigns going live on assumption rather than sign-off"],
+        ],
+      },
+      {
+        type: "p",
+        text: "None of these require new tooling. A clear spreadsheet that everyone updates does the job. What matters is that each item is final before trafficking begins, rather than finalised during it.",
+      },
+
+      { type: "h2", text: "Checking trafficking before and after launch", id: "qa" },
+      {
+        type: "p",
+        text: "Trafficking QA is not the same as creative QA. Creative QA asks whether the asset is right. Trafficking QA asks whether the right asset is attached to the right placement, with the right destination and the right tracking, in the account configuration that will actually serve. The second can only be answered in the live platform or ad server, not from the trafficking sheet, because the sheet records what was intended.",
+      },
+      {
+        type: "ul",
+        items: [
+          "Before launch: placement-by-placement comparison of the build against the plan, creative-to-placement mapping, destination URLs and parameters, tag presence, dates and account timezone.",
+          "At launch: confirmation that placements are serving and that tracking is registering, rather than assuming both from a clean setup.",
+          "In flight: delivery against plan, discrepancies between the ad server and the platform or publisher, and a record of every change made after launch.",
+        ],
+      },
+      {
+        type: "p",
+        text: "A worked sequence for the pre-launch pass is in the [campaign launch QA checklist](/insights/campaign-launch-qa-checklist). How measurement is validated end to end is covered in [campaign measurement implementation and validation](/insights/campaign-measurement-implementation-validation).",
+      },
+
+      { type: "h2", text: "What stays with the agency", id: "keep" },
+      {
+        type: "p",
+        text: "Outsourcing trafficking moves execution, not judgement. The decisions that sit close to the client and the plan stay where they are.",
+      },
+      {
+        type: "ul",
+        items: [
+          "The media plan, the buy and any change to either.",
+          "Creative and copy approval, including language approval.",
+          "The decision to launch: campaigns go live on the agency's approval, not automatically.",
+          "The client relationship and accountability for what was delivered.",
+        ],
+      },
+      {
+        type: "p",
+        text: "Everything between an approved plan and live delivery — placement build, creative assignment, URLs and tags, pre-launch checks, launch verification and change logging — is process-led work that an external team can carry, inside the agency's own platforms, naming conventions and approval steps.",
+      },
+
+      { type: "h2", text: "Keeping control when someone else traffics", id: "control" },
+      {
+        type: "p",
+        text: "The arrangement works when responsibility is defined before the first campaign rather than discovered during the third. Three things do most of the work: an agreed handoff (the inputs above, complete before build starts), a defined approval point (who signs off, and that nothing launches without it), and a change log (every in-flight edit recorded against the plan). Access should be scoped to the accounts and roles the work needs. The broader governance questions — access, escalation, confidentiality — are set out in [outsourced ad operations governance](/insights/outsourced-ad-operations-governance).",
+      },
+
+      { type: "h2", text: "How Trafficomm handles trafficking", id: "trafficomm" },
+      {
+        type: "p",
+        text: "Trafficomm supports agencies with campaign build, trafficking, QA, pacing checks, optimisation support, reporting, measurement setup and documentation, working inside the agency's platforms, naming conventions and approval steps, and where an agency needs it, behind the agency's brand. Trafficomm has campaign experience across Meta, Google Ads, TikTok, Snapchat, X, LinkedIn, Display & Video 360, Campaign Manager 360, Search Ads 360 and Amazon Ads; platform experience indicates operational familiarity and does not imply partnership or certification. Since 2015 Trafficomm has handled 10,000+ campaigns and 1M+ creatives and placements. How an engagement is structured is set out under [ad operations outsourcing](/ad-operations-outsourcing).",
+      },
+    ],
+    related: ["campaign-launch-qa-checklist", "agency-guide-to-outsourcing-ad-operations", "outsourced-ad-operations-governance"],
+    links: [
+      { href: "/ad-operations-outsourcing", label: "Ad operations outsourcing", meta: "Service" },
+      { href: "/services/ad-operations", label: "Ad Operations", meta: "Service" },
+      { href: "/services/programmatic", label: "Programmatic Operations", meta: "DV360 · CM360" },
+      { href: "/solutions/white-label-ad-operations", label: "White-label ad operations", meta: "Solution" },
     ],
   },
 ];
