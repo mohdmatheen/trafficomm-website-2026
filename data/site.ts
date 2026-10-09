@@ -20,6 +20,8 @@ export const company = {
   publicName: "Trafficomm Digital",
   legalName: "Trafficomm Digital Media Services Pvt Ltd",
   founded: 2015,
+  /** Trafficomm Digital Media Services Private Limited, incorporated 19 Feb 2016 (MCA, CIN U74999TN2016PTC104264). Operating since `founded`. */
+  incorporated: 2016,
   tagline: "Performance Operations. Built for Execution.",
   positioning: "The performance operations layer behind modern media teams.",
   /**

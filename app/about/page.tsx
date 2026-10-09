@@ -9,9 +9,9 @@ import { company, scaleStats } from "@/data/site";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
-  title: "About",
+  title: "About — Performance Operations Partner Since 2015",
   description:
-    "Founded in 2015, Trafficomm is a digital advertising operations and performance operations company working behind agencies, ad-tech companies, publishers and brands.",
+    "Operating since 2015, Trafficomm is a digital advertising operations and performance operations company working behind agencies, ad-tech companies, publishers and brands.",
   path: "/about",
 });
 
@@ -41,7 +41,7 @@ export default function AboutPage() {
             We understand what happens <span className="block text-steel/70">behind the campaigns.</span>
           </>
         }
-        lead={`${company.legalName} was founded in ${company.founded} to do one thing exceptionally well: run the operational work behind digital advertising. Today we are the performance operations layer behind agencies, ad-tech companies, publishers and brands.`}
+        lead={`Trafficomm started in ${company.founded} to do one thing exceptionally well: run the operational work behind digital advertising. We were incorporated in India in ${company.incorporated} as ${company.legalName}. Today we are the performance operations layer behind agencies, ad-tech companies, publishers and brands.`}
       />
 
       <Section tone="white" labelledBy="story-title">
