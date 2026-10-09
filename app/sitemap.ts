@@ -7,7 +7,6 @@ import { solutions } from "@/data/solutions";
 import { getArticles } from "@/lib/content";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const now = new Date();
   // "/ad-operations-outsourcing" is a cornerstone commercial page, ranked alongside
   // the section indexes rather than below them.
   const staticRoutes = ["", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact", "/ad-operations-outsourcing"];
@@ -17,9 +16,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ["/labs/adops-capacity", 0.8],
     ["/labs", 0.5],
   ];
-  const entry = (path: string, priority: number, lastModified: Date = now): MetadataRoute.Sitemap[number] => ({
+  // lastmod is emitted only where a real content date exists (articles). Stamping
+  // every other page with the build time made every deploy claim a site-wide change,
+  // which teaches crawlers to ignore the field.
+  const entry = (path: string, priority: number, lastModified?: Date): MetadataRoute.Sitemap[number] => ({
     url: `${siteUrl}${path}`,
-    lastModified,
+    ...(lastModified ? { lastModified } : {}),
     changeFrequency: "monthly",
     priority,
   });
