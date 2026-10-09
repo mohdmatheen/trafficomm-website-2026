@@ -1,6 +1,7 @@
 import { expect, test, type Page } from "@playwright/test";
 import { PRODUCTION_ORIGIN, resolveSiteUrl } from "../data/site";
 import { aliasRedirectIsSafe, hostRedirects, CANONICAL_HOST, PRODUCTION_ALIAS } from "../lib/host-redirects";
+import { legacyRedirects } from "../lib/legacy-redirects";
 
 /**
  * Production shipped every canonical, og:url, robots.txt Host and all 37 sitemap
@@ -110,6 +111,33 @@ test.describe("sitemap", () => {
       results.forEach((res, k) => {
         expect(res.status(), `${batch[k]} should be 200, not ${res.status()}`).toBe(200);
       });
+    }
+  });
+});
+
+test.describe("legacy URL redirects", () => {
+  test("each rule is one exact path, permanent, to a local page", async () => {
+    for (const r of legacyRedirects) {
+      expect(r.source, "no wildcards or params in a legacy rule").toMatch(/^\/[\w./-]+$/);
+      expect(r.destination.startsWith("/"), `${r.source} must stay on this site`).toBe(true);
+      expect(r.permanent).toBe(true);
+    }
+  });
+
+  test("each legacy URL is a single 308 hop to a 200 page", async ({ page }) => {
+    for (const r of legacyRedirects) {
+      const res = await page.request.get(r.source, { maxRedirects: 0 });
+      expect(res.status(), `${r.source} should 308`).toBe(308);
+      expect(new URL(res.headers()["location"], "http://x").pathname).toBe(r.destination);
+      const target = await page.request.get(r.destination, { maxRedirects: 0 });
+      expect(target.status(), `${r.destination} should be 200 without a further hop`).toBe(200);
+    }
+  });
+
+  test("old URLs without an established equivalent stay 404", async ({ page }) => {
+    for (const path of ["/testimonials/abdul", "/testimonials/saran-kumar", "/services/2", "/services/3", "/public/index.php", "/blog/3", "/public/index.php/blog/3"]) {
+      const res = await page.request.get(path, { maxRedirects: 0 });
+      expect(res.status(), `${path} should stay 404`).toBe(404);
     }
   });
 });
