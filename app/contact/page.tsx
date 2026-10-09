@@ -3,7 +3,7 @@ import { AssessmentForm } from "@/components/forms/AssessmentForm";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Lock } from "@/components/ui/Icons";
 import { Eyebrow } from "@/components/ui/Section";
-import { company, enquiryConfidentialityNote, markets } from "@/data/site";
+import { company, enquiryConfidentialityNote, formatAddress, markets } from "@/data/site";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = buildMetadata({
@@ -23,6 +23,7 @@ export default function ContactPage() {
   const details = [
     company.email && { k: "Email", v: <a className="underline decoration-signal underline-offset-4" href={`mailto:${company.email}`}>{company.email}</a> },
     company.phone && { k: "Phone", v: <a href={`tel:${company.phone}`}>{company.phone}</a> },
+    company.address && { k: "Office", v: <address className="not-italic">{formatAddress(company.address)}</address> },
     company.linkedin && { k: "LinkedIn", v: <a href={company.linkedin} target="_blank" rel="noopener noreferrer">Trafficomm on LinkedIn</a> },
   ].filter(Boolean) as { k: string; v: React.ReactNode }[];
 

@@ -3,6 +3,11 @@
  * Every number here is a verified proof point supplied by Trafficomm.
  * Do not add statistics that are not documented.
  */
+export type PostalAddress = { streetAddress: string; addressLocality: string; addressRegion: string; postalCode: string; addressCountry: string };
+
+/** One line, as the Business Profile shows it. */
+export const formatAddress = (a: PostalAddress) => `${a.streetAddress}, ${a.addressLocality}, ${a.addressRegion} ${a.postalCode}`;
+
 export const company = {
   /**
    * The short brand used everywhere a human reads it: the wordmark, page
@@ -41,6 +46,18 @@ export const company = {
   phone: null as string | null,
   /** Verified official company page. Feeds Organization.sameAs; no other profile is emitted. */
   linkedin: "https://www.linkedin.com/company/trafficomm-media-services/" as string | null,
+  /**
+   * Office address, owner-confirmed 2026-10-09 and spelled exactly as on Trafficomm's
+   * managed Google Business Profile. Not the registered office (Triplicane, per MCA),
+   * and not the Chetpet or Triplicane addresses some directories still show.
+   */
+  address: {
+    streetAddress: "2nd floor, Metro Towers, Poonamalee High Road, Egmore",
+    addressLocality: "Chennai",
+    addressRegion: "Tamil Nadu",
+    postalCode: "600084",
+    addressCountry: "IN",
+  } as PostalAddress | null,
   /** Optional booking link (e.g. Calendly). When null, "Schedule a call" routes through the form. */
   bookingUrl: null as string | null,
 };

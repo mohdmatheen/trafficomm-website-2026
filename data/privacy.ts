@@ -3,8 +3,7 @@
  * repository does today (forms, API routes, analytics allowlist, storage).
  * When a practice changes, change this file in the same pull request.
  *
- * Deliberately absent until Trafficomm confirms them: a postal address
- * (the Business Profile text has not been verified), a privacy mailbox,
+ * Deliberately absent until Trafficomm confirms them: a privacy mailbox,
  * fixed retention periods and the name of the production email/CRM provider.
  * Do not fill these in from assumptions.
  */
@@ -17,7 +16,7 @@ export const privacySections: PrivacySection[] = [
     id: "who-we-are",
     heading: "Who we are",
     paragraphs: [
-      "This website, www.trafficomm.com, is operated by Trafficomm Digital Media Services Pvt Ltd, a company incorporated in India (CIN U74999TN2016PTC104264). In this policy, \"Trafficomm\", \"we\" and \"us\" mean that company. We decide how the personal information described below is used.",
+      "This website, www.trafficomm.com, is operated by Trafficomm Digital Media Services Pvt Ltd, a company incorporated in India (CIN U74999TN2016PTC104264). Our office is at 2nd floor, Metro Towers, Poonamalee High Road, Egmore, Chennai, Tamil Nadu 600084, India. In this policy, \"Trafficomm\", \"we\" and \"us\" mean that company. We decide how the personal information described below is used.",
       "This policy covers information collected through this website. It does not cover the work we do for clients under contract, which is governed by the agreement with each client.",
     ],
   },

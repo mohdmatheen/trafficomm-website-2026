@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import { hostRedirects } from "./lib/host-redirects";
+import { legacyRedirects } from "./lib/legacy-redirects";
 
 const indexable = process.env.SITE_INDEXABLE === "true";
 
@@ -15,8 +16,10 @@ const nextConfig: NextConfig = {
   // The production deployment also answers on its vercel.app alias, which serves a
   // full indexable copy of the site. See lib/host-redirects.ts for the rule and for
   // why it is built from literal hostnames.
+  // Host rules come first, so a legacy path on the alias moves to the canonical host
+  // before its own rule applies. Legacy path rules: see lib/legacy-redirects.ts.
   async redirects() {
-    return hostRedirects(indexable);
+    return [...hostRedirects(indexable), ...legacyRedirects];
   },
 };
 
