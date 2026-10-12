@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import { Analytics, AnalyticsEnvironment, AnalyticsNoScript } from "@/components/analytics/Analytics";
 import { LinkEvents } from "@/components/analytics/LinkEvents";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { RevealObserver } from "@/components/motion/RevealObserver";
@@ -73,6 +74,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <RevealObserver />
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
         <LinkEvents />
+        <ConsentBanner />
         <Analytics />
       </body>
     </html>

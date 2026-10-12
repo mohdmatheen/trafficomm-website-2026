@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { company, primaryNav, secondaryNav } from "@/data/site";
+import { CookieSettingsButton } from "@/components/consent/CookieSettingsButton";
 import { ButtonLink } from "@/components/ui/Button";
 import { Logo } from "@/components/ui/Logo";
 
@@ -66,6 +67,7 @@ export function Footer() {
             <Link href="/privacy" className="transition-colors hover:text-white">
               Privacy
             </Link>
+            <CookieSettingsButton className="cursor-pointer whitespace-nowrap transition-colors hover:text-white" />
             {company.linkedin && (
               <a href={company.linkedin} rel="me noopener" target="_blank" className="transition-colors hover:text-white">
                 LinkedIn

@@ -48,7 +48,7 @@ export const privacySections: PrivacySection[] = [
     items: [
       "To reply to your request, arrange the conversation you asked for and prepare an assessment or delivery estimate. Our basis for this is taking the steps you asked for before a possible contract, and our legitimate interest in answering business enquiries.",
       "To understand which pages and campaigns bring enquiries, using the page, referrer and campaign tags that travel with a form. Our basis is our legitimate interest in running and improving our marketing.",
-      "To measure how the site is used in aggregate through Google Analytics. Our basis is our legitimate interest in understanding and improving the site.",
+      "To measure how the site is used in aggregate through Google Analytics. For visitors from the United Kingdom, the European Union, Iceland, Liechtenstein, Norway and Switzerland we do this only if you accept analytics cookies, as described under \"Your cookie choices\". For other visitors our basis is our legitimate interest in understanding and improving the site.",
       "To keep the site and forms secure, for example by rejecting automated submissions and duplicate sends.",
     ],
     after: [
@@ -62,6 +62,15 @@ export const privacySections: PrivacySection[] = [
       "We use Google Tag Manager to load Google Analytics 4, a service from Google that tells us how visitors use the site, for example which pages are viewed and when a form is started or submitted. Google Analytics sets cookies in your browser, such as _ga and a _ga_ cookie specific to our property, to tell visits apart. Google processes this information as described in its own privacy policy, and keeps it under the retention settings of our Google Analytics property.",
       "The events our code sends to Google are limited by a fixed list of permitted fields. Your name, email address, company, phone number and anything you type into a free-text field are not on that list, so they are not sent to Google. Calculator results are sent only as ranges, for example a team-size band, never as the values you entered.",
       "Trafficomm's own code does not set any cookies. The calculator uses session storage on your device as described above. You can block or delete cookies in your browser settings, and Google offers a browser add-on that stops Google Analytics from collecting data about your visits.",
+    ],
+  },
+  {
+    id: "cookies",
+    heading: "Your cookie choices",
+    paragraphs: [
+      "If you visit from the United Kingdom, a European Union member state, Iceland, Liechtenstein, Norway or Switzerland, Google Analytics cookies are off until you choose. A banner asks whether you accept analytics cookies, with an equal option to reject them. Google Analytics sets its cookies only after you select \"Accept analytics\". Visitors from other countries are measured with these cookies by default.",
+      "To decide whether to show the banner, the site asks our hosting provider which country your connection comes from. Only the country code is returned to your browser, where it is kept in session storage until you close the tab. We do not store it or your IP address for this purpose.",
+      "Your choice is saved in your browser's local storage under the name tc_consent, so we do not ask again on each visit. It is not a cookie and is not sent to us. You can change your choice at any time with \"Cookie settings\" at the bottom of every page, which shows the banner again in any country. Clearing your browser's site data also removes it.",
     ],
   },
   {

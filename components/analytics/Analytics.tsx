@@ -1,5 +1,6 @@
 import { GoogleTagManager } from "@next/third-parties/google";
 import { siteEnvironment } from "@/lib/deployment";
+import { consentDefaultsScript } from "@/lib/consent";
 
 /**
  * Google Tag Manager, and nothing else.
@@ -32,12 +33,13 @@ export function Analytics() {
 }
 
 /**
- * Rendered in <head> as a parser-blocking inline script, so the environment is the
- * first dataLayer message, ahead of the `gtm.js` event that next/script pushes after
- * hydration. The value is a fixed string from the build, never visitor data.
+ * Rendered in <head> as a parser-blocking inline script, so the Consent Mode
+ * defaults (lib/consent.ts) and the environment are the first dataLayer messages,
+ * ahead of the `gtm.js` event that next/script pushes after hydration. The values
+ * are fixed strings from the build, plus the visitor's own stored consent choice.
  */
 export function AnalyticsEnvironment() {
-  const init = `window.dataLayer=window.dataLayer||[];window.dataLayer.push(${JSON.stringify({ site_environment: siteEnvironment })});`;
+  const init = `window.dataLayer=window.dataLayer||[];${consentDefaultsScript()}window.dataLayer.push(${JSON.stringify({ site_environment: siteEnvironment })});`;
   return <script id="site-environment" dangerouslySetInnerHTML={{ __html: init }} />;
 }
 
