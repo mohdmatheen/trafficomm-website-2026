@@ -7,7 +7,7 @@
  * fixed retention periods and the name of the production email/CRM provider.
  * Do not fill these in from assumptions.
  */
-export const privacyUpdated = "2026-10-09";
+export const privacyUpdated = "2026-10-12";
 
 export type PrivacySection = { id: string; heading: string; paragraphs?: string[]; items?: string[]; after?: string[] };
 
