@@ -7,7 +7,7 @@
  * fixed retention periods and the name of the production email/CRM provider.
  * Do not fill these in from assumptions.
  */
-export const privacyUpdated = "2026-10-12";
+export const privacyUpdated = "2026-10-19";
 
 export type PrivacySection = { id: string; heading: string; paragraphs?: string[]; items?: string[]; after?: string[] };
 
@@ -31,6 +31,7 @@ export const privacySections: PrivacySection[] = [
       "How you reached the form: the page you were on, the referring website if your browser disclosed one, and any campaign tags in the link you followed (utm_source, utm_medium, utm_campaign, utm_content, utm_term). These are sent only with a form you submit.",
       "Delivery estimate requests in Trafficomm Labs: your name, company, work email address and, if you give them, your role and phone number, together with the analysis the AdOps capacity calculator produced. That analysis includes your market and currency, team size, campaign volume, platforms, workload and utilization, the total monthly cost and execution cost figures it calculated, and an indicative fit score. Individual salary inputs are never sent.",
       "Usage information through Google Analytics, described under \"Analytics and cookies\" below.",
+      "Advertising measurement information through the LinkedIn Insight Tag, also described under \"Analytics and cookies\" below.",
       "Technical information that any website receives, such as your IP address, browser type and the page requested, which our hosting provider processes to deliver the site and protect it from abuse.",
     ],
   },
@@ -49,6 +50,7 @@ export const privacySections: PrivacySection[] = [
       "To reply to your request, arrange the conversation you asked for and prepare an assessment or delivery estimate. Our basis for this is taking the steps you asked for before a possible contract, and our legitimate interest in answering business enquiries.",
       "To understand which pages and campaigns bring enquiries, using the page, referrer and campaign tags that travel with a form. Our basis is our legitimate interest in running and improving our marketing.",
       "To measure how the site is used in aggregate through Google Analytics. For visitors from the United Kingdom, the European Union, Iceland, Liechtenstein, Norway and Switzerland we do this only if you accept analytics cookies, as described under \"Your cookie choices\". For other visitors our basis is our legitimate interest in understanding and improving the site.",
+      "To measure and improve our advertising on LinkedIn through the LinkedIn Insight Tag: to see how visitors who arrive from our LinkedIn ads use the site, to count actions such as a form submission as conversions, and to show our LinkedIn ads to people who have visited the site. For visitors from the United Kingdom, the European Union, Iceland, Liechtenstein, Norway and Switzerland we do this only if you select \"Accept all\", as described under \"Your cookie choices\". For other visitors our basis is our legitimate interest in measuring and improving our advertising, and you can switch it off at any time with \"Cookie settings\".",
       "To keep the site and forms secure, for example by rejecting automated submissions and duplicate sends.",
     ],
     after: [
@@ -60,6 +62,7 @@ export const privacySections: PrivacySection[] = [
     heading: "Analytics and cookies",
     paragraphs: [
       "We use Google Tag Manager to load Google Analytics 4, a service from Google that tells us how visitors use the site, for example which pages are viewed and when a form is started or submitted. Google Analytics sets cookies in your browser, such as _ga and a _ga_ cookie specific to our property, to tell visits apart. Google processes this information as described in its own privacy policy, and keeps it under the retention settings of our Google Analytics property.",
+      "We also use Google Tag Manager to load the LinkedIn Insight Tag, a service from LinkedIn that tells us how visitors who saw or clicked our LinkedIn ads use the site, counts actions such as a form submission as conversions for those ads, and lets us show our LinkedIn ads to people who have visited the site. It sets LinkedIn cookies in your browser, such as li_fat_id, which records that you arrived by clicking one of our LinkedIn ads, and others including li_sugr, bcookie, lidc, UserMatchHistory and AnalyticsSyncHistory. If you are signed in to LinkedIn, LinkedIn may connect your visit to your LinkedIn account. LinkedIn does not tell us who you are: we see aggregated reports and audience sizes. LinkedIn processes this information as described in its own privacy and cookie policies.",
       "The events our code sends to Google are limited by a fixed list of permitted fields. Your name, email address, company, phone number and anything you type into a free-text field are not on that list, so they are not sent to Google. Calculator results are sent only as ranges, for example a team-size band, never as the values you entered.",
       "Trafficomm's own code does not set any cookies. The calculator uses session storage on your device as described above. You can block or delete cookies in your browser settings, and Google offers a browser add-on that stops Google Analytics from collecting data about your visits.",
     ],
@@ -68,7 +71,7 @@ export const privacySections: PrivacySection[] = [
     id: "cookies",
     heading: "Your cookie choices",
     paragraphs: [
-      "If you visit from the United Kingdom, a European Union member state, Iceland, Liechtenstein, Norway or Switzerland, Google Analytics cookies are off until you choose. A banner asks whether you accept analytics cookies, with an equal option to reject them. Google Analytics sets its cookies only after you select \"Accept analytics\". Visitors from other countries are measured with these cookies by default.",
+      "If you visit from the United Kingdom, a European Union member state, Iceland, Liechtenstein, Norway or Switzerland, Google Analytics and LinkedIn Insight Tag cookies are off until you choose. A banner offers three options of equal weight: \"Accept all\" turns on both, \"Analytics only\" turns on Google Analytics but not the LinkedIn Insight Tag, and \"Reject all\" turns on neither. Visitors from other countries are measured with both by default, and can choose \"Analytics only\" or \"Reject all\" through \"Cookie settings\".",
       "To decide whether to show the banner, the site asks our hosting provider which country your connection comes from. Only the country code is returned to your browser, where it is kept in session storage until you close the tab. We do not store it or your IP address for this purpose.",
       "Your choice is saved in your browser's local storage under the name tc_consent, so we do not ask again on each visit. It is not a cookie and is not sent to us. You can change your choice at any time with \"Cookie settings\" at the bottom of every page, which shows the banner again in any country. Clearing your browser's site data also removes it.",
     ],
@@ -81,13 +84,14 @@ export const privacySections: PrivacySection[] = [
       "Our website hosting provider, Vercel, which runs the site and the form handlers.",
       "The email delivery service and, where we use one, the business system to which form submissions are delivered so that our team receives them.",
       "Google, for Google Tag Manager and Google Analytics as described above.",
+      "LinkedIn, for the LinkedIn Insight Tag as described above.",
     ],
   },
   {
     id: "transfers",
     heading: "Where your information is processed",
     paragraphs: [
-      "Trafficomm operates from India, and our team reads and responds to enquiries there. Our hosting, email and analytics providers operate internationally, so your information may be processed in countries other than the one you live in, including the United States and India.",
+      "Trafficomm operates from India, and our team reads and responds to enquiries there. Our hosting, email, analytics and advertising providers operate internationally, so your information may be processed in countries other than the one you live in, including the United States and India.",
     ],
   },
   {
@@ -95,7 +99,7 @@ export const privacySections: PrivacySection[] = [
     heading: "How long we keep it",
     paragraphs: [
       "The website does not keep form submissions in a database. When you submit a form, the details are delivered to our team and are then held in our business email and records. To stop accidental double submissions, the site remembers a short fingerprint of a submission in memory for about 90 seconds. If a delivery fails, a short technical error message is written to our hosting provider's logs.",
-      "We keep enquiry details for as long as we need them to respond to you and to manage any business relationship that follows. You can ask us to delete them at any time, as described below. Google Analytics data is kept under the retention settings of our analytics property.",
+      "We keep enquiry details for as long as we need them to respond to you and to manage any business relationship that follows. You can ask us to delete them at any time, as described below. Google Analytics data is kept under the retention settings of our analytics property, and LinkedIn keeps Insight Tag data under its own retention policies.",
     ],
   },
   {
