@@ -17,7 +17,7 @@ export const privacySections: PrivacySection[] = [
     heading: "Who we are",
     paragraphs: [
       "This website, www.trafficomm.com, is operated by Trafficomm Digital Media Services Pvt Ltd, a company incorporated in India (CIN U74999TN2016PTC104264). Our office is at 2nd floor, Metro Towers, Poonamalee High Road, Egmore, Chennai, Tamil Nadu 600084, India. In this policy, \"Trafficomm\", \"we\" and \"us\" mean that company. We decide how the personal information described below is used.",
-      "This policy covers information collected through this website. It does not cover the work we do for clients under contract, which is governed by the agreement with each client.",
+      "This policy covers information collected through this website and through Trafficomm's Lead Gen Forms on LinkedIn. It does not cover the work we do for clients under contract, which is governed by the agreement with each client.",
     ],
   },
   {
@@ -30,6 +30,7 @@ export const privacySections: PrivacySection[] = [
       "Operations assessment and call requests (the form on the contact page and elsewhere on the site): your name, company, work email address, approximate campaigns per month, whether you asked for an assessment or a conversation, and anything you choose to write about your operational challenge.",
       "How you reached the form: the page you were on, the referring website if your browser disclosed one, and any campaign tags in the link you followed (utm_source, utm_medium, utm_campaign, utm_content, utm_term). These are sent only with a form you submit.",
       "Delivery estimate requests in Trafficomm Labs: your name, company, work email address and, if you give them, your role and phone number, together with the analysis the AdOps capacity calculator produced. That analysis includes your market and currency, team size, campaign volume, platforms, workload and utilization, the total monthly cost and execution cost figures it calculated, and an indicative fit score. Individual salary inputs are never sent.",
+      "Requests made through our LinkedIn Lead Gen Forms: when you submit one of our forms on LinkedIn, LinkedIn passes us the details you chose to submit — your first and last name, email address, company name, job title and country or region — together with your answers to our questions about your agency's monthly campaign volume and how we can help, the time you submitted the form, and identifiers for the LinkedIn campaign and advertisement the form was attached to. LinkedIn may pre-fill some of these details from your LinkedIn profile; you can review and change them before you submit.",
       "Usage information through Google Analytics, described under \"Analytics and cookies\" below.",
       "Advertising measurement information through the LinkedIn Insight Tag, also described under \"Analytics and cookies\" below.",
       "Technical information that any website receives, such as your IP address, browser type and the page requested, which our hosting provider processes to deliver the site and protect it from abuse.",
@@ -47,7 +48,7 @@ export const privacySections: PrivacySection[] = [
     id: "how-we-use",
     heading: "How we use it",
     items: [
-      "To reply to your request, arrange the conversation you asked for and prepare an assessment or delivery estimate. Our basis for this is taking the steps you asked for before a possible contract, and our legitimate interest in answering business enquiries.",
+      "To reply to your request — whether made on this website or through a LinkedIn Lead Gen Form — arrange the conversation you asked for, prepare an assessment or delivery estimate, and follow up with you about it by email or on LinkedIn. Our basis for this is taking the steps you asked for before a possible contract, and our legitimate interest in answering and following up business enquiries. You can ask us to stop following up at any time, and we will.",
       "To understand which pages and campaigns bring enquiries, using the page, referrer and campaign tags that travel with a form. Our basis is our legitimate interest in running and improving our marketing.",
       "To measure how the site is used in aggregate through Google Analytics. For visitors from the United Kingdom, the European Union, Iceland, Liechtenstein, Norway and Switzerland we do this only if you accept analytics cookies, as described under \"Your cookie choices\". For other visitors our basis is our legitimate interest in understanding and improving the site.",
       "To measure and improve our advertising on LinkedIn through the LinkedIn Insight Tag: to see how visitors who arrive from our LinkedIn ads use the site, to count actions such as a form submission as conversions, and to show our LinkedIn ads to people who have visited the site. For visitors from the United Kingdom, the European Union, Iceland, Liechtenstein, Norway and Switzerland we do this only if you select \"Accept all\", as described under \"Your cookie choices\". For other visitors our basis is our legitimate interest in measuring and improving our advertising, and you can switch it off at any time with \"Cookie settings\".",
@@ -84,7 +85,7 @@ export const privacySections: PrivacySection[] = [
       "Our website hosting provider, Vercel, which runs the site and the form handlers.",
       "The email delivery service and, where we use one, the business system to which form submissions are delivered so that our team receives them.",
       "Google, for Google Tag Manager and Google Analytics as described above.",
-      "LinkedIn, for the LinkedIn Insight Tag as described above.",
+      "LinkedIn, for the LinkedIn Insight Tag and our LinkedIn Lead Gen Forms as described above. LinkedIn processes Lead Gen Form submissions under its own privacy policy.",
     ],
   },
   {
@@ -99,6 +100,7 @@ export const privacySections: PrivacySection[] = [
     heading: "How long we keep it",
     paragraphs: [
       "The website does not keep form submissions in a database. When you submit a form, the details are delivered to our team and are then held in our business email and records. To stop accidental double submissions, the site remembers a short fingerprint of a submission in memory for about 90 seconds. If a delivery fails, a short technical error message is written to our hosting provider's logs.",
+      "Requests made through a LinkedIn Lead Gen Form are held by LinkedIn in our advertising account, from which our team downloads them into our business records so that we can respond.",
       "We keep enquiry details for as long as we need them to respond to you and to manage any business relationship that follows. You can ask us to delete them at any time, as described below. Google Analytics data is kept under the retention settings of our analytics property, and LinkedIn keeps Insight Tag data under its own retention policies.",
     ],
   },
