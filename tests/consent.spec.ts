@@ -58,9 +58,10 @@ test.describe("consent: UK visitor", () => {
 
   test("the buttons carry equal weight and the banner does not block the page", async ({ page }) => {
     await openPage(page);
-    const accept = banner(page).getByRole("button", { name: "Accept analytics" });
-    const reject = banner(page).getByRole("button", { name: "Reject" });
-    expect(await accept.getAttribute("class")).toBe(await reject.getAttribute("class"));
+    const classes = await Promise.all(
+      ["Accept all", "Analytics only", "Reject all"].map((name) => banner(page).getByRole("button", { name }).getAttribute("class")),
+    );
+    expect(new Set(classes).size, "all three choices look the same").toBe(1);
     await expect(banner(page).getByRole("checkbox")).toHaveCount(0);
     // No wall: the page underneath stays visible and the banner takes a small part of the screen.
     await expect(page.locator("#main")).toBeVisible();
@@ -69,25 +70,47 @@ test.describe("consent: UK visitor", () => {
     expect(box!.height, "banner is a strip, not a wall").toBeLessThan(vp.height / 2);
   });
 
-  test("Accept grants analytics, is remembered, and applies before gtm.js on the next page", async ({ page }) => {
+  test("Accept all grants analytics and LinkedIn, is remembered, and applies before gtm.js on the next page", async ({ page }) => {
     await openPage(page);
-    await banner(page).getByRole("button", { name: "Accept analytics" }).click();
+    await banner(page).getByRole("button", { name: "Accept all" }).click();
     await expect(banner(page)).toBeHidden();
     const after = await entries(page);
-    expect(after.some((e) => isCommand(e, "consent", "update") && settingsOf(e).analytics_storage === "granted")).toBe(true);
-    expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("granted");
+    expect(after.some((e) => isCommand(e, "consent", "update") && settingsOf(e).analytics_storage === "granted" && settingsOf(e).ad_storage === "granted")).toBe(true);
+    expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("all");
 
     await openPage(page, "/about");
     await expect(banner(page)).toBeHidden();
     const list = await entries(page);
     const update = list.findIndex((e) => isCommand(e, "consent", "update"));
-    expect(settingsOf(list[update])).toEqual({ analytics_storage: "granted" });
+    expect(settingsOf(list[update])).toEqual({ analytics_storage: "granted", ad_storage: "granted" });
     expect(update).toBeLessThan(gtmJsIndex(list));
   });
 
-  test("Reject denies analytics and sets no analytics cookie", async ({ page }) => {
+  test("Analytics only grants analytics and keeps the LinkedIn tag's signal denied", async ({ page }) => {
     await openPage(page);
-    await banner(page).getByRole("button", { name: "Reject" }).click();
+    await banner(page).getByRole("button", { name: "Analytics only" }).click();
+    await expect(banner(page)).toBeHidden();
+    expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("analytics");
+
+    await openPage(page, "/about");
+    const list = await entries(page);
+    const update = list.findIndex((e) => isCommand(e, "consent", "update"));
+    expect(settingsOf(list[update])).toEqual({ analytics_storage: "granted", ad_storage: "denied" });
+    expect(update).toBeLessThan(gtmJsIndex(list));
+  });
+
+  test("a choice stored before the advertising option existed stays analytics-only", async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem("tc_consent", "granted"));
+    await openPage(page);
+    await expect(banner(page)).toBeHidden();
+    const list = await entries(page);
+    const update = list.findIndex((e) => isCommand(e, "consent", "update"));
+    expect(settingsOf(list[update])).toEqual({ analytics_storage: "granted", ad_storage: "denied" });
+  });
+
+  test("Reject all denies analytics and LinkedIn and sets no analytics cookie", async ({ page }) => {
+    await openPage(page);
+    await banner(page).getByRole("button", { name: "Reject all" }).click();
     await expect(banner(page)).toBeHidden();
     expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("denied");
     const after = await entries(page);
@@ -97,7 +120,7 @@ test.describe("consent: UK visitor", () => {
     await expect(banner(page)).toBeHidden();
     const list = await entries(page);
     const update = list.findIndex((e) => isCommand(e, "consent", "update"));
-    expect(settingsOf(list[update])).toEqual({ analytics_storage: "denied" });
+    expect(settingsOf(list[update])).toEqual({ analytics_storage: "denied", ad_storage: "denied" });
     expect(update).toBeLessThan(gtmJsIndex(list));
     expect(await gaCookies(page)).toHaveLength(0);
   });
@@ -121,7 +144,7 @@ test.describe("consent: UK visitor", () => {
 
 test.describe("consent: visitors outside the consent regions", () => {
   for (const country of ["AE", "US"]) {
-    test(`${country}: no banner, analytics granted by default, order as before`, async ({ page }) => {
+    test(`${country}: no banner, analytics and LinkedIn granted by default, Google ad signals denied`, async ({ page }) => {
       await mockCountry(page, country);
       // Wait for the geo lookup to resolve before asserting the banner stays away.
       const geo = page.waitForResponse("**/api/geo");
@@ -130,7 +153,7 @@ test.describe("consent: visitors outside the consent regions", () => {
       await expect(banner(page)).toBeHidden();
       const list = await entries(page);
       const global = list.findIndex((e) => isCommand(e, "consent", "default") && !("region" in settingsOf(e)));
-      expect(settingsOf(list[global])).toMatchObject({ analytics_storage: "granted", ad_storage: "denied" });
+      expect(settingsOf(list[global])).toMatchObject({ analytics_storage: "granted", ad_storage: "granted", ad_user_data: "denied", ad_personalization: "denied" });
       expect(global).toBeLessThan(gtmJsIndex(list));
       expect(list.some((e) => isCommand(e, "consent", "update"))).toBe(false);
     });
@@ -152,8 +175,8 @@ test.describe("consent: footer Cookie settings", () => {
       await page.locator("footer").getByRole("button", { name: "Cookie settings" }).click();
       await expect(banner(page)).toBeVisible();
       expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBeNull();
-      await banner(page).getByRole("button", { name: "Accept analytics" }).click();
-      expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("granted");
+      await banner(page).getByRole("button", { name: "Accept all" }).click();
+      expect(await page.evaluate(() => localStorage.getItem("tc_consent"))).toBe("all");
     });
   }
 });
@@ -171,4 +194,7 @@ test("/privacy documents the cookie choices", async ({ page }) => {
   await expect(page.locator("#cookies h2")).toHaveText("Your cookie choices");
   await expect(page.locator("#cookies")).toContainText("tc_consent");
   await expect(page.locator("#cookies")).toContainText("Cookie settings");
+  await expect(page.locator("#cookies")).toContainText("Analytics only");
+  await expect(page.locator("#analytics-and-cookies")).toContainText("LinkedIn Insight Tag");
+  await expect(page.locator("#sharing")).toContainText("LinkedIn");
 });
