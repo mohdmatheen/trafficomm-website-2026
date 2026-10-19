@@ -152,7 +152,11 @@ export const primaryNav: NavGroup[] = [
       { label: "For Publishers & AdTech", href: "/solutions/publishers-adtech", description: "Monetization, ad serving and platform ops" },
       { label: "White-Label Ad Operations", href: "/solutions/white-label-ad-operations", description: "Your brand in front, our team behind" },
     ],
-    feature: { label: "Request an operations assessment", href: "/contact", description: "Map where your team loses time today." },
+    feature: {
+      label: "Ad operations outsourcing",
+      href: "/ad-operations-outsourcing",
+      description: "How agencies outsource AdOps to us, alongside their team or white-label.",
+    },
   },
 ];
 
