@@ -14,6 +14,7 @@ export function Footer() {
     {
       title: "Explore",
       links: [
+        { label: "Ad operations outsourcing", href: "/ad-operations-outsourcing" },
         { label: "All services", href: "/services" },
         { label: "All solutions", href: "/solutions" },
         { label: "Platforms", href: "/platforms" },

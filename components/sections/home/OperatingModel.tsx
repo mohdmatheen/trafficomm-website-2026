@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ButtonLink } from "@/components/ui/Button";
 import { LogoMark } from "@/components/ui/Logo";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -36,7 +37,11 @@ export function OperatingModel({ index = "06" }: { index?: string | null }) {
           }
         />
         <p className="text-[1rem] leading-relaxed text-steel lg:pb-2" data-reveal>
-          Trafficomm works as an extension of your media team — behind it, not in front of your clients. You keep strategy and relationships; a specialized operations team carries the execution load.
+          Trafficomm works as an extension of your media team — behind it, not in front of your clients. You keep strategy and relationships; a specialized operations team carries the execution load. See how{" "}
+          <Link href="/ad-operations-outsourcing" className="text-ink underline decoration-line-strong underline-offset-4 hover:decoration-signal">
+            ad operations outsourcing
+          </Link>{" "}
+          works with Trafficomm.
         </p>
       </div>
 
