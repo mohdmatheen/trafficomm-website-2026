@@ -156,6 +156,20 @@ test.describe("robots", () => {
   });
 });
 
+test.describe("llms.txt", () => {
+  test("is plain text, links only to real pages, and carries no headcount", async ({ page }) => {
+    const res = await page.request.get("/llms.txt");
+    expect(res.status()).toBe(200);
+    expect(res.headers()["content-type"]).toContain("text/plain");
+    const body = await res.text();
+    expect(body.startsWith("# Trafficomm\n")).toBe(true);
+    expect(body).not.toMatch(/70\+|employees|headcount/i);
+    const paths = [...body.matchAll(/\]\((https?:\/\/[^)]+)\)/g)].map((m) => new URL(m[1]).pathname);
+    expect(paths.length).toBeGreaterThan(20);
+    for (const path of new Set(paths)) expect((await page.request.get(path)).status(), path).toBe(200);
+  });
+});
+
 test.describe("page metadata", () => {
   const pages = ["/", "/services", "/solutions", "/platforms", "/case-studies", "/how-we-work", "/insights", "/about", "/contact"];
 
