@@ -152,7 +152,7 @@ export const faqs: FAQ[] = [
   },
   {
     q: "Can agencies in the United States, the UK or Türkiye outsource ad operations to Trafficomm?",
-    a: "Yes, the model is not tied to a market. Trafficomm's documented campaign experience spans Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, and that is historical experience rather than a boundary on where it can operate. Delivery is centralized, and the team works inside each agency's own platforms, naming conventions and approval steps, with campaigns going live on the agency's approval, so the same way of working applies to an agency in the United States, the United Kingdom or Türkiye.",
+    a: "Yes. Trafficomm works to each client's working hours and follows the client's holiday calendar, whichever country the client is in. Its campaign experience spans Saudi Arabia, the UAE, Qatar, Kuwait, Lebanon and Australia, and it has run campaigns targeted at Türkiye. Delivery is centralized, and the team works inside each agency's own platforms, naming conventions and approval steps, with campaigns going live on the agency's approval, so the same way of working applies to an agency in the United States, the United Kingdom or Türkiye.",
   },
   {
     q: "What should an agency look for when choosing an AdOps outsourcing partner?",
