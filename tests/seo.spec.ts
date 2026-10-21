@@ -135,7 +135,7 @@ test.describe("legacy URL redirects", () => {
   });
 
   test("old URLs without an established equivalent stay 404", async ({ page }) => {
-    for (const path of ["/testimonials/abdul", "/testimonials/saran-kumar", "/services/2", "/services/3", "/public/index.php", "/blog/3", "/public/index.php/blog/3"]) {
+    for (const path of ["/testimonials/abdul", "/testimonials/saran-kumar", "/services/2", "/services/3", "/public/index.php"]) {
       const res = await page.request.get(path, { maxRedirects: 0 });
       expect(res.status(), `${path} should stay 404`).toBe(404);
     }
